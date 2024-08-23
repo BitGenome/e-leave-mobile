@@ -11,6 +11,9 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
+import { Poppins_400Regular } from "@expo-google-fonts/poppins";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,7 +30,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Poppins_400Regular,
     ...FontAwesome.font,
   });
 
@@ -49,15 +52,20 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
+const customLightTheme = { ...MD3LightTheme, colors: Colors.light };
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+  const paperTheme =
+    colorScheme === "dark" ? customDarkTheme : customLightTheme;
+
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <PaperProvider theme={paperTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
-    </ThemeProvider>
+    </PaperProvider>
   );
 }
