@@ -1,9 +1,4 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -14,6 +9,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { Poppins_400Regular } from "@expo-google-fonts/poppins";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { darkTheme, lightTheme } from "@/themes";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,8 +48,8 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
-const customLightTheme = { ...MD3LightTheme, colors: Colors.light };
+const customDarkTheme = { ...darkTheme, colors: Colors.dark };
+const customLightTheme = { ...lightTheme, colors: Colors.light };
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
