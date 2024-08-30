@@ -4,8 +4,7 @@ import React from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-import { Pressable, TouchableOpacity } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, IconButton, TouchableRipple } from "react-native-paper";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -24,7 +23,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarButton: (props) => <Pressable {...props} />,
+        tabBarButton: (props) => <TouchableRipple {...props} />,
       }}
     >
       <Tabs.Screen
@@ -44,14 +43,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(leaves)/apply-leave/index"
+        name="(leaves)/apply-leave"
         options={{
           title: "Apply Leave",
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="employees"
+        name="employee"
         options={{
           title: "Employees",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
