@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "e-leave",
+    "name": "ELeave",
     "slug": "e-leave",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,10 +10,10 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "rgb(0, 99, 154)"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {

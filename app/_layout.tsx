@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
+import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { darkTheme, lightTheme } from "@/themes";
@@ -17,9 +18,20 @@ import {
   Poppins_800ExtraBold,
   Poppins_900Black,
 } from "@expo-google-fonts/poppins";
-import { PaperProvider, useTheme } from "react-native-paper";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import merge from "deepmerge";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  adaptNavigationTheme,
+  PaperProvider,
+  useTheme,
+} from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -67,20 +79,53 @@ export default function RootLayout() {
 const customDarkTheme = { ...darkTheme, colors: Colors.dark };
 const customLightTheme = { ...lightTheme, colors: Colors.light };
 
+const { LightTheme, DarkTheme } = adaptNavigationTheme({
+  reactNavigationLight: NavigationDefaultTheme,
+  reactNavigationDark: NavigationDarkTheme,
+});
+
+const CombinedLightTheme = merge(LightTheme, customLightTheme);
+const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
+
 function RootLayoutNav() {
+  return (
+    <Providers>
+      <Stack
+        screenOptions={{
+          headerShadowVisible: false,
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        {/* <Stack.Screen
+          name="employee-detail"
+          options={{
+            headerShown: true,
+            headerTitle: () => (
+              <TextPoppinsBold>Employee Detail </TextPoppinsBold>
+            ),
+          }}
+        /> */}
+      </Stack>
+    </Providers>
+  );
+}
+
+function Providers({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
 
   const paperTheme =
-    colorScheme === "dark" ? customDarkTheme : customLightTheme;
+    colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme;
   const theme = useTheme();
 
   return (
-    <PaperProvider theme={paperTheme}>
-      <SafeAreaProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      </SafeAreaProvider>
-    </PaperProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider theme={paperTheme}>
+        <ThemeProvider value={paperTheme}>
+          <BottomSheetModalProvider>
+            <SafeAreaProvider>{children}</SafeAreaProvider>
+          </BottomSheetModalProvider>
+        </ThemeProvider>
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }

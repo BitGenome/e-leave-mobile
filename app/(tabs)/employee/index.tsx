@@ -1,6 +1,7 @@
 import EmployeeCard from "@/components/Employee/EmployeeCard";
 import EmployeeSearchText from "@/components/Employee/EmployeeSearch";
 import { View } from "@/components/Themed";
+import { ROUTES } from "@/constants/Routes";
 import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
 import { StyleSheet } from "react-native";
@@ -52,8 +53,8 @@ export default function EmployeeScreen() {
           data={employee}
           estimatedItemSize={20}
         />
-        <Link href={"/employee/register-employee"} asChild>
-          <FAB icon="plus" mode="flat" style={styles.fab} animated />
+        <Link href={"/register-employee"} asChild>
+          <FAB icon="plus" style={styles.fab} animated />
         </Link>
       </View>
     </SafeAreaView>
