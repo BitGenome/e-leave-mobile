@@ -45,7 +45,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(leaves)/apply-leave"
+        name="apply-leave"
         options={{
           title: "Apply Leave",
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,

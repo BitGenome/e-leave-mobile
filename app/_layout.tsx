@@ -96,15 +96,6 @@ function RootLayoutNav() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen
-          name="employee-detail"
-          options={{
-            headerShown: true,
-            headerTitle: () => (
-              <TextPoppinsBold>Employee Detail </TextPoppinsBold>
-            ),
-          }}
-        /> */}
       </Stack>
     </Providers>
   );

@@ -1,12 +1,14 @@
+import ApplyEmployeeLeaveForm from "@/components/Forms/ApplyLeave";
 import { StyleSheet, View } from "react-native";
 
-import EditScreenInfo from "@/components/EditScreenInfo";
-import { Text } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ApplyLeaveScreen() {
+  const inset = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
-      <Text variant="headlineLarge">Apply leave</Text>
+    <View style={[styles.container, { marginTop: 5 + inset.top }]}>
+      <ApplyEmployeeLeaveForm />
     </View>
   );
 }
@@ -14,8 +16,6 @@ export default function ApplyLeaveScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   title: {
     fontSize: 20,

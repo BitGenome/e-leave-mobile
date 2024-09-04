@@ -1,4 +1,6 @@
 import { View } from "@/components/Themed";
+import PrimaryButton from "@/ui/primary-button";
+import { Link } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
