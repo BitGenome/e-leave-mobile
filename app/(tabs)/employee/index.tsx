@@ -1,63 +1,29 @@
-import EmployeeCard from "@/components/Employee/EmployeeCard";
-import EmployeeSearchText from "@/components/Employee/EmployeeSearch";
+import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View } from "@/components/Themed";
-import { ROUTES } from "@/constants/Routes";
+import { employedata } from "@/data/employee";
 import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
 import { StyleSheet } from "react-native";
-import { FAB, MD3Theme, useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
-const employee = [
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-];
+import { FAB, MD3Theme, Text, useTheme } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function EmployeeScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
+  const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.searchTextContainer}>
-          <EmployeeSearchText />
-        </View>
-        <FlashList
-          renderItem={({ item }) => <EmployeeCard {...item} />}
-          data={employee}
-          estimatedItemSize={20}
-        />
-        <Link href={"/register-employee"} asChild>
-          <FAB icon="plus" style={styles.fab} animated />
-        </Link>
-      </View>
-    </SafeAreaView>
+    <View style={[styles.container]}>
+      <FlashList
+        contentInsetAdjustmentBehavior="automatic"
+        renderItem={({ item }) => <EmployeeCard {...item} />}
+        data={employedata}
+        estimatedItemSize={20}
+      />
+      <Link href={{ pathname: "/register-employee" }} asChild>
+        <FAB mode="flat" icon="plus" style={styles.fab} animated />
+      </Link>
+    </View>
   );
 }
 
@@ -65,7 +31,8 @@ const createStyles = (theme: MD3Theme) => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.background,
+      marginTop: 10,
     },
     title: {
       fontSize: 20,
@@ -86,7 +53,10 @@ const createStyles = (theme: MD3Theme) => {
     searchTextContainer: {
       paddingVertical: 10,
       paddingHorizontal: 20,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.surface,
+    },
+    flashContainer: {
+      marginTop: 20,
     },
   });
 };

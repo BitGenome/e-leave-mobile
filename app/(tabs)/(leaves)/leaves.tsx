@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
-
+import LeaveCard from "@/components/Leaves/components/LeaveCard";
 import { View } from "@/components/Themed";
-import { Text } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LeavesScreen() {
+  const inset = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
-      <Text>Employee Leaves</Text>
+    <View style={[styles.container, { marginTop: inset.top }]}>
+      <LeaveCard />
     </View>
   );
 }
@@ -14,8 +15,7 @@ export default function LeavesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    marginHorizontal: 15,
   },
   title: {
     fontSize: 20,

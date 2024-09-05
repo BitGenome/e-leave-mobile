@@ -14,6 +14,9 @@ export default function RegisterEmployeeScreen() {
         options={{
           headerShown: true,
           presentation: "modal",
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
           headerTitle: () => (
             <TextPoppinsBold>Register Employee</TextPoppinsBold>
           ),

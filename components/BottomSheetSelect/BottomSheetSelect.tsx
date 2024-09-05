@@ -5,8 +5,14 @@ import {
   BottomSheetModal,
 } from "@gorhom/bottom-sheet";
 import React, { useCallback, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { IconButton, List, useTheme } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import {
+  IconButton,
+  List,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from "react-native-paper";
 
 interface Option {
   label: string;
@@ -18,6 +24,12 @@ interface SelectProps {
   label: string;
   onSelect: (option: Option) => void;
   selectedValue?: Option;
+  header?: string;
+  snapPoint?: string[] | number[];
+}
+
+interface HeaderProps {
+  label: string;
 }
 
 const BottomSheetSelect = ({
@@ -25,6 +37,8 @@ const BottomSheetSelect = ({
   label,
   onSelect,
   selectedValue,
+  header,
+  snapPoint = ["30%", "50%"],
 }: SelectProps) => {
   const theme = useTheme();
   const [selectedOption, setSelectedOption] = useState<Option | undefined>(
@@ -44,10 +58,31 @@ const BottomSheetSelect = ({
 
   const renderItem = ({ item }: { item: Option }) => (
     <List.Item
-      title={item.label}
+      style={{
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.surfaceDisabled,
+      }}
+      contentStyle={{
+        height: 40,
+      }}
+      title={() => {
+        const isActive = item.value === selectedOption?.value;
+        return (
+          <Text
+            style={{
+              fontFamily: "Poppins_400Regular",
+              color: isActive ? theme.colors.primary : undefined,
+            }}
+          >
+            {item.label}
+          </Text>
+        );
+      }}
       onPress={() => handleSelect(item)}
       right={() =>
-        selectedOption?.value === item.value && <IconButton icon="check" />
+        selectedOption?.value === item.value && (
+          <List.Icon color={theme.colors.primary} icon="check" />
+        )
       }
     />
   );
@@ -62,33 +97,50 @@ const BottomSheetSelect = ({
     ),
     []
   );
+
+  const renderHeader = useCallback(
+    (props: HeaderProps) => (
+      <View
+        style={{
+          padding: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.colors.surfaceDisabled,
+        }}
+      >
+        <Text
+          variant="labelLarge"
+          style={{ textAlign: "center", fontFamily: "Poppins_700Bold" }}
+        >
+          {props.label}
+        </Text>
+      </View>
+    ),
+    []
+  );
   return (
     <>
-      <TouchableOpacity onPress={openBottomSheet}>
+      <TouchableRipple onPress={openBottomSheet} borderless>
         <View
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            backgroundColor: "#fff",
-            borderRadius: 8,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: theme.colors.outline,
-          }}
+          style={[
+            styles.select,
+            {
+              borderColor: theme.colors.outline,
+              backgroundColor: theme.colors.surface,
+            },
+          ]}
         >
           <Text>{selectedOption?.label || label}</Text>
           <IconButton icon="chevron-down" />
         </View>
-      </TouchableOpacity>
+      </TouchableRipple>
 
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={["50%", "75%"]}
+        snapPoints={snapPoint}
         backdropComponent={renderBackdrop}
       >
+        {header && renderHeader({ label: header })}
         <BottomSheetFlatList
           data={options}
           keyExtractor={(item) => item.value.toString()}
@@ -100,3 +152,15 @@ const BottomSheetSelect = ({
 };
 
 export default BottomSheetSelect;
+
+const styles = StyleSheet.create({
+  select: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 1,
+  },
+});

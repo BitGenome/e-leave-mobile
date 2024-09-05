@@ -16,7 +16,7 @@ export default function LeaveCalendar(props: Calendar) {
     <Calendar
       theme={{
         selectedDayBackgroundColor: theme.colors.primary,
-        shadow: theme.colors.elevation,
+        shadow: theme.colors.shadow,
       }}
       onDayPress={(day: any) => {
         onPress(day.dateString);

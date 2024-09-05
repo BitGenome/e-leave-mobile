@@ -1,13 +1,14 @@
 import { Link } from "expo-router";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   MD3Theme,
   Surface,
+  Text,
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
-import { TextPoppinsBold } from "../Text/TextPoppinsBold";
-import { TextPoppinsRegular } from "../Text/TextPoppinsRegular";
+import { TextPoppinsBold } from "../../Text/TextPoppinsBold";
+import { TextPoppinsRegular } from "../../Text/TextPoppinsRegular";
 
 interface IEmployeeCard {
   name: string;
@@ -20,16 +21,22 @@ export default function EmployeeCard(props: IEmployeeCard) {
   const styles = createStyles(theme);
 
   return (
-    <Link href={"/employee-detail"} asChild>
-      <TouchableRipple
-        onPress={() => console.log("hello")}
-        rippleColor={theme.colors.primaryContainer}
-      >
+    <Link
+      href={{
+        pathname: "/employee-detail",
+        params: {
+          name,
+        },
+      }}
+      asChild
+    >
+      <TouchableRipple borderless>
         <Surface elevation={0} style={styles.surface}>
           <TextPoppinsBold variant="headlineSmall">{name}</TextPoppinsBold>
           <TextPoppinsRegular variant="bodyMedium">
             {position}
           </TextPoppinsRegular>
+          <Text variant="headlineSmall">hello</Text>
         </Surface>
       </TouchableRipple>
     </Link>

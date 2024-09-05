@@ -4,8 +4,9 @@ import React from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-import { TouchableOpacity } from "react-native";
-import { useTheme } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
+import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -24,8 +25,25 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
         headerShown: false,
+        headerShadowVisible: false,
         tabBarShowLabel: false,
-        tabBarButton: (props) => <TouchableOpacity {...props} />,
+        tabBarButton: (props) => (
+          <TouchableRipple
+            rippleColor={theme.colors.primaryContainer}
+            borderless
+            {...props}
+          />
+        ),
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            backgroundColor: theme.colors.surface,
+            borderColor: theme.colors.surfaceDisabled,
+          },
+        ],
+        headerStyle: {
+          backgroundColor: theme.colors.surface,
+        },
       }}
     >
       <Tabs.Screen
@@ -39,9 +57,12 @@ export default function TabLayout() {
         name="(leaves)/leaves"
         options={{
           title: "Leaves",
+          headerShown: true,
+          headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
           ),
+          headerTitle: () => <TextPoppinsBold>Employee Leaves</TextPoppinsBold>,
         }}
       />
       <Tabs.Screen
@@ -70,3 +91,13 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    height: 70,
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
+    borderWidth: 0.5,
+    elevation: 30,
+  },
+});

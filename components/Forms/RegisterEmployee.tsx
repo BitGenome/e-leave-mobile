@@ -1,84 +1,13 @@
+import { position } from "@/data/position";
 import PrimaryButton from "@/ui/primary-button";
-import {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
-import { useCallback, useMemo, useRef } from "react";
-import { Keyboard, StyleSheet, View } from "react-native";
-import {
-  MD3Theme,
-  Text,
-  TextInput,
-  TouchableRipple,
-  useTheme,
-} from "react-native-paper";
-
-const positions = [
-  {
-    name: "Driver",
-  },
-  {
-    name: "Admin assistant",
-  },
-  {
-    name: "Manager",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-  {
-    name: "Mechanic",
-  },
-];
+import { StyleSheet, View } from "react-native";
+import { MD3Theme, TextInput, useTheme } from "react-native-paper";
+import BottomSheetSelect from "../BottomSheetSelect/BottomSheetSelect";
 
 export default function RegisterEmployeeForm() {
   const theme = useTheme();
   const styles = createStyles(theme);
 
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  // variables
-  const snapPoints = useMemo(() => ["50%", "95%"], []);
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
-
-  const renderBackdrop = useCallback(
-    (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={2}
-      />
-    ),
-    []
-  );
   return (
     <View style={styles.formContainer}>
       <TextInput
@@ -99,44 +28,14 @@ export default function RegisterEmployeeForm() {
         style={styles.input}
         theme={{ roundness: 8 }}
       />
-      <TouchableRipple
-        onPress={() => {
-          Keyboard.dismiss();
-          handlePresentModalPress();
-        }}
-        borderless
-        centered
-      >
-        <TextInput
-          editable={false}
-          label={"Select employee position"}
-          mode="outlined"
-          theme={{ roundness: 8 }}
-          right={<TextInput.Icon icon={"chevron-down"} />}
-          pointerEvents="none"
-        />
-      </TouchableRipple>
-
+      <BottomSheetSelect
+        label={"Select position"}
+        selectedValue={undefined}
+        options={position}
+        onSelect={({ value }) => console.log(value)}
+        snapPoint={["35%", "50%"]}
+      />
       <PrimaryButton theme={{ roundness: 3 }}>Save</PrimaryButton>
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={0}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        backdropComponent={renderBackdrop}
-      >
-        <BottomSheetScrollView style={styles.contentContainer}>
-          {positions.map((pos, _index) => (
-            <TouchableRipple
-              style={styles.itemContent}
-              onPress={() => console.log("hello")}
-              key={_index}
-            >
-              <Text variant="labelMedium">{pos.name}</Text>
-            </TouchableRipple>
-          ))}
-        </BottomSheetScrollView>
-      </BottomSheetModal>
     </View>
   );
 }

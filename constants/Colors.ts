@@ -16,7 +16,7 @@ export default {
     onError: "rgb(255, 255, 255)",
     errorContainer: "rgb(255, 218, 214)",
     onErrorContainer: "rgb(65, 0, 2)",
-    background: "rgb(252, 252, 255)",
+    background: "rgb(238, 238, 238)",
     onBackground: "rgb(26, 28, 30)",
     surface: "rgb(252, 252, 255)",
     onSurface: "rgb(26, 28, 30)",
@@ -29,6 +29,7 @@ export default {
     inverseSurface: "rgb(47, 48, 51)",
     inverseOnSurface: "rgb(240, 240, 244)",
     inversePrimary: "rgb(150, 204, 255)",
+    white: "rgb(255, 255, 255)",
     elevation: {
       level0: "transparent",
       level1: "rgb(239, 244, 250)",
