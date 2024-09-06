@@ -1,16 +1,36 @@
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View } from "@/components/Themed";
+import { ROUTES } from "@/constants/Routes";
 import { employedata } from "@/data/employee";
+import { useAppStore } from "@/store/app";
 import { FlashList } from "@shopify/flash-list";
-import { Link } from "expo-router";
-import { StyleSheet } from "react-native";
-import { FAB, MD3Theme, Text, useTheme } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useExpoRouter } from "expo-router/build/global-state/router-store";
+import { MotiView } from "moti";
+import { useRef } from "react";
+import { Animated, StyleSheet } from "react-native";
+import { FAB, MD3Theme, useTheme } from "react-native-paper";
 
 export default function EmployeeScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
-  const insets = useSafeAreaInsets();
+  const router = useExpoRouter();
+
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const [isTabBarVisible, hideTabBar, showTabBar] = useAppStore((state) => [
+    state.isTabbarVisible,
+    state.hideTabBar,
+    state.showTabBar,
+  ]);
+
+  const handleScroll = (event: any) => {
+    const currentOffset = event.nativeEvent.contentOffset.y;
+
+    if (currentOffset > 50) {
+      hideTabBar(); // Hide the tab bar when scrolling down
+    } else {
+      showTabBar(); // Show the tab bar when scrolling up
+    }
+  };
 
   return (
     <View style={[styles.container]}>
@@ -19,10 +39,27 @@ export default function EmployeeScreen() {
         renderItem={({ item }) => <EmployeeCard {...item} />}
         data={employedata}
         estimatedItemSize={20}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+          { useNativeDriver: false, listener: handleScroll }
+        )}
       />
-      <Link href={{ pathname: "/register-employee" }} asChild>
-        <FAB mode="flat" icon="plus" style={styles.fab} animated />
-      </Link>
+      {isTabBarVisible && (
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: "timing", duration: 300 }}
+          style={styles.fab}
+        >
+          <FAB
+            onPress={() => router.navigate("/register-employee")}
+            mode="flat"
+            icon="plus"
+            style={styles.fab}
+            animated
+          />
+        </MotiView>
+      )}
     </View>
   );
 }
@@ -47,7 +84,7 @@ const createStyles = (theme: MD3Theme) => {
       position: "absolute",
       margin: 16,
       right: 0,
-      bottom: 0,
+      bottom: 30,
       borderRadius: 20,
     },
     searchTextContainer: {
