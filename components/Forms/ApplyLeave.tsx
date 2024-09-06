@@ -1,10 +1,11 @@
+import { employee } from "@/data/employee";
+import { leaveType } from "@/data/leave-type";
+import PrimaryButton from "@/ui/primary-button";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 import BottomSheetSelect from "../BottomSheetSelect/BottomSheetSelect";
 import LeaveCalendar from "../EmployeeLeave/components/LeaveCalendar";
-import { employee } from "@/data/employee";
-import { leaveType } from "@/data/leave-type";
 
 export default function ApplyEmployeeLeaveForm() {
   const theme = useTheme();
@@ -17,7 +18,7 @@ export default function ApplyEmployeeLeaveForm() {
     setSelectedValue(option.value);
   };
   return (
-    <View style={[styles.formContainer]}>
+    <View style={styles.formContainer}>
       <View
         style={[
           styles.formLayoutContainer,
@@ -50,6 +51,7 @@ export default function ApplyEmployeeLeaveForm() {
           onSelect={handleSelect}
           header="Leave type"
         />
+        <PrimaryButton>Apply Leave</PrimaryButton>
       </View>
     </View>
   );
@@ -64,8 +66,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   formLayoutContainer: {
-    gap: 15,
+    gap: 12,
     padding: 20,
     borderRadius: 12,
+    flex: 1,
   },
 });

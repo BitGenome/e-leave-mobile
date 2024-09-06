@@ -5,7 +5,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { darkTheme, lightTheme } from "@/themes";
@@ -88,11 +87,15 @@ const CombinedLightTheme = merge(LightTheme, customLightTheme);
 const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
 
 function RootLayoutNav() {
+  const theme = useTheme();
   return (
     <Providers>
       <Stack
         screenOptions={{
           headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

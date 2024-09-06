@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'e-leave'
+rootProject.name = 'ELeave'
 
 dependencyResolutionManagement {
   versionCatalogs {

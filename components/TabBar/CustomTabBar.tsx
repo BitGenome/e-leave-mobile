@@ -15,7 +15,7 @@ export default function CustomAnimatedTabBar({
     <MotiView
       from={{ translateY: 0 }}
       animate={{ translateY: isTabBarVisible ? 0 : 100 }}
-      transition={{ type: "timing", duration: 300 }}
+      transition={{ type: "timing", duration: 250 }}
       style={[
         styles.tabBarContainer,
         {

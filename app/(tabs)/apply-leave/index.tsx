@@ -1,28 +1,14 @@
 import ApplyEmployeeLeaveForm from "@/components/Forms/ApplyLeave";
-import { StyleSheet, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, StyleSheet } from "react-native";
 
 export default function ApplyLeaveScreen() {
-  const inset = useSafeAreaInsets();
-
   return (
-    <View style={[styles.container, { marginTop: 5 + inset.top }]}>
+    <ScrollView style={styles.container}>
       <ApplyEmployeeLeaveForm />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
+  container: { flex: 1, marginTop: 10 },
 });

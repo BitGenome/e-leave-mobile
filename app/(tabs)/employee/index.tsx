@@ -1,6 +1,5 @@
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View } from "@/components/Themed";
-import { ROUTES } from "@/constants/Routes";
 import { employedata } from "@/data/employee";
 import { useAppStore } from "@/store/app";
 import { FlashList } from "@shopify/flash-list";
@@ -55,6 +54,7 @@ export default function EmployeeScreen() {
             onPress={() => router.navigate("/register-employee")}
             mode="flat"
             icon="plus"
+            color={theme.colors.surface}
             style={styles.fab}
             animated
           />
@@ -86,6 +86,8 @@ const createStyles = (theme: MD3Theme) => {
       right: 0,
       bottom: 30,
       borderRadius: 20,
+      backgroundColor: theme.colors.primary,
+      elevation: 8,
     },
     searchTextContainer: {
       paddingVertical: 10,

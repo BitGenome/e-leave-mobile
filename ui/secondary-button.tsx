@@ -1,12 +1,17 @@
 import { StyleSheet } from "react-native";
-import { Button, ButtonProps } from "react-native-paper";
+import { Button, ButtonProps, useTheme } from "react-native-paper";
 
-function PrimaryButton(props: ButtonProps) {
+function SecondaryButton(props: ButtonProps) {
+  const theme = useTheme();
   return (
     <Button
       {...props}
       mode="contained"
-      style={[props.style, styles.primary]}
+      style={[
+        props.style,
+        styles.primary,
+        { backgroundColor: theme.colors.secondary },
+      ]}
       contentStyle={{
         height: 55,
       }}
@@ -22,4 +27,4 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
 });
-export default PrimaryButton;
+export default SecondaryButton;
