@@ -1,13 +1,18 @@
 import RegisterEmployeeForm from "@/components/Forms/RegisterEmployee";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
+import useUnsavedChangesWarning from "@/hooks/useUnsaveChangesWarning";
 import { Stack } from "expo-router";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { MD3Theme, useTheme } from "react-native-paper";
 
 export default function RegisterEmployeeScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
+  const [text, setText] = useState("");
+  const hasUnsavedChanges = Boolean(text);
 
+  useUnsavedChangesWarning({ hasUnsavedChanges });
   return (
     <>
       <Stack.Screen

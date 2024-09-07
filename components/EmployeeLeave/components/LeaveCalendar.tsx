@@ -48,7 +48,7 @@ export default function LeaveCalendar(props: Calendar) {
             betweenDates[dt.toISOString().split("T")[0]] = {
               selected: true,
               marked: false,
-              color: theme.colors.primaryContainer,
+              color: theme.colors.secondaryContainer,
               textColor: theme.colors.secondary,
               startingDay: false,
               endingDay: false,

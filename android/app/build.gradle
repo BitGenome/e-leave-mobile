@@ -109,9 +109,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.eleave'
+    namespace 'com.anonymous.leaveease'
     defaultConfig {
-        applicationId 'com.anonymous.eleave'
+        applicationId 'com.anonymous.leaveease'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

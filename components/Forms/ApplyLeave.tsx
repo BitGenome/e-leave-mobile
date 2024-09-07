@@ -4,7 +4,9 @@ import PrimaryButton from "@/ui/primary-button";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
-import BottomSheetSelect from "../BottomSheetSelect/BottomSheetSelect";
+import BottomSheetSelect, {
+  SelectValue,
+} from "../BottomSheetSelect/BottomSheetSelect";
 import LeaveCalendar from "../EmployeeLeave/components/LeaveCalendar";
 
 export default function ApplyEmployeeLeaveForm() {
@@ -14,8 +16,8 @@ export default function ApplyEmployeeLeaveForm() {
     string | number | undefined
   >(undefined);
 
-  const handleSelect = (option: { label: string; value: string | number }) => {
-    setSelectedValue(option.value);
+  const handleSelect = (option: SelectValue) => {
+    setSelectedValue(option);
   };
   return (
     <View style={styles.formContainer}>
@@ -29,7 +31,7 @@ export default function ApplyEmployeeLeaveForm() {
         <BottomSheetSelect
           label="Employee name"
           options={employee}
-          selectedValue={undefined}
+          value={undefined}
           onSelect={handleSelect}
           header="Employee name"
         />
@@ -47,8 +49,8 @@ export default function ApplyEmployeeLeaveForm() {
         <BottomSheetSelect
           label="Select leave type"
           options={leaveType}
-          selectedValue={leaveType.find((opt) => opt.value === selectedValue)}
-          onSelect={handleSelect}
+          // value={leaveType.find((opt) => opt.value === selectedValue)}
+          onSelect={(value) => handleSelect(value)}
           header="Leave type"
         />
         <PrimaryButton>Apply Leave</PrimaryButton>

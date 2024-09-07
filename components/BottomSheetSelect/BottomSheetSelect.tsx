@@ -5,7 +5,7 @@ import {
   BottomSheetModal,
 } from "@gorhom/bottom-sheet";
 import React, { useCallback, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, View } from "react-native";
 import {
   IconButton,
   List,
@@ -19,13 +19,16 @@ interface Option {
   value: string | number;
 }
 
+export type SelectValue = string | number;
+
 interface SelectProps {
   options: Option[];
   label: string;
-  onSelect: (option: Option) => void;
-  selectedValue?: Option;
+  onSelect: (option: SelectValue) => void;
+  value?: SelectValue;
   header?: string;
   snapPoint?: string[] | number[];
+  error?: boolean;
 }
 
 interface HeaderProps {
@@ -36,23 +39,25 @@ const BottomSheetSelect = ({
   options,
   label,
   onSelect,
-  selectedValue,
+  value,
   header,
   snapPoint = ["30%", "50%"],
+  error,
 }: SelectProps) => {
   const theme = useTheme();
   const [selectedOption, setSelectedOption] = useState<Option | undefined>(
-    selectedValue
+    undefined
   );
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const openBottomSheet = useCallback(() => {
+    Keyboard.dismiss();
     bottomSheetModalRef.current?.present();
   }, []);
 
   const handleSelect = (option: Option) => {
     setSelectedOption(option);
-    onSelect(option);
+    onSelect(option.value);
     bottomSheetModalRef.current?.dismiss();
   };
 
@@ -124,7 +129,7 @@ const BottomSheetSelect = ({
           style={[
             styles.select,
             {
-              borderColor: theme.colors.outline,
+              borderColor: error ? theme.colors.error : theme.colors.outline,
               backgroundColor: theme.colors.surface,
             },
           ]}

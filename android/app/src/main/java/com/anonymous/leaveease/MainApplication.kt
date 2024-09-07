@@ -1,4 +1,4 @@
-package com.anonymous.eleave
+package com.anonymous.leaveease
 
 import android.app.Application
 import android.content.res.Configuration

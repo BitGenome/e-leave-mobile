@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ELeave",
+    "name": "LeaveEase",
     "slug": "e-leave",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.eleave"
+      "package": "com.anonymous.leaveease"
     },
     "web": {
       "bundler": "metro",

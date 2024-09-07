@@ -1,4 +1,4 @@
-package com.anonymous.eleave
+package com.anonymous.leaveease
 
 import android.os.Build
 import android.os.Bundle

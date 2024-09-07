@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'ELeave'
+rootProject.name = 'LeaveEase'
 
 dependencyResolutionManagement {
   versionCatalogs {
