@@ -5,7 +5,6 @@ import {
   Card,
   Chip,
   Divider,
-  Icon,
   Text,
   useTheme,
 } from "react-native-paper";
@@ -114,13 +113,13 @@ export default function LeaveCard(props: LeaveCardProps) {
                 name="arrowright"
                 style={{
                   marginTop: -5,
-                  marginLeft: 60,
+                  marginLeft: 80,
                 }}
               />
             )}
             textColor={theme.colors.surface}
             contentStyle={{
-              height: 80,
+              height: 60,
               flexDirection: "row-reverse",
             }}
           >
@@ -134,7 +133,7 @@ export default function LeaveCard(props: LeaveCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 8,
+    borderRadius: 20,
     marginVertical: 5,
   },
 });

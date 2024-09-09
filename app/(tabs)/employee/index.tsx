@@ -1,11 +1,11 @@
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View } from "@/components/Themed";
 import { employedata } from "@/data/employee";
+import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { useAppStore } from "@/store/app";
 import { FlashList } from "@shopify/flash-list";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { MotiView } from "moti";
-import { useRef } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { FAB, MD3Theme, useTheme } from "react-native-paper";
 
@@ -14,22 +14,8 @@ export default function EmployeeScreen() {
   const styles = createStyles(theme);
   const router = useExpoRouter();
 
-  const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  const [isTabBarVisible, hideTabBar, showTabBar] = useAppStore((state) => [
-    state.isTabbarVisible,
-    state.hideTabBar,
-    state.showTabBar,
-  ]);
-
-  const handleScroll = (event: any) => {
-    const currentOffset = event.nativeEvent.contentOffset.y;
-
-    if (currentOffset > 50) {
-      hideTabBar(); // Hide the tab bar when scrolling down
-    } else {
-      showTabBar(); // Show the tab bar when scrolling up
-    }
-  };
+  const isTabBarVisible = useAppStore((state) => state.isTabbarVisible);
+  const scrollOffsetY = useTabBarVisibility();
 
   return (
     <View style={[styles.container]}>
@@ -40,7 +26,7 @@ export default function EmployeeScreen() {
         estimatedItemSize={20}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false, listener: handleScroll }
+          { useNativeDriver: false }
         )}
       />
       {isTabBarVisible && (

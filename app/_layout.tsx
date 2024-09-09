@@ -31,6 +31,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { TabsProvider } from "react-native-paper-tabs";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -115,9 +116,11 @@ function Providers({ children }: { children: React.ReactNode }) {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={paperTheme}>
         <ThemeProvider value={paperTheme}>
-          <BottomSheetModalProvider>
-            <SafeAreaProvider>{children}</SafeAreaProvider>
-          </BottomSheetModalProvider>
+          <TabsProvider>
+            <BottomSheetModalProvider>
+              <SafeAreaProvider>{children}</SafeAreaProvider>
+            </BottomSheetModalProvider>
+          </TabsProvider>
         </ThemeProvider>
       </PaperProvider>
     </GestureHandlerRootView>
