@@ -3,6 +3,7 @@ import { View } from "@/components/Themed";
 import { employedata } from "@/data/employee";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { useAppStore } from "@/store/app";
+import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { MotiView } from "moti";
@@ -21,7 +22,9 @@ export default function EmployeeScreen() {
     <View style={[styles.container]}>
       <FlashList
         contentInsetAdjustmentBehavior="automatic"
-        renderItem={({ item }) => <EmployeeCard {...item} />}
+        renderItem={({ item, index }) => (
+          <EmployeeCard key={index} path="/employee-detail" {...item} />
+        )}
         data={employedata}
         estimatedItemSize={20}
         onScroll={Animated.event(
@@ -39,7 +42,9 @@ export default function EmployeeScreen() {
           <FAB
             onPress={() => router.navigate("/register-employee")}
             mode="flat"
-            icon="plus"
+            icon={({ color, size }) => (
+              <AntDesign color={color} size={size} name="pluscircle" />
+            )}
             color={theme.colors.surface}
             style={styles.fab}
             animated
@@ -71,7 +76,7 @@ const createStyles = (theme: MD3Theme) => {
       margin: 16,
       right: 0,
       bottom: 30,
-      borderRadius: 20,
+      borderRadius: 100,
       backgroundColor: theme.colors.primary,
       elevation: 8,
     },

@@ -95,7 +95,7 @@ export default function LeaveCard(props: LeaveCardProps) {
         </View>
         <Divider
           style={{
-            height: 2,
+            height: 1,
             backgroundColor: theme.colors.elevation.level5,
           }}
         />
@@ -110,10 +110,10 @@ export default function LeaveCard(props: LeaveCardProps) {
               <AntDesign
                 size={28}
                 color={color}
-                name="arrowright"
+                name="right"
                 style={{
                   marginTop: -5,
-                  marginLeft: 80,
+                  marginLeft: 20,
                 }}
               />
             )}

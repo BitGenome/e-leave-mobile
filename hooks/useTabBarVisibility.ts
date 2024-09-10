@@ -1,7 +1,6 @@
-import { useEffect, useRef, useCallback } from "react";
-import { Animated } from "react-native";
 import { useAppStore } from "@/store/app";
-import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef } from "react";
+import { Animated } from "react-native";
 
 export const useTabBarVisibility = () => {
   const [hideTabBar, showTabBar] = useAppStore((state) => [

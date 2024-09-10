@@ -35,31 +35,38 @@ export const employee = [
 
 export const employedata = [
   {
+    id: "01-1",
     name: "Jane Doe",
     position: "Driver",
   },
   {
+    id: "01-2",
     name: "Jhon Doe",
     position: "Driver",
   },
   {
+    id: "01-3",
     name: "Jhon Doe",
     position: "Driver",
   },
   {
+    id: "01-4",
+    name: "Jhon Doe",
+    position: "Assistant",
+  },
+  {
+    id: "01-5",
+    name: "Jhon Doe",
+    position: "Mechanic",
+  },
+  {
+    id: "01-6",
     name: "Jhon Doe",
     position: "Driver",
   },
   {
+    id: "01-7",
     name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
-  },
-  {
-    name: "Jhon Doe",
-    position: "Driver",
+    position: "Manager",
   },
 ];

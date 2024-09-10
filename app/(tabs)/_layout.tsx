@@ -1,4 +1,5 @@
-import CustomAnimatedTabBar from "@/components/TabBar/CustomTabBar";
+import NavigationHeaderTitle from "@/components/Navigation/HeaderTitle/CustomHeaderTitle";
+import CustomAnimatedTabBar from "@/components/Navigation/TabBar/CustomTabBar";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
@@ -21,79 +22,83 @@ export default function TabLayout() {
   const theme = useTheme();
 
   return (
-    <>
-      <Tabs
-        tabBar={(props) => <CustomAnimatedTabBar {...props} />}
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
-          headerShown: false,
-          headerShadowVisible: false,
-          tabBarShowLabel: false,
-          tabBarButton: (props) => (
-            <TouchableRipple
-              rippleColor={theme.colors.primaryContainer}
-              borderless
-              {...props}
-            />
-          ),
-          tabBarStyle: [
-            styles.tabBar,
-            {
-              backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.surfaceDisabled,
-            },
-          ],
-          headerStyle: {
+    <Tabs
+      tabBar={(props) => <CustomAnimatedTabBar {...props} />}
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
+        headerShown: false,
+        headerShadowVisible: false,
+        tabBarShowLabel: false,
+        tabBarButton: (props) => (
+          <TouchableRipple
+            rippleColor={theme.colors.primaryContainer}
+            borderless
+            {...props}
+          />
+        ),
+        tabBarStyle: [
+          styles.tabBar,
+          {
             backgroundColor: theme.colors.surface,
+            borderColor: theme.colors.surfaceDisabled,
           },
+        ],
+        headerStyle: {
+          backgroundColor: theme.colors.surface,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          headerTitle: () => (
+            <TextPoppinsBold style={{ fontSize: 20 }}>
+              Welcome back
+            </TextPoppinsBold>
+          ),
+          headerShown: true,
+          title: "Home",
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Home",
-            tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="(leaves)/leaves"
-          options={{
-            title: "Leaves",
-            headerShown: true,
-            headerTitleAlign: "center",
-            tabBarIcon: ({ color }) => (
-              <TabBarIcon name="calendar" color={color} />
-            ),
-            headerTitle: () => (
-              <TextPoppinsBold>Employee Leaves</TextPoppinsBold>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="apply-leave"
-          options={{
-            title: "Apply Leave",
-            tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="employee"
-          options={{
-            title: "Employees",
-            tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: "Settings",
-            tabBarIcon: ({ color }) => (
-              <TabBarIcon name="setting" color={color} />
-            ),
-          }}
-        />
-      </Tabs>
-    </>
+      />
+      <Tabs.Screen
+        name="leaves"
+        options={{
+          title: "Leaves",
+          headerShown: true,
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="calendar" color={color} />
+          ),
+          headerTitle: () => (
+            <NavigationHeaderTitle title="Employee with Leaves" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="apply-leave"
+        options={{
+          title: "Apply Leave",
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="employee"
+        options={{
+          title: "Employees",
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="setting" color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
 

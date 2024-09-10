@@ -1,32 +1,26 @@
 import LeaveCard from "@/components/Leaves/components/LeaveCard";
-import { View } from "@/components/Themed";
+import NavigationHeaderTitle from "@/components/Navigation/HeaderTitle/CustomHeaderTitle";
 import { EmployeeLeaves } from "@/data/leaves";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { FlashList } from "@shopify/flash-list";
-import { Animated, StyleSheet } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { Animated, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import { Tabs, TabScreen } from "react-native-paper-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function LeavesScreen() {
+export default function EmployeeLeaveScreen() {
   const scrollOffsetY = useTabBarVisibility();
-  // const [hideTabBar, showTabBar] = useAppStore((state) => [
-  //   state.hideTabBar,
-  //   state.showTabBar,
-  // ]);
-
-  // const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  // const handleScroll = (event: any) => {
-  //   const currentOffset = event.nativeEvent.contentOffset.y;
-
-  //   if (currentOffset > 50) {
-  //     hideTabBar(); // Hide the tab bar when scrolling down
-  //   } else {
-  //     showTabBar(); // Show the tab bar when scrolling up
-  //   }
-  // };
+  const param = useLocalSearchParams<{ name: string; id: string }>();
+  const { bottom } = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { marginBottom: 12 + bottom }]}>
+      <Stack.Screen
+        options={{
+          headerTitle: () => <NavigationHeaderTitle title={param.name} />,
+        }}
+      />
       <Tabs>
         <TabScreen label="Status">
           <View style={styles.leaveCardContainer}>
@@ -50,7 +44,6 @@ export default function LeavesScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

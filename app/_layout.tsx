@@ -30,8 +30,8 @@ import {
   PaperProvider,
   useTheme,
 } from "react-native-paper";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TabsProvider } from "react-native-paper-tabs";
+import { StatusBar } from "expo-status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -94,9 +94,6 @@ function RootLayoutNav() {
       <Stack
         screenOptions={{
           headerShadowVisible: false,
-          headerStyle: {
-            backgroundColor: theme.colors.surface,
-          },
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -117,9 +114,7 @@ function Providers({ children }: { children: React.ReactNode }) {
       <PaperProvider theme={paperTheme}>
         <ThemeProvider value={paperTheme}>
           <TabsProvider>
-            <BottomSheetModalProvider>
-              <SafeAreaProvider>{children}</SafeAreaProvider>
-            </BottomSheetModalProvider>
+            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
           </TabsProvider>
         </ThemeProvider>
       </PaperProvider>
