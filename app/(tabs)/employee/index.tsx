@@ -40,7 +40,7 @@ export default function EmployeeScreen() {
           style={styles.fab}
         >
           <FAB
-            onPress={() => router.navigate("/register-employee")}
+            onPress={() => router.navigate("register-employee")}
             mode="flat"
             icon={({ color, size }) => (
               <AntDesign color={color} size={size} name="pluscircle" />

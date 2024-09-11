@@ -6,8 +6,8 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Alert, StyleSheet, View } from "react-native";
 import { HelperText, MD3Theme, TextInput, useTheme } from "react-native-paper";
 import * as zod from "zod";
-import BottomSheetSelect, {
-  SelectValue,
+import BottomSheetSelectTest, {
+  type SelectValue,
 } from "../BottomSheetSelect/BottomSheetSelect";
 
 interface IFormInput {
@@ -43,7 +43,7 @@ export default function RegisterEmployeeForm() {
   useUnsavedChangesWarning({ hasUnsavedChanges: formState.isDirty });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate a 2-second submission delay
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate a 3-second submission delay
     Alert.alert(
       "Form Submitted",
       `First Name: ${data.firstname}\nLast Name: ${data.lastname}\nPosition: ${data.position}`
@@ -118,11 +118,10 @@ export default function RegisterEmployeeForm() {
         name="position"
         render={({ field }) => (
           <>
-            <BottomSheetSelect
+            <BottomSheetSelectTest
               label={"Select position"}
               options={position}
               onSelect={field.onChange}
-              // onSelect={({ value }) => console.log(value)}
               snapPoint={["35%", "50%"]}
               {...field}
             />

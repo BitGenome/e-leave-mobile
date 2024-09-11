@@ -2,6 +2,7 @@ import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { employedata } from "@/data/employee";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { FlashList } from "@shopify/flash-list";
+import { Href } from "expo-router";
 import { Animated, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
@@ -19,7 +20,11 @@ export default function LeavesScreen() {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
         renderItem={({ item, index }) => (
-          <EmployeeCard key={index} path={"/leaves"} {...item} />
+          <EmployeeCard
+            key={index}
+            path={"/(employee-leaves)/leaves/[id]" as Href<string>}
+            {...item}
+          />
         )}
         data={employedata}
         estimatedItemSize={20}

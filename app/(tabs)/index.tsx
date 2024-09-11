@@ -1,19 +1,32 @@
 import AnnualLeaveCard from "@/components/HomeScreen/components/AnnualLeaveCard";
 import { View } from "@/components/Themed";
-import { StyleSheet } from "react-native";
+import { Dimensions, ScrollView, StyleSheet } from "react-native";
 import { useTheme } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const theme = useTheme();
-  const { top } = useSafeAreaInsets();
+  const windowHeight = Dimensions.get("window").height;
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, height: windowHeight },
+      ]}
     >
-      <AnnualLeaveCard />
-      <AnnualLeaveCard />
-    </View>
+      <View
+        style={{
+          flex: 1,
+          gap: 5,
+          height: windowHeight,
+          padding: 5,
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <AnnualLeaveCard />
+        <AnnualLeaveCard />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -21,7 +34,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginVertical: 10,
-    padding: 10,
-    gap: 10,
+    marginHorizontal: 5,
   },
 });

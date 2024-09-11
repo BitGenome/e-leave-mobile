@@ -1,15 +1,26 @@
-import { StyleSheet } from "react-native";
-import { Text, View } from "@/components/Themed";
+import ListItem from "@/components/Settings/components/ListItems";
+import Profile from "@/components/Settings/components/Profile";
+import { View } from "@/components/Themed";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { ScrollView, StyleSheet } from "react-native";
 
 export default function SettingsScreen() {
+  const height = useHeaderHeight();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+    <View style={[styles.container, { paddingTop: height + 20 }]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Profile />
+        <View style={{ marginTop: 30, flex: 1, rowGap: 10 }}>
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+          <ListItem label="Light/Dark theme" path={"/settings"} />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -17,16 +28,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+    padding: 15,
+    gap: 10,
   },
 });

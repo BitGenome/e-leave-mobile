@@ -1,11 +1,9 @@
+import { AntDesign } from "@expo/vector-icons";
 import { Href } from "expo-router";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Chip, IconButton, MD3Theme, useTheme } from "react-native-paper";
 import { TextPoppinsBold } from "../../Text/TextPoppinsBold";
-import { TextPoppinsRegular } from "../../Text/TextPoppinsRegular";
-import { AntDesign } from "@expo/vector-icons";
-import { Icon } from "@expo/vector-icons/build/createIconSet";
 
 interface IEmployeeCard {
   name: string;
@@ -35,15 +33,16 @@ export default function EmployeeCard(props: IEmployeeCard) {
         styles.surface,
         { backgroundColor: theme.colors.inverseOnSurface },
       ]}
-      onPress={() =>
+      onPress={() => {
+        console.log("press", path);
         router.navigate({
           pathname: path,
           params: {
             name,
             id,
           },
-        })
-      }
+        });
+      }}
     >
       <View style={styles.container}>
         <View>

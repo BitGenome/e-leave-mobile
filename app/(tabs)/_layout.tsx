@@ -3,17 +3,17 @@ import CustomAnimatedTabBar from "@/components/Navigation/TabBar/CustomTabBar";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Tabs } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { TouchableRipple, useTheme } from "react-native-paper";
 
+type IconName = React.ComponentProps<typeof AntDesign>["name"];
+
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof AntDesign>["name"];
-  color: string;
-}) {
+export function TabBarIcon(props: { name: IconName; color: string }) {
   return <AntDesign size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
@@ -93,6 +93,10 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Settings",
+          headerShown: true,
+          headerTransparent: true,
+          headerTitleAlign: "center",
+          headerTitle: () => <NavigationHeaderTitle title="Settings" />,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="setting" color={color} />
           ),

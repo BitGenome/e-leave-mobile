@@ -13,12 +13,17 @@ export const useTabBarVisibility = () => {
   // Memoize the scroll handler to avoid recreating the function on every render
   const handleScroll = useCallback(
     (currentOffset: number) => {
-      if (currentOffset < previousOffsetY.current) {
-        showTabBar(); // Immediately show the tab bar when scrolling up
-      } else {
-        hideTabBar(); // Hide the tab bar when scrolling down
+      if (currentOffset === 0) {
+        previousOffsetY.current = currentOffset;
+        return showTabBar();
       }
+      if (currentOffset < previousOffsetY.current) {
+        previousOffsetY.current = currentOffset;
+        return showTabBar(); // Immediately show the tab bar when scrolling up
+      }
+
       previousOffsetY.current = currentOffset;
+      return hideTabBar(); // Hide the tab bar when scrolling down
     },
     [hideTabBar, showTabBar]
   );

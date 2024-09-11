@@ -1,10 +1,4 @@
-import {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetFlatList,
-  BottomSheetModal,
-} from "@gorhom/bottom-sheet";
-import React, { useCallback, useRef, useState } from "react";
+import { forwardRef, useCallback, useRef, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import {
   IconButton,
@@ -13,15 +7,21 @@ import {
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetFlatList,
+  BottomSheetModal,
+} from "@gorhom/bottom-sheet";
 
-interface Option {
+export interface Option {
   label: string;
   value: string | number;
 }
 
 export type SelectValue = string | number;
 
-interface SelectProps {
+export interface SelectProps {
   options: Option[];
   label: string;
   onSelect: (option: SelectValue) => void;
@@ -31,132 +31,136 @@ interface SelectProps {
   error?: boolean;
 }
 
-interface HeaderProps {
+export interface HeaderProps {
   label: string;
 }
 
-const BottomSheetSelect = ({
-  options,
-  label,
-  onSelect,
-  value,
-  header,
-  snapPoint = ["30%", "50%"],
-  error,
-}: SelectProps) => {
-  const theme = useTheme();
-  const [selectedOption, setSelectedOption] = useState<Option | undefined>(
-    undefined
-  );
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+const BottomSheetSelectTest = forwardRef<View, SelectProps>(
+  (
+    {
+      options,
+      label,
+      onSelect,
+      value,
+      header,
+      snapPoint = ["30%", "50%"],
+      error,
+    },
+    ref
+  ) => {
+    const theme = useTheme();
+    const [selectedOption, setSelectedOption] = useState<Option | undefined>(
+      undefined
+    );
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const openBottomSheet = useCallback(() => {
-    Keyboard.dismiss();
-    bottomSheetModalRef.current?.present();
-  }, []);
+    const openBottomSheet = useCallback(() => {
+      Keyboard.dismiss();
+      bottomSheetModalRef.current?.present();
+    }, []);
 
-  const handleSelect = (option: Option) => {
-    setSelectedOption(option);
-    onSelect(option.value);
-    bottomSheetModalRef.current?.dismiss();
-  };
+    const handleSelect = (option: Option) => {
+      setSelectedOption(option);
+      onSelect(option.value);
+      bottomSheetModalRef.current?.dismiss();
+    };
 
-  const renderItem = ({ item }: { item: Option }) => (
-    <List.Item
-      style={{
-        borderBottomWidth: 1,
-        borderBottomColor: theme.colors.surfaceDisabled,
-      }}
-      contentStyle={{
-        height: 40,
-      }}
-      title={() => {
-        const isActive = item.value === selectedOption?.value;
-        return (
-          <Text
-            style={{
-              fontFamily: "Poppins_400Regular",
-              color: isActive ? theme.colors.primary : undefined,
-            }}
-          >
-            {item.label}
-          </Text>
-        );
-      }}
-      onPress={() => handleSelect(item)}
-      right={() =>
-        selectedOption?.value === item.value && (
-          <List.Icon color={theme.colors.primary} icon="check" />
-        )
-      }
-    />
-  );
-
-  const renderBackdrop = useCallback(
-    (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={2}
-      />
-    ),
-    []
-  );
-
-  const renderHeader = useCallback(
-    (props: HeaderProps) => (
-      <View
+    const renderItem = ({ item }: { item: Option }) => (
+      <List.Item
         style={{
-          padding: 10,
           borderBottomWidth: 1,
           borderBottomColor: theme.colors.surfaceDisabled,
         }}
-      >
-        <Text
-          variant="labelLarge"
-          style={{ textAlign: "center", fontFamily: "Poppins_700Bold" }}
-        >
-          {props.label}
-        </Text>
-      </View>
-    ),
-    []
-  );
-  return (
-    <>
-      <TouchableRipple onPress={openBottomSheet} borderless>
-        <View
-          style={[
-            styles.select,
-            {
-              borderColor: error ? theme.colors.error : theme.colors.outline,
-              backgroundColor: theme.colors.surface,
-            },
-          ]}
-        >
-          <Text>{selectedOption?.label || label}</Text>
-          <IconButton icon="chevron-down" />
-        </View>
-      </TouchableRipple>
+        contentStyle={{
+          height: 40,
+        }}
+        title={() => {
+          const isActive = item.value === selectedOption?.value;
+          return (
+            <Text
+              style={{
+                fontFamily: "Poppins_400Regular",
+                color: isActive ? theme.colors.primary : undefined,
+              }}
+            >
+              {item.label}
+            </Text>
+          );
+        }}
+        onPress={() => handleSelect(item)}
+        right={() =>
+          selectedOption?.value === item.value && (
+            <List.Icon color={theme.colors.primary} icon="check" />
+          )
+        }
+      />
+    );
 
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={0}
-        snapPoints={snapPoint}
-        backdropComponent={renderBackdrop}
-      >
-        {header && renderHeader({ label: header })}
-        <BottomSheetFlatList
-          data={options}
-          keyExtractor={(item) => item.value.toString()}
-          renderItem={renderItem}
+    const renderBackdrop = useCallback(
+      (props: BottomSheetBackdropProps) => (
+        <BottomSheetBackdrop
+          {...props}
+          disappearsOnIndex={-1}
+          appearsOnIndex={2}
         />
-      </BottomSheetModal>
-    </>
-  );
-};
+      ),
+      []
+    );
 
-export default BottomSheetSelect;
+    const renderHeader = useCallback(
+      (props: HeaderProps) => (
+        <View
+          style={{
+            padding: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: theme.colors.surfaceDisabled,
+          }}
+        >
+          <Text
+            variant="labelLarge"
+            style={{ textAlign: "center", fontFamily: "Poppins_700Bold" }}
+          >
+            {props.label}
+          </Text>
+        </View>
+      ),
+      []
+    );
+    return (
+      <View>
+        <TouchableRipple onPress={openBottomSheet} borderless>
+          <View
+            style={[
+              styles.select,
+              {
+                borderColor: error ? theme.colors.error : theme.colors.outline,
+                backgroundColor: theme.colors.surface,
+              },
+            ]}
+          >
+            <Text>{selectedOption?.label || label}</Text>
+            <IconButton icon="chevron-down" />
+          </View>
+        </TouchableRipple>
+
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoint}
+          backdropComponent={renderBackdrop}
+        >
+          {header && renderHeader({ label: header })}
+          <BottomSheetFlatList
+            data={options}
+            keyExtractor={(item) => item.value.toString()}
+            renderItem={renderItem}
+          />
+        </BottomSheetModal>
+      </View>
+    );
+  }
+);
+export default BottomSheetSelectTest;
 
 const styles = StyleSheet.create({
   select: {
