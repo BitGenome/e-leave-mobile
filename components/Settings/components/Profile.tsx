@@ -1,6 +1,5 @@
 import { StyleSheet, View } from "react-native";
 import { Avatar, Button, Divider, Text, useTheme } from "react-native-paper";
-import Svg, { Path } from "react-native-svg";
 
 export default function Profile() {
   const theme = useTheme();
@@ -12,7 +11,7 @@ export default function Profile() {
         variant="headlineLarge"
         style={{
           fontFamily: "Poppins_600SemiBold",
-          marginTop: 10,
+          marginTop: 5,
         }}
       >
         Jane Doe
@@ -31,11 +30,29 @@ export default function Profile() {
           borderColor: theme.colors.elevation.level1,
         }}
       />
+
+      <View
+        style={{
+          backgroundColor: theme.colors.primaryContainer,
+          height: 80,
+          width: "80%",
+          borderRadius: 20,
+          alignItems: "center",
+          marginBottom: 20,
+        }}
+      ></View>
       <Button
         mode="contained"
+        contentStyle={{
+          height: 50,
+        }}
         style={{
-          marginTop: 10,
-          borderRadius: 20,
+          width: "50%",
+          borderRadius: 35,
+          position: "absolute",
+          bottom: 0,
+          borderWidth: 7,
+          borderColor: theme.colors.surface,
         }}
       >
         Edit profile
@@ -49,7 +66,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 25,
-    height: 250,
+    height: 270,
     width: "100%",
+    position: "relative",
   },
 });

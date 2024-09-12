@@ -7,6 +7,7 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import { useAppThemeStore } from "@/store/app";
 import { darkTheme, lightTheme } from "@/themes";
 import {
   Poppins_100Thin,
@@ -25,13 +26,8 @@ import {
 } from "@react-navigation/native";
 import merge from "deepmerge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  adaptNavigationTheme,
-  PaperProvider,
-  useTheme,
-} from "react-native-paper";
+import { adaptNavigationTheme, Provider, useTheme } from "react-native-paper";
 import { TabsProvider } from "react-native-paper-tabs";
-import { StatusBar } from "expo-status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -94,9 +90,22 @@ function RootLayoutNav() {
       <Stack
         screenOptions={{
           headerShadowVisible: false,
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(employee-leaves)/leaves/[id]"
+          options={{
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: theme.colors.surface,
+            },
+          }}
+        />
       </Stack>
     </Providers>
   );
@@ -104,20 +113,26 @@ function RootLayoutNav() {
 
 function Providers({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
+  const { isDarkTheme, loadTheme } = useAppThemeStore();
 
-  const paperTheme =
-    colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme;
-  const theme = useTheme();
+  useEffect(() => {
+    loadTheme();
+  }, [loadTheme]);
+
+  const theme =
+    isDarkTheme || colorScheme === "dark"
+      ? CombinedDarkTheme
+      : CombinedLightTheme;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <PaperProvider theme={paperTheme}>
-        <ThemeProvider value={paperTheme}>
+      <Provider theme={theme}>
+        <ThemeProvider value={theme}>
           <TabsProvider>
             <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
           </TabsProvider>
         </ThemeProvider>
-      </PaperProvider>
+      </Provider>
     </GestureHandlerRootView>
   );
 }

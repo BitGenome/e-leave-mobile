@@ -31,7 +31,6 @@ export default function ApplyEmployeeLeaveForm() {
         <BottomSheetSelect
           label="Employee name"
           options={employee}
-          value={undefined}
           onSelect={handleSelect}
           header="Employee name"
         />

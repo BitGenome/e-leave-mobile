@@ -18,6 +18,7 @@ export default function EmployeeLeaveScreen() {
     <View style={[styles.container, { marginBottom: 12 + bottom }]}>
       <Stack.Screen
         options={{
+          headerShown: true,
           headerTitle: () => <NavigationHeaderTitle title={param.name} />,
         }}
       />

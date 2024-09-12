@@ -1,4 +1,9 @@
+import {
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
 import { useRef, useState } from "react";
+import { Text } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 
@@ -19,8 +24,21 @@ export default function LeaveCalendar(props: Calendar) {
 
   return (
     <Calendar
+      style={{
+        backgroundColor: theme.colors.surface,
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: theme.colors.inverseOnSurface,
+        padding: 5,
+      }}
       theme={{
+        arrowHeight: 28,
+        textDayFontFamily: "Poppins_700Bold",
+        textDayHeaderFontFamily: "Poppins_600SemiBold",
+        textMonthFontFamily: "Poppins_600SemiBold",
+        calendarBackground: theme.colors.surface,
         selectedDayBackgroundColor: theme.colors.primaryContainer,
+        arrowColor: theme.colors.secondary,
       }}
       onDayPress={(day: any) => {
         if (!startDateRef.current) {

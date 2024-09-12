@@ -1,6 +1,7 @@
-import { TabBarIcon } from "@/app/(tabs)/_layout";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import CustomIcon, { type IconName } from "@/ui/custom-icon";
+import { AntDesign } from "@expo/vector-icons";
 import { Href } from "expo-router";
+import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { StyleSheet, View, ViewProps } from "react-native";
 import {
   IconButton,
@@ -11,13 +12,24 @@ import {
 
 interface ItemProps extends ViewProps {
   label: string;
-  path: Href<string>;
-  icon?: React.ComponentProps<typeof AntDesign>["name"];
+  path?: Href<string>;
+  icon?: IconName;
+  library?: "antdesign" | "ionic";
+  toggleLogoutDialog?: () => void;
 }
 
 export default function ListItem(props: ItemProps) {
   const theme = useTheme();
-  const { icon } = props;
+  const { icon, library: iconLibrary, path, label, toggleLogoutDialog } = props;
+  const router = useExpoRouter();
+  const IS_LOGOUT_ITEM = label === "Logout";
+
+  const onPressItem = () => {
+    if (IS_LOGOUT_ITEM && toggleLogoutDialog) return toggleLogoutDialog();
+    if (path) return router.navigate(path);
+
+    return;
+  };
   return (
     <TouchableRipple
       borderless
@@ -25,7 +37,7 @@ export default function ListItem(props: ItemProps) {
         borderRadius: 15,
       }}
       rippleColor={theme.colors.primary}
-      onPress={() => console.log("df")}
+      onPress={onPressItem}
     >
       <View
         style={[
@@ -43,13 +55,27 @@ export default function ListItem(props: ItemProps) {
             gap: 7,
           }}
         >
-          <Ionicons
-            name="color-palette"
-            size={24}
-            color={theme.colors.primary}
-          />
+          {icon && (
+            <CustomIcon
+              library={iconLibrary}
+              name={icon}
+              size={24}
+              color={IS_LOGOUT_ITEM ? theme.colors.error : theme.colors.primary}
+            />
+          )}
 
-          <Text style={styles.label}>{props.label}</Text>
+          <Text
+            style={[
+              styles.label,
+              {
+                color: IS_LOGOUT_ITEM
+                  ? theme.colors.error
+                  : theme.colors.onSurface,
+              },
+            ]}
+          >
+            {label}
+          </Text>
         </View>
         <IconButton
           icon={() => (

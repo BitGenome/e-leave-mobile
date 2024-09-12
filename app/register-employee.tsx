@@ -1,9 +1,10 @@
 import RegisterEmployeeForm from "@/components/Forms/RegisterEmployee";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
+import { View } from "@/components/Themed";
 import useUnsavedChangesWarning from "@/hooks/useUnsaveChangesWarning";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { MD3Theme, useTheme } from "react-native-paper";
 
 export default function RegisterEmployeeScreen() {
@@ -39,8 +40,8 @@ const createStyles = (theme: MD3Theme) => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.background,
       padding: 20,
+      backgroundColor: theme.colors.inverseOnSurface,
     },
     formContainer: {
       flex: 1,

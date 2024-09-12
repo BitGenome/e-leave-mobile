@@ -52,7 +52,9 @@ export default function RegisterEmployeeForm() {
   };
 
   return (
-    <View style={styles.formContainer}>
+    <View
+      style={[styles.formContainer, { backgroundColor: theme.colors.surface }]}
+    >
       <Controller
         control={control}
         name="employee_no"
@@ -138,7 +140,7 @@ export default function RegisterEmployeeForm() {
         theme={{ roundness: 3 }}
         onPress={handleSubmit(onSubmit)}
       >
-        Save
+        Save employee
       </PrimaryButton>
     </View>
   );
@@ -146,8 +148,10 @@ export default function RegisterEmployeeForm() {
 const createStyles = (theme: MD3Theme) => {
   return StyleSheet.create({
     formContainer: {
-      flex: 1,
       gap: 5,
+      borderRadius: 25,
+      padding: 20,
+      paddingVertical: 40,
     },
     submit: {
       marginTop: 20,

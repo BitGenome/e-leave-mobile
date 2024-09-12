@@ -1,11 +1,14 @@
 import AnnualLeaveCard from "@/components/HomeScreen/components/AnnualLeaveCard";
 import { View } from "@/components/Themed";
+import { useAppThemeStore } from "@/store/app";
+import { StatusBar } from "expo-status-bar";
 import { Dimensions, ScrollView, StyleSheet } from "react-native";
 import { useTheme } from "react-native-paper";
 
 export default function HomeScreen() {
   const theme = useTheme();
   const windowHeight = Dimensions.get("window").height;
+  const { isDarkTheme } = useAppThemeStore();
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -14,6 +17,7 @@ export default function HomeScreen() {
         { backgroundColor: theme.colors.background, height: windowHeight },
       ]}
     >
+      <StatusBar style={isDarkTheme ? "light" : "dark"} />
       <View
         style={{
           flex: 1,

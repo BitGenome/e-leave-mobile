@@ -6,11 +6,12 @@ function SecondaryButton(props: ButtonProps) {
   return (
     <Button
       {...props}
-      mode="contained"
+      mode="outlined"
+      theme={{ roundness: 3 }}
       style={[
         props.style,
         styles.primary,
-        { backgroundColor: theme.colors.secondary },
+        { borderColor: theme.colors.secondary, borderWidth: 1 },
       ]}
       contentStyle={{
         height: 55,

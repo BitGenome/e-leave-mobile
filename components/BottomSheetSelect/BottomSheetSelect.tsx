@@ -1,3 +1,9 @@
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetFlatList,
+  BottomSheetModal,
+} from "@gorhom/bottom-sheet";
 import { forwardRef, useCallback, useRef, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import {
@@ -7,12 +13,6 @@ import {
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
-import {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetFlatList,
-  BottomSheetModal,
-} from "@gorhom/bottom-sheet";
 
 export interface Option {
   label: string;
@@ -127,8 +127,14 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
       []
     );
     return (
-      <View>
-        <TouchableRipple onPress={openBottomSheet} borderless>
+      <View ref={ref}>
+        <TouchableRipple
+          onPress={openBottomSheet}
+          borderless
+          style={{
+            borderRadius: 8,
+          }}
+        >
           <View
             style={[
               styles.select,
@@ -138,7 +144,9 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
               },
             ]}
           >
-            <Text>{selectedOption?.label || label}</Text>
+            <Text style={{ fontFamily: "Poppins_400Regular" }}>
+              {selectedOption?.label || label}
+            </Text>
             <IconButton icon="chevron-down" />
           </View>
         </TouchableRipple>

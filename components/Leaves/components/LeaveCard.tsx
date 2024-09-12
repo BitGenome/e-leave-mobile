@@ -25,7 +25,10 @@ export default function LeaveCard(props: LeaveCardProps) {
       mode="outlined"
       style={[
         styles.card,
-        { backgroundColor: "white", borderColor: theme.colors.surfaceDisabled },
+        {
+          backgroundColor: theme.colors.surface,
+          borderColor: theme.colors.surfaceDisabled,
+        },
       ]}
     >
       <Card.Title
