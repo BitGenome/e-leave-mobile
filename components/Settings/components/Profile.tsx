@@ -3,7 +3,6 @@ import { Avatar, Button, Divider, Text, useTheme } from "react-native-paper";
 
 export default function Profile() {
   const theme = useTheme();
-
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <Avatar.Text label="JD" />

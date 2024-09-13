@@ -1,4 +1,4 @@
-import { IInputFieldProps } from "@/app/settings/security";
+import { IInputFieldProps } from "@/app/(app)/settings/security";
 import CustomIcon from "@/ui/custom-icon";
 import AppTextInput from "@/ui/text-input";
 import { Control, Controller } from "react-hook-form";

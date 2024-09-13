@@ -6,6 +6,7 @@ import AppDialog from "@/ui/app-dialog";
 import CustomIcon, { IconName, TIconLibrary } from "@/ui/custom-icon";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Href } from "expo-router";
+import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { ScrollView, StyleSheet } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
@@ -37,12 +38,17 @@ const SETTINGS_LIST: SettingsItem[] = [
 
 export default function SettingsScreen() {
   const height = useHeaderHeight();
+  const router = useExpoRouter();
   const { state: isLogoutDialogVisible, toggle: toggleLogoutDialog } =
     useVisibility({ defaultVisiblityState: false });
   const theme = useTheme();
 
+  const onConfirmLogout = () => {
+    toggleLogoutDialog();
+    router.replace("(auth)/login");
+  };
   return (
-    <View style={[styles.container, { paddingTop: height + 20 }]}>
+    <View style={[styles.container, { paddingTop: height }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Profile />
         <View style={{ marginTop: 30, flex: 1, rowGap: 10 }}>
@@ -67,7 +73,7 @@ export default function SettingsScreen() {
           >
             <View
               style={{
-                backgroundColor: theme.colors.primaryContainer,
+                backgroundColor: theme.colors.errorContainer,
                 borderRadius: 22,
                 padding: 15,
                 height: 100,
@@ -79,7 +85,7 @@ export default function SettingsScreen() {
                 style={{ marginRight: -15 }}
                 size={64}
                 name="log-out-outline"
-                color={theme.colors.secondary}
+                color={theme.colors.error}
                 library="ionic"
               />
             </View>
@@ -97,7 +103,7 @@ export default function SettingsScreen() {
         }
         confirmText="Yes"
         visible={isLogoutDialogVisible}
-        onConfirm={toggleLogoutDialog}
+        onConfirm={onConfirmLogout}
         children
       />
     </View>
@@ -108,6 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+    paddingBottom: 0,
     gap: 10,
   },
 });

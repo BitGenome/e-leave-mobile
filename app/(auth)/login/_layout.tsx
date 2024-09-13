@@ -2,7 +2,7 @@ import NavigationHeaderTitle from "@/components/Navigation/HeaderTitle/CustomHea
 import { Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
 
-export default function TabLayout() {
+export default function LoginLayout() {
   const theme = useTheme();
   return (
     <Stack
@@ -15,18 +15,11 @@ export default function TabLayout() {
       }}
     >
       <Stack.Screen
-        name="security"
+        name="index"
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTransparent: true,
-          headerTitle: () => <NavigationHeaderTitle title="Security" />,
-        }}
-      />
-      <Stack.Screen
-        name="theme-settings"
-        options={{
-          headerShown: true,
-          headerTitle: () => <NavigationHeaderTitle title="Theme" />,
+          headerTitle: () => <NavigationHeaderTitle title="Login" />,
         }}
       />
     </Stack>

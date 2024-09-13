@@ -1,4 +1,5 @@
 import { useAppStore } from "@/store/app";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated } from "react-native";
 
@@ -34,9 +35,16 @@ export const useTabBarVisibility = () => {
     });
 
     return () => {
-      scrollOffsetY.removeListener(listenerId); // Clean up listener to prevent memory leaks
+      scrollOffsetY.removeListener(listenerId);
+      showTabBar(); // Clean up listener to prevent memory leaks
     };
-  }, [scrollOffsetY, handleScroll]);
+  }, [scrollOffsetY, handleScroll, showTabBar]);
+
+  useFocusEffect(
+    useCallback(() => {
+      showTabBar();
+    }, [showTabBar])
+  );
 
   return scrollOffsetY;
 };
