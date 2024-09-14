@@ -3,9 +3,11 @@ import AppTextInput from "@/ui/text-input";
 import Text from "@/ui/typography/regular";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Button, HelperText, useTheme } from "react-native-paper";
+import { Button, HelperText, TextInput, useTheme } from "react-native-paper";
 import { LoginInputProps } from "./Login";
 import { Control, Controller } from "react-hook-form";
+import useVisibility from "@/hooks/usePasswordVisibilityToggle";
+import CustomIcon from "@/ui/custom-icon";
 
 export interface RegisterInputProps extends LoginInputProps {
   confirm_password: string;
@@ -21,7 +23,12 @@ export default function RegisterForm({
 }: RegisterFormProps) {
   const router = useExpoRouter();
   const theme = useTheme();
+  const { state: isPasswordVisible, toggle: togglePassword } = useVisibility();
+  const { state: isConfirmPasswordVisible, toggle: toggleConfirmPassword } =
+    useVisibility();
+
   const ERROR_COLOR = theme.colors.error;
+
   return (
     <View style={styles.formContainer}>
       <Controller
@@ -38,6 +45,13 @@ export default function RegisterForm({
               value={value}
               error={!!error}
               placeholder="Username"
+              right={
+                <TextInput.Icon
+                  icon={({ color = theme.colors.primary, ...props }) => (
+                    <CustomIcon name="user" {...props} />
+                  )}
+                />
+              }
             />
             <HelperText
               type="error"
@@ -68,6 +82,20 @@ export default function RegisterForm({
               value={value}
               error={!!error}
               placeholder="Password"
+              secureTextEntry={isPasswordVisible}
+              right={
+                isPasswordVisible ? (
+                  <TextInput.Icon
+                    onPress={togglePassword}
+                    icon={() => <CustomIcon name="eye-off" library="ionic" />}
+                  />
+                ) : (
+                  <TextInput.Icon
+                    onPress={togglePassword}
+                    icon={() => <CustomIcon name="eye" library="ionic" />}
+                  />
+                )
+              }
             />
             <HelperText
               type="error"
@@ -94,10 +122,24 @@ export default function RegisterForm({
           <>
             <AppTextInput
               onBlur={onBlur}
-              onChange={onChange}
+              onChangeText={onChange}
               value={value}
               error={!!error}
               placeholder="Confirm password"
+              secureTextEntry={isConfirmPasswordVisible}
+              right={
+                isConfirmPasswordVisible ? (
+                  <TextInput.Icon
+                    onPress={toggleConfirmPassword}
+                    icon={() => <CustomIcon name="eye-off" library="ionic" />}
+                  />
+                ) : (
+                  <TextInput.Icon
+                    onPress={toggleConfirmPassword}
+                    icon={() => <CustomIcon name="eye" library="ionic" />}
+                  />
+                )
+              }
             />
             <HelperText
               type="error"

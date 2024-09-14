@@ -3,7 +3,7 @@ import { leaveType } from "@/data/leave-type";
 import PrimaryButton from "@/ui/primary-button";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { TextInput, useTheme } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 import BottomSheetSelect, {
   SelectValue,
 } from "../BottomSheetSelect/BottomSheetSelect";
@@ -27,7 +27,17 @@ export default function ApplyEmployeeLeaveForm() {
           { backgroundColor: theme.colors.surface },
         ]}
       >
-        <LeaveCalendar selectedDate={selectedDate} onPress={setSelectedDate} />
+        <View
+          style={{
+            gap: 10,
+          }}
+        >
+          <Text variant="labelMedium">Select Inclusive Dates</Text>
+          <LeaveCalendar
+            selectedDate={selectedDate}
+            onPress={setSelectedDate}
+          />
+        </View>
         <BottomSheetSelect
           label="Employee name"
           options={employee}
@@ -36,7 +46,7 @@ export default function ApplyEmployeeLeaveForm() {
         />
         <TextInput
           mode="outlined"
-          placeholder="What is the employee reason?"
+          placeholder="Remarks"
           theme={{ roundness: 8 }}
           multiline
           style={[

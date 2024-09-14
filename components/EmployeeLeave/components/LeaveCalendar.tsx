@@ -1,14 +1,9 @@
-import {
-  Poppins_600SemiBold,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
 import { useRef, useState } from "react";
-import { Text } from "react-native";
-import { Calendar } from "react-native-calendars";
+import { Calendar, DateData } from "react-native-calendars";
 import { useTheme } from "react-native-paper";
 
 interface Calendar {
-  onPress: (selectedDate: string) => void;
+  onPress: (selectedDate: any) => void;
   selectedDate: string;
 }
 
@@ -18,7 +13,7 @@ export default function LeaveCalendar(props: Calendar) {
   const todayDate = new Date();
   const today = todayDate.toISOString().split("T")[0];
 
-  const startDateRef = useRef<string>(today);
+  const startDateRef = useRef<string | undefined>();
   const endDateRef = useRef<string>();
   const [markedDates, setMarkedDates] = useState<Record<string, any>>({});
 
@@ -40,9 +35,17 @@ export default function LeaveCalendar(props: Calendar) {
         selectedDayBackgroundColor: theme.colors.primaryContainer,
         arrowColor: theme.colors.secondary,
       }}
-      onDayPress={(day: any) => {
+      onDayPress={(day: DateData) => {
         if (!startDateRef.current) {
           startDateRef.current = day.dateString;
+        } else if (
+          day.dateString === startDateRef.current ||
+          day.dateString === endDateRef.current
+        ) {
+          // Reset the start date if the same day is selected
+          startDateRef.current = undefined;
+          endDateRef.current = undefined;
+          setMarkedDates({});
         } else {
           endDateRef.current = day.dateString;
         }
@@ -55,9 +58,11 @@ export default function LeaveCalendar(props: Calendar) {
           if (pickedDate.getTime() < startDate.getTime()) {
             endDate = new Date(startDateRef.current);
             startDateRef.current = day.dateString;
-            startDate = new Date(startDateRef.current);
+            if (startDateRef.current)
+              startDate = new Date(startDateRef.current);
           }
-          const betweenDates: any = {};
+
+          const betweenDates: Record<string, any> = {};
           for (
             const dt = new Date(startDate);
             dt <= new Date(endDate);
@@ -97,6 +102,18 @@ export default function LeaveCalendar(props: Calendar) {
           });
           setMarkedDates({ ...betweenDates });
           onPress({ ...betweenDates });
+        } else if (startDateRef.current) {
+          // If only start date is set, mark it as the selected day
+          setMarkedDates({
+            [startDateRef.current]: {
+              selected: true,
+              color: theme.colors.primaryContainer,
+              textColor: theme.colors.primary,
+              containerStyle: {
+                borderRadius: 10,
+              },
+            },
+          });
         }
       }}
       hideExtraDays

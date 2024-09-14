@@ -47,7 +47,8 @@
     "zustand": "^4.5.5",
     "react-native-svg": "15.2.0",
     "@react-native-async-storage/async-storage": "1.23.1",
-    "expo-linear-gradient": "~13.0.2"
+    "expo-linear-gradient": "~13.0.2",
+    "@react-native-community/datetimepicker": "8.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

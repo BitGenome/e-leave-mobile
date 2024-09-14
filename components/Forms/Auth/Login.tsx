@@ -43,6 +43,13 @@ export default function LoginForm({ control, handleSubmit }: LoginFormProps) {
               value={value}
               error={!!error?.message}
               placeholder="Username"
+              right={
+                <TextInput.Icon
+                  icon={({ color = theme.colors.primary, ...props }) => (
+                    <CustomIcon name="user" {...props} />
+                  )}
+                />
+              }
             />
             <HelperText
               type="error"

@@ -12,18 +12,16 @@ const registerUserSchema = zod
   .object({
     username: zod.string().min(1, { message: "username is required." }),
     password: zod.string().min(5, { message: "minimum of 5 characters." }),
-    confirm_password: zod
-      .string({ required_error: "Confirm password field is required." })
-      .min(5, {
-        message: "Confirm password field is minimum of 5 characters.",
-      }),
+    confirm_password: zod.string().min(5, {
+      message: "Confirm password field is minimum of 5 characters.",
+    }),
   })
   .required()
   .superRefine(({ confirm_password, password }, ctx) => {
     if (confirm_password !== password) {
       ctx.addIssue({
         code: "custom",
-        message: "The confirm password did not match",
+        message: "The confirm password did not match.",
         path: ["confirm_password"],
       });
     }

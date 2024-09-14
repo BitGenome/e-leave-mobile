@@ -39,6 +39,7 @@ const securitySchema = zod
   });
 
 export default function SecurityScreen() {
+  const theme = useTheme();
   const { control, handleSubmit, formState } = useForm<IInputFieldProps>({
     defaultValues: {
       oldPassword: "",
@@ -47,7 +48,6 @@ export default function SecurityScreen() {
     },
     resolver: zodResolver(securitySchema),
   });
-  const theme = useTheme();
 
   const onSubmit: SubmitHandler<IInputFieldProps> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate a 3-second submission delay
@@ -59,12 +59,6 @@ export default function SecurityScreen() {
   };
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
-      {/* <View
-        style={{
-          height: "30%",
-          backgroundColor: theme.colors.surfaceDisabled,
-        }}
-      /> */}
       <View
         style={[
           styles.container,
@@ -93,7 +87,6 @@ export default function SecurityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
   },
   submit: {
     position: "absolute",

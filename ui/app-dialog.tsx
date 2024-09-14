@@ -42,7 +42,12 @@ const AppDialog = ({
       >
         <Dialog.Title>{title}</Dialog.Title>
         <Dialog.Content>{content}</Dialog.Content>
-        <Dialog.Actions>
+        <Dialog.Actions
+          style={{
+            flexDirection: "column-reverse",
+            gap: 10,
+          }}
+        >
           {cancelText && (
             <SecondaryButton onPress={onCancel} style={styles.button}>
               {cancelText}
@@ -64,6 +69,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   button: {
-    width: "48%",
+    width: "100%",
   },
 });

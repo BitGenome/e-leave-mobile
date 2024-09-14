@@ -58,6 +58,7 @@ export default function TabLayout() {
             </TextPoppinsBold>
           ),
           headerShown: true,
+          headerTitleAlign: "center",
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
