@@ -17,8 +17,6 @@ export default function RegisterLayout() {
       <Stack.Screen
         name="index"
         options={{
-          headerShown: true,
-          headerTransparent: true,
           headerTitle: () => <NavigationHeaderTitle title="Register" />,
         }}
       />

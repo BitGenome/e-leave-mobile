@@ -1,4 +1,3 @@
-import NavigationHeaderTitle from "@/components/Navigation/HeaderTitle/CustomHeaderTitle";
 import { Redirect, Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
 

@@ -29,6 +29,7 @@ export default function TabLayout() {
         headerShown: false,
         headerShadowVisible: false,
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
         tabBarButton: (props) => (
           <TouchableRipple
             rippleColor={theme.colors.primaryContainer}
