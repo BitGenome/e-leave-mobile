@@ -34,6 +34,9 @@ export {
   ErrorBoundary,
 } from "expo-router";
 
+import { enGB, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en-GB", enGB);
+
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(app)",

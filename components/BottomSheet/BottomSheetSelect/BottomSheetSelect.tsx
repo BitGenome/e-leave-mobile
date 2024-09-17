@@ -80,7 +80,7 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
             <Text
               style={{
                 fontFamily: "Poppins_400Regular",
-                color: isActive ? theme.colors.primary : undefined,
+                color: isActive ? theme.colors.primary : theme.colors.outline,
               }}
             >
               {item.label}
@@ -156,6 +156,9 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
           index={0}
           snapPoints={snapPoint}
           backdropComponent={renderBackdrop}
+          backgroundStyle={{
+            backgroundColor: theme.colors.surface,
+          }}
         >
           {header && renderHeader({ label: header })}
           <BottomSheetFlatList

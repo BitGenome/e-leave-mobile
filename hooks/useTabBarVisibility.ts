@@ -1,7 +1,7 @@
 import { useAppStore } from "@/store/app";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
-import { Animated } from "react-native";
+import { Animated, Keyboard } from "react-native";
 
 export const useTabBarVisibility = () => {
   const [hideTabBar, showTabBar] = useAppStore((state) => [
@@ -34,9 +34,21 @@ export const useTabBarVisibility = () => {
       handleScroll(value);
     });
 
+    // Keyboard event listeners
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      hideTabBar
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      showTabBar
+    );
+
     return () => {
       scrollOffsetY.removeListener(listenerId);
-      showTabBar(); // Clean up listener to prevent memory leaks
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+      showTabBar();
     };
   }, [scrollOffsetY, handleScroll, showTabBar]);
 

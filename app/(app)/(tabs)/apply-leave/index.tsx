@@ -10,5 +10,5 @@ export default function ApplyLeaveScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, marginTop: 10, marginBottom: 80 },
+  container: { flex: 1, marginTop: 10 },
 });

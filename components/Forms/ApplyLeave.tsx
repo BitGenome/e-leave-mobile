@@ -1,17 +1,34 @@
 import { employee } from "@/data/employee";
 import { leaveType } from "@/data/leave-type";
+import { time } from "@/data/time";
+import useVisibility from "@/hooks/usePasswordVisibilityToggle";
 import PrimaryButton from "@/ui/primary-button";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Text, TextInput, useTheme } from "react-native-paper";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { DatePickerModal } from "react-native-paper-dates";
+import { type CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar";
 import BottomSheetSelect, {
   SelectValue,
-} from "../BottomSheetSelect/BottomSheetSelect";
-import LeaveCalendar from "../EmployeeLeave/components/LeaveCalendar";
+} from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
+
+interface IDateRange {
+  startDate: CalendarDate;
+  endDate: CalendarDate;
+}
+
+const LOCALE = "en-GB";
+const TODAY = new Date();
 
 export default function ApplyEmployeeLeaveForm() {
   const theme = useTheme();
-  const [selectedDate, setSelectedDate] = useState("");
+  const [range, setRange] = useState<Partial<IDateRange>>({
+    startDate: undefined,
+    endDate: undefined,
+  });
+  const { state: isOpebDateSelector, toggle: toogleDate } = useVisibility({
+    defaultVisiblityState: false,
+  });
   const [selectedValue, setSelectedValue] = useState<
     string | number | undefined
   >(undefined);
@@ -19,6 +36,29 @@ export default function ApplyEmployeeLeaveForm() {
   const handleSelect = (option: SelectValue) => {
     setSelectedValue(option);
   };
+
+  const onDismiss = useCallback(() => {
+    toogleDate();
+  }, [toogleDate]);
+
+  const onConfirm = useCallback(
+    ({ startDate, endDate }: IDateRange) => {
+      toogleDate();
+      setRange({ startDate, endDate });
+    },
+    [toogleDate, setRange]
+  );
+
+  const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(LOCALE, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+    [LOCALE]
+  );
+
   return (
     <View style={styles.formContainer}>
       <View
@@ -32,12 +72,69 @@ export default function ApplyEmployeeLeaveForm() {
             gap: 10,
           }}
         >
-          <Text variant="labelMedium">Select Inclusive Dates</Text>
-          <LeaveCalendar
-            selectedDate={selectedDate}
-            onPress={setSelectedDate}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              columnGap: 5,
+              flex: 1,
+              width: "100%",
+            }}
+          >
+            <View
+              style={{
+                flexShrink: 1,
+              }}
+            >
+              <Text variant="labelMedium">Select Inclusive Dates</Text>
+              {
+                <Text
+                  variant="bodySmall"
+                  allowFontScaling
+                  maxFontSizeMultiplier={1.5}
+                  ellipsizeMode="middle"
+                  numberOfLines={1}
+                >
+                  {!range.startDate && !range.endDate
+                    ? "No dates selected."
+                    : !range.endDate
+                    ? range.startDate
+                      ? dateFormatter.format(range.startDate)
+                      : ""
+                    : [
+                        range.startDate
+                          ? dateFormatter.format(range.startDate)
+                          : "",
+                        range.endDate
+                          ? dateFormatter.format(range.endDate)
+                          : "",
+                      ].join(" - ")}
+                </Text>
+              }
+            </View>
+            <Button mode="outlined" onPress={toogleDate}>
+              Select Date
+            </Button>
+          </View>
+          <DatePickerModal
+            locale={LOCALE}
+            mode="range"
+            visible={isOpebDateSelector}
+            onDismiss={onDismiss}
+            startDate={range.startDate}
+            endDate={range.endDate}
+            onConfirm={onConfirm}
+            validRange={{ startDate: TODAY }}
+            presentationStyle="pageSheet"
           />
         </View>
+        <BottomSheetSelect
+          label="Duration"
+          options={time}
+          onSelect={handleSelect}
+          header="Select leave duration"
+        />
         <BottomSheetSelect
           label="Employee name"
           options={employee}

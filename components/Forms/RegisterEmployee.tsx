@@ -8,7 +8,7 @@ import { HelperText, MD3Theme, TextInput, useTheme } from "react-native-paper";
 import * as zod from "zod";
 import BottomSheetSelectTest, {
   type SelectValue,
-} from "../BottomSheetSelect/BottomSheetSelect";
+} from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
 
 interface IFormInput {
   employee_no: string;

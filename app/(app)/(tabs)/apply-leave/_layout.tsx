@@ -11,7 +11,6 @@ export default function ApplyLeaveLayout() {
         headerShown: true,
         headerShadowVisible: false,
         headerTitleAlign: "center",
-
         headerTitle: () => (
           <TextPoppinsBold>Apply Employee Leave</TextPoppinsBold>
         ),
