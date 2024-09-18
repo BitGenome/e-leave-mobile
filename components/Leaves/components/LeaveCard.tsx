@@ -1,4 +1,6 @@
+import { TextPoppinsRegular } from "@/components/Text/TextPoppinsRegular";
 import { AntDesign } from "@expo/vector-icons";
+import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   Button,
@@ -9,17 +11,23 @@ import {
   useTheme,
 } from "react-native-paper";
 
-interface LeaveCardProps {
+export interface LeaveCardProps {
   type: string;
-  name: string;
   status: string;
   date: string;
   duration: string;
 }
 
-export default function LeaveCard(props: LeaveCardProps) {
-  const { type, name, status, date, duration } = props;
+const LEAVE_STATUS = {
+  approved: "approved",
+  denied: "denied",
+  pending: "pending",
+};
+
+const LeaveCard = (props: LeaveCardProps) => {
+  const { type, status, date, duration } = props;
   const theme = useTheme();
+
   return (
     <Card
       mode="outlined"
@@ -38,7 +46,7 @@ export default function LeaveCard(props: LeaveCardProps) {
         }}
         title={type}
         right={() => {
-          if (status === "pending")
+          if (status === LEAVE_STATUS.pending)
             return (
               <Chip
                 theme={{ roundness: 8 }}
@@ -54,7 +62,7 @@ export default function LeaveCard(props: LeaveCardProps) {
               </Chip>
             );
 
-          if (status === "approved")
+          if (status === LEAVE_STATUS.approved)
             return (
               <Chip
                 theme={{ roundness: 8 }}
@@ -94,7 +102,6 @@ export default function LeaveCard(props: LeaveCardProps) {
         <View>
           <Text variant="labelMedium">{duration}</Text>
           <Text variant="headlineLarge">{date}</Text>
-          <Text variant="titleMedium">{name}</Text>
         </View>
         <Divider
           style={{
@@ -109,31 +116,43 @@ export default function LeaveCard(props: LeaveCardProps) {
               flex: 1,
               backgroundColor: theme.colors.primary,
             }}
-            icon={({ color }) => (
-              <AntDesign
-                size={28}
-                color={color}
-                name="right"
-                style={{
-                  marginTop: -5,
-                  marginLeft: 20,
-                }}
-              />
-            )}
             textColor={theme.colors.surface}
             contentStyle={{
-              height: 60,
-              flexDirection: "row-reverse",
+              height: 55,
             }}
           >
-            View Details
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flex: 1,
+              }}
+            >
+              <TextPoppinsRegular
+                style={{
+                  color: theme.colors.surface,
+                }}
+              >
+                View Details
+              </TextPoppinsRegular>
+              <AntDesign
+                size={20}
+                color={theme.colors.surface}
+                name="right"
+                style={{
+                  marginLeft: 10,
+                }}
+              />
+            </View>
           </Button>
         </View>
       </Card.Content>
     </Card>
   );
-}
+};
 
+export default memo(LeaveCard);
 const styles = StyleSheet.create({
   card: {
     borderRadius: 20,

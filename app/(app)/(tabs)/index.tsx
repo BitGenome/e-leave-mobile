@@ -1,4 +1,5 @@
-import AnnualLeaveCard from "@/components/HomeScreen/components/AnnualLeaveCard";
+import DashboardSummary from "@/components/HomeScreen/components/DashboardSummary";
+import QuickActions from "@/components/HomeScreen/components/QuickActions";
 import { View } from "@/components/Themed";
 import { useAppThemeStore } from "@/store/app";
 import { StatusBar } from "expo-status-bar";
@@ -10,25 +11,24 @@ export default function HomeScreen() {
   const windowHeight = Dimensions.get("window").height;
   const { isDarkTheme } = useAppThemeStore();
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.background, height: windowHeight },
-      ]}
-    >
-      <StatusBar style={isDarkTheme ? "light" : "dark"} />
+    <ScrollView showsVerticalScrollIndicator={false} style={[styles.container]}>
       <View
         style={{
-          flex: 1,
-          gap: 5,
           height: windowHeight,
-          padding: 5,
-          backgroundColor: theme.colors.background,
+          gap: 10,
+          paddingHorizontal: 15,
+          paddingTop: 12,
         }}
       >
-        <AnnualLeaveCard />
-        <AnnualLeaveCard />
+        <StatusBar style={isDarkTheme ? "light" : "dark"} />
+        <DashboardSummary />
+        <View
+          style={{
+            paddingTop: 15,
+          }}
+        >
+          <QuickActions />
+        </View>
       </View>
     </ScrollView>
   );
@@ -38,6 +38,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginVertical: 10,
-    marginHorizontal: 5,
   },
 });

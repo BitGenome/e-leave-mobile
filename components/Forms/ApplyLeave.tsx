@@ -9,7 +9,7 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import { type CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar";
 import BottomSheetSelect, {
-  SelectValue,
+  type SelectValue,
 } from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
 
 interface IDateRange {

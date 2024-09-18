@@ -34,7 +34,6 @@ export default function EmployeeCard(props: IEmployeeCard) {
         { backgroundColor: theme.colors.inverseOnSurface },
       ]}
       onPress={() => {
-        console.log("press", path);
         router.navigate({
           pathname: path,
           params: {

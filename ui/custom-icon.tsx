@@ -10,10 +10,11 @@ export type IconName = AntDesignIconNames | IoniconsIconNames;
 
 export type TIconLibrary = "antdesign" | "ionic";
 // Define the props interface
-interface CustomIconProps {
+export interface CustomIconProps {
   name: IconName;
   size?: number;
   color?: string;
+  /** set this if the icon is not supported by antd */
   library?: TIconLibrary;
   style?: StyleProp<TextStyle>;
 }

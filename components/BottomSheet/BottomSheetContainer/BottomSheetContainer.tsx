@@ -1,10 +1,10 @@
-import BottomSheet, {
+import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { useCallback, useRef, ReactNode, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { ReactNode, useCallback, useEffect, useRef } from "react";
+import { useTheme } from "react-native-paper";
 
 interface BottomSheetViewContainerProps {
   children: ReactNode;
@@ -20,44 +20,42 @@ export default function BottomSheetViewContainer({
   openBottomSheet = false,
   onDismiss,
 }: BottomSheetViewContainerProps) {
+  const theme = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const handlePresentModalPress = useCallback(() => {
     if (openBottomSheet) {
-      sheetRef.current?.present();
+      return sheetRef.current?.present();
     }
+
+    return sheetRef.current?.dismiss();
   }, [openBottomSheet]);
 
-  useEffect(() => {
-    handlePresentModalPress();
-  }, [openBottomSheet]);
+  handlePresentModalPress();
+
+  // useEffect(() => {
+  //   handlePresentModalPress();
+  // }, [openBottomSheet]);
 
   return (
-    <View style={styles.container}>
-      <BottomSheetModal
-        onDismiss={onDismiss}
-        ref={sheetRef}
-        enableDynamicSizing
-        index={0}
-        snapPoints={snapPoints}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            disappearsOnIndex={-1}
-            appearsOnIndex={2}
-            {...props}
-          />
-        )}
-      >
-        <BottomSheetView>{children}</BottomSheetView>
-      </BottomSheetModal>
-    </View>
+    <BottomSheetModal
+      onDismiss={onDismiss}
+      ref={sheetRef}
+      enableDynamicSizing
+      index={0}
+      snapPoints={snapPoints}
+      backdropComponent={(props) => (
+        <BottomSheetBackdrop
+          disappearsOnIndex={-1}
+          appearsOnIndex={2}
+          {...props}
+        />
+      )}
+      backgroundStyle={{
+        backgroundColor: theme.colors.surface,
+      }}
+    >
+      <BottomSheetView>{children}</BottomSheetView>
+    </BottomSheetModal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
