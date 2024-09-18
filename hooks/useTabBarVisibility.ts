@@ -1,13 +1,14 @@
 import { useAppStore } from "@/store/app";
-import { useFocusEffect } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Keyboard } from "react-native";
 
 export const useTabBarVisibility = () => {
-  const [hideTabBar, showTabBar] = useAppStore((state) => [
-    state.hideTabBar,
-    state.showTabBar,
-  ]);
+  const { hideTabBar, showTabBar } = useAppStore((state) => ({
+    hideTabBar: state.hideTabBar,
+    showTabBar: state.showTabBar,
+  }));
+  const navigation = useNavigation();
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const previousOffsetY = useRef(0);
@@ -44,19 +45,18 @@ export const useTabBarVisibility = () => {
       showTabBar
     );
 
+    const focusListener = navigation.addListener("focus", showTabBar);
+    const blurListener = navigation.addListener("blur", showTabBar);
+
     return () => {
       scrollOffsetY.removeListener(listenerId);
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
+      focusListener();
+      blurListener();
       showTabBar();
     };
   }, [scrollOffsetY, handleScroll, showTabBar]);
-
-  useFocusEffect(
-    useCallback(() => {
-      showTabBar();
-    }, [showTabBar])
-  );
 
   return scrollOffsetY;
 };

@@ -8,7 +8,7 @@ export interface FilterOptions {
   resetFilters: () => void;
 }
 
-export const useFilterStore = create<FilterOptions>((set) => ({
+export const useFilterStore = create<FilterOptions>()((set) => ({
   approved: false,
   pending: false,
   denied: false,

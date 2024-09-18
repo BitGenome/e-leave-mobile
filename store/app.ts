@@ -14,7 +14,7 @@ const initialAppState: AppState = {
   isTabbarVisible: true,
 };
 
-export const useAppStore = create<AppState & AppAction>((set) => ({
+export const useAppStore = create<AppState & AppAction>()((set) => ({
   ...initialAppState,
   showTabBar: () => set({ isTabbarVisible: true }),
   hideTabBar: () => set({ isTabbarVisible: false }),

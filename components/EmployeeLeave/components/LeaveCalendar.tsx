@@ -4,11 +4,11 @@ import { useTheme } from "react-native-paper";
 
 interface Calendar {
   onPress: (selectedDate: any) => void;
-  selectedDate: string;
 }
 
 export default function LeaveCalendar(props: Calendar) {
-  const { onPress, selectedDate = "2024-10-01" } = props;
+  const { onPress } = props;
+
   const theme = useTheme();
   const todayDate = new Date();
   const today = todayDate.toISOString().split("T")[0];
@@ -119,7 +119,6 @@ export default function LeaveCalendar(props: Calendar) {
       hideExtraDays
       enableSwipeMonths
       markingType={"period"}
-      minDate={today}
       markedDates={markedDates}
     />
   );
