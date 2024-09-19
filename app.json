@@ -28,9 +28,18 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4ccd7124-818e-4b6d-8a2d-16fc7aff590a"
+      }
+    },
+    "owner": "sacrojunel"
   }
 }
