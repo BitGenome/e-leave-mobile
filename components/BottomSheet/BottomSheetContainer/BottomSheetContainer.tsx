@@ -1,17 +1,23 @@
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
+  BottomSheetModalProps,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { ReactNode, useCallback, useEffect, useRef } from "react";
+import { ReactNode, useCallback, useRef } from "react";
 import { useTheme } from "react-native-paper";
 
-interface BottomSheetViewContainerProps {
+interface BottomSheetViewContainerProps
+  extends Omit<BottomSheetModalProps, "onDismiss" | "openBottomSheet"> {
   children: ReactNode;
   snapPoints?: (string | number)[];
   openBottomSheet?: boolean;
   /** trigger for ondismiss of bottom sheet */
   onDismiss?: () => void;
+  /** use this for bottom sheet that has list
+   * then in your component use the BottomSheetFlatlist as children
+   */
+  isList?: boolean;
 }
 
 export default function BottomSheetViewContainer({
@@ -19,6 +25,8 @@ export default function BottomSheetViewContainer({
   snapPoints,
   openBottomSheet = false,
   onDismiss,
+  isList = false,
+  ...rest
 }: BottomSheetViewContainerProps) {
   const theme = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
@@ -32,10 +40,6 @@ export default function BottomSheetViewContainer({
   }, [openBottomSheet]);
 
   handlePresentModalPress();
-
-  // useEffect(() => {
-  //   handlePresentModalPress();
-  // }, [openBottomSheet]);
 
   return (
     <BottomSheetModal
@@ -54,8 +58,9 @@ export default function BottomSheetViewContainer({
       backgroundStyle={{
         backgroundColor: theme.colors.surface,
       }}
+      {...rest}
     >
-      <BottomSheetView>{children}</BottomSheetView>
+      {isList ? children : <BottomSheetView>{children}</BottomSheetView>}
     </BottomSheetModal>
   );
 }

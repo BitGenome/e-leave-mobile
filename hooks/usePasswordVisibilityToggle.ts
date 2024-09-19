@@ -10,9 +10,14 @@ const useVisibility = (props: VisibilityProps = {}) => {
     setHide((prevState) => !prevState);
   };
 
+  const setVisibility = (open: boolean) => {
+    setHide(open);
+  };
+
   return {
     state: hide,
     toggle: toggle,
+    setVisibility,
   };
 };
 

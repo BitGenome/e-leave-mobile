@@ -1,4 +1,4 @@
-import CustomIcon, { type CustomIconProps } from "@/ui/custom-icon";
+import CustomIcon from "@/ui/custom-icon";
 import { Href } from "expo-router";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { ReactElement, useCallback } from "react";
@@ -42,7 +42,7 @@ export default function QuickActions() {
           style={[
             styles.itemContainer,
             {
-              backgroundColor: theme.colors.surface,
+              backgroundColor: theme.colors.background,
             },
           ]}
         >

@@ -1,3 +1,4 @@
+import { position } from "./position";
 export const employee = [
   {
     label: "Jhon Doe",
@@ -33,7 +34,12 @@ export const employee = [
   },
 ];
 
-export const employedata = [
+export type EmployeeData = {
+  id: string;
+  name: string;
+  position: string;
+};
+export const employedata: EmployeeData[] = [
   {
     id: "01-1",
     name: "Jane Doe",

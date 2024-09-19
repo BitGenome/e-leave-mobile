@@ -1,125 +1,98 @@
-import { useRef, useState } from "react";
-import { Calendar, DateData } from "react-native-calendars";
+import CustomIcon from "@/ui/custom-icon";
+import { useCallback } from "react";
+import { StyleSheet } from "react-native";
+import { Calendar, type DateData } from "react-native-calendars";
+import { type MarkingProps } from "react-native-calendars/src/calendar/day/marking";
 import { useTheme } from "react-native-paper";
 
 interface Calendar {
-  onPress: (selectedDate: any) => void;
+  onPressMarkedDates: (selectedDate: DateData) => void;
+  /**list of dates to be marked */
+  leavesDates?: string[];
 }
 
+const todayDate = new Date();
+const today = todayDate.toISOString().split("T")[0];
+
 export default function LeaveCalendar(props: Calendar) {
-  const { onPress } = props;
+  const { onPressMarkedDates, leavesDates = ["2024-09-19", "2024-09-21"] } =
+    props;
 
   const theme = useTheme();
-  const todayDate = new Date();
-  const today = todayDate.toISOString().split("T")[0];
 
-  const startDateRef = useRef<string | undefined>();
-  const endDateRef = useRef<string>();
-  const [markedDates, setMarkedDates] = useState<Record<string, any>>({});
+  const markedDateStyles = {
+    color: theme.colors.primary,
+    customContainerStyle: {
+      borderRadius: 8,
+      backgroundColor: theme.colors.primary,
+    },
+    selectedColor: theme.colors.primary,
+    endingDay: false,
+    marked: false,
+    selected: true,
+    startingDay: true,
+    textColor: theme.colors.surface,
+  };
+  const markedDates: Record<string, MarkingProps> = leavesDates.reduce(
+    (acc, date) => {
+      acc[date] = { ...markedDateStyles };
+      return acc;
+    },
+    {} as Record<string, MarkingProps>
+  );
+
+  //handle dates press to only select the marked dates.
+  const handleDayLongPress = useCallback(
+    (date: DateData) => {
+      const { dateString } = date;
+      if (!markedDates[dateString as keyof typeof markedDates]) {
+        return console.log(`The date ${dateString} is not marked.`);
+      }
+
+      onPressMarkedDates(date);
+      return console.log(`The date ${dateString} is marked.`);
+    },
+    [markedDates]
+  );
 
   return (
     <Calendar
-      style={{
-        backgroundColor: theme.colors.surface,
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: theme.colors.inverseOnSurface,
-        padding: 5,
-      }}
+      style={[
+        styles.calendar,
+        {
+          backgroundColor: theme.colors.background,
+          borderColor: theme.colors.inverseOnSurface,
+        },
+      ]}
       theme={{
         arrowHeight: 28,
         textDayFontFamily: "Poppins_700Bold",
         textDayHeaderFontFamily: "Poppins_600SemiBold",
         textMonthFontFamily: "Poppins_600SemiBold",
-        calendarBackground: theme.colors.surface,
+        calendarBackground: theme.colors.background,
         selectedDayBackgroundColor: theme.colors.primaryContainer,
         arrowColor: theme.colors.secondary,
       }}
-      onDayPress={(day: DateData) => {
-        if (!startDateRef.current) {
-          startDateRef.current = day.dateString;
-        } else if (
-          day.dateString === startDateRef.current ||
-          day.dateString === endDateRef.current
-        ) {
-          // Reset the start date if the same day is selected
-          startDateRef.current = undefined;
-          endDateRef.current = undefined;
-          setMarkedDates({});
-        } else {
-          endDateRef.current = day.dateString;
-        }
-
-        if (startDateRef.current && endDateRef.current) {
-          const pickedDate = new Date(day.dateString);
-          let startDate = new Date(startDateRef.current);
-          let endDate = new Date(endDateRef.current);
-
-          if (pickedDate.getTime() < startDate.getTime()) {
-            endDate = new Date(startDateRef.current);
-            startDateRef.current = day.dateString;
-            if (startDateRef.current)
-              startDate = new Date(startDateRef.current);
-          }
-
-          const betweenDates: Record<string, any> = {};
-          for (
-            const dt = new Date(startDate);
-            dt <= new Date(endDate);
-            dt.setDate(dt.getDate() + 1)
-          ) {
-            betweenDates[dt.toISOString().split("T")[0]] = {
-              selected: true,
-              marked: false,
-              color: theme.colors.secondaryContainer,
-              textColor: theme.colors.secondary,
-              startingDay: false,
-              endingDay: false,
-              customContainerStyle: {
-                borderRadius: 0,
-              },
-            };
-          }
-          Object.keys(betweenDates).forEach((x, i) => {
-            if (i === 0) {
-              betweenDates[x].startingDay = true;
-              betweenDates[x].color = theme.colors.secondary;
-              betweenDates[x].textColor = "white";
-              betweenDates[x].customContainerStyle = {
-                borderTopLeftRadius: 8,
-                borderBottomLeftRadius: 8,
-              };
-            }
-            if (i === Object.keys(betweenDates).length - 1) {
-              betweenDates[x].endingDay = true;
-              betweenDates[x].color = theme.colors.secondary;
-              betweenDates[x].textColor = theme.colors.surface;
-              betweenDates[x].customContainerStyle = {
-                borderTopRightRadius: 8,
-                borderRadius: 8,
-              };
-            }
-          });
-          setMarkedDates({ ...betweenDates });
-          onPress({ ...betweenDates });
-        } else if (startDateRef.current) {
-          // If only start date is set, mark it as the selected day
-          setMarkedDates({
-            [startDateRef.current]: {
-              selected: true,
-              color: theme.colors.primaryContainer,
-              textColor: theme.colors.primary,
-              containerStyle: {
-                borderRadius: 10,
-              },
-            },
-          });
-        }
-      }}
+      initialDate={today}
       hideExtraDays
+      renderArrow={(direction) => {
+        return direction === "right" ? (
+          <CustomIcon name="arrowright" />
+        ) : (
+          <CustomIcon name="arrowleft" />
+        );
+      }}
       enableSwipeMonths
-      markingType={"period"}
+      onDayLongPress={handleDayLongPress}
       markedDates={markedDates}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  calendar: {
+    borderRadius: 15,
+    borderWidth: 1,
+    padding: 5,
+  },
+});
