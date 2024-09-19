@@ -9,6 +9,7 @@ import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { MotiView } from "moti";
 import { Animated, StyleSheet } from "react-native";
 import { FAB, MD3Theme, Text, useTheme } from "react-native-paper";
+import { View as ScreenView } from "@/components/Themed";
 
 export default function EmployeeScreen() {
   const theme = useTheme();
@@ -19,7 +20,7 @@ export default function EmployeeScreen() {
   const scrollOffsetY = useTabBarVisibility();
 
   return (
-    <View style={[styles.container]}>
+    <ScreenView style={styles.container}>
       <FlashList
         contentInsetAdjustmentBehavior="automatic"
         renderItem={({ item, index }) => (
@@ -52,7 +53,7 @@ export default function EmployeeScreen() {
           />
         </MotiView>
       )}
-    </View>
+    </ScreenView>
   );
 }
 
@@ -60,8 +61,6 @@ const createStyles = (theme: MD3Theme) => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.background,
-      marginTop: 10,
     },
     title: {
       fontSize: 20,

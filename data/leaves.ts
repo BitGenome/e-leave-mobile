@@ -1,5 +1,6 @@
 export const EmployeeLeaves = [
   {
+    id: "1",
     type: "Sick Leave",
     name: "Jhon Doe",
     status: "approved",
@@ -7,6 +8,7 @@ export const EmployeeLeaves = [
     duration: "Full Day",
   },
   {
+    id: "2",
     type: "Sick Leave",
     name: "Jhon Doe",
     status: "denied",
@@ -14,6 +16,7 @@ export const EmployeeLeaves = [
     duration: "Full Day",
   },
   {
+    id: "3",
     type: "Sick Leave",
     name: "Jhon Doe",
     status: "pending",
@@ -21,14 +24,15 @@ export const EmployeeLeaves = [
     duration: "Full Day",
   },
   {
+    id: "4",
     type: "Sick Leave",
     name: "Jhon Doe",
     status: "pending",
     date: "2024-10-01",
     duration: "Full Day",
   },
-
   {
+    id: "5",
     type: "Sick Leave",
     name: "Jhon Doe",
     status: "pending",

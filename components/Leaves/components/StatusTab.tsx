@@ -4,6 +4,7 @@ import { memo, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import LeaveCard, { LeaveCardProps } from "./LeaveCard";
 import { useFilterStore } from "@/store/leaveFilter";
+import { View as TabScreenView } from "@/components/Themed";
 
 const StatusTab = () => {
   const { approved, pending, denied } = useFilterStore((state) => ({
@@ -19,13 +20,14 @@ const StatusTab = () => {
 
     return matchesApproved && matchesPending && matchesDenied;
   });
+
   const renderItem = useCallback(
     ({ item }: { item: LeaveCardProps }) => <LeaveCard {...item} />,
     []
   );
 
   return (
-    <View style={styles.leaveCardContainer}>
+    <TabScreenView style={styles.leaveCardContainer}>
       <FlashList
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
@@ -33,7 +35,7 @@ const StatusTab = () => {
         data={filteredLeaves}
         estimatedItemSize={20}
       />
-    </View>
+    </TabScreenView>
   );
 };
 
@@ -42,6 +44,7 @@ export default memo(StatusTab);
 const styles = StyleSheet.create({
   leaveCardContainer: {
     flex: 1,
-    marginTop: 10,
+
+    paddingHorizontal: 10,
   },
 });

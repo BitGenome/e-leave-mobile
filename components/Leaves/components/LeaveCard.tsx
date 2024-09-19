@@ -1,6 +1,7 @@
 import { TextPoppinsRegular } from "@/components/Text/TextPoppinsRegular";
 import { AntDesign } from "@expo/vector-icons";
-import { memo } from "react";
+import { useRouter } from "expo-router";
+import { memo, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   Button,
@@ -16,6 +17,7 @@ export interface LeaveCardProps {
   status: string;
   date: string;
   duration: string;
+  id: string;
 }
 
 const LEAVE_STATUS = {
@@ -25,8 +27,18 @@ const LEAVE_STATUS = {
 };
 
 const LeaveCard = (props: LeaveCardProps) => {
-  const { type, status, date, duration } = props;
+  const { type, status, date, duration, id } = props;
+  const router = useRouter();
   const theme = useTheme();
+
+  const handleViewDetailsPress = useCallback(() => {
+    return router.navigate({
+      pathname: "/(app)/(employee-leaves)/leaves/leave-details/[id]",
+      params: {
+        id,
+      },
+    });
+  }, [router, id]);
 
   return (
     <Card
@@ -111,6 +123,7 @@ const LeaveCard = (props: LeaveCardProps) => {
         />
         <View>
           <Button
+            onPress={handleViewDetailsPress}
             mode="contained"
             style={{
               flex: 1,

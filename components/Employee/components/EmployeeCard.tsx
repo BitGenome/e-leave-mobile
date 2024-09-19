@@ -29,10 +29,7 @@ export default function EmployeeCard(props: IEmployeeCard) {
 
   return (
     <Pressable
-      style={[
-        styles.surface,
-        { backgroundColor: theme.colors.inverseOnSurface },
-      ]}
+      style={[styles.surface, { backgroundColor: theme.colors.surface }]}
       onPress={() => {
         router.navigate({
           pathname: path,
@@ -67,7 +64,7 @@ export default function EmployeeCard(props: IEmployeeCard) {
         <View>
           <IconButton
             icon={({ size, color }) => (
-              <AntDesign name="right" size={size} color={color} />
+              <AntDesign name="arrowright" size={size} color={color} />
             )}
           />
         </View>

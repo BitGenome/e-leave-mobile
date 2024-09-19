@@ -49,7 +49,7 @@ export function View(props: ViewProps) {
 
   return (
     <DefaultView
-      style={[{ backgroundColor: theme.colors.surfaceVariant }, style]}
+      style={[{ backgroundColor: theme.colors.inverseOnSurface }, style]}
       {...otherProps}
     />
   );

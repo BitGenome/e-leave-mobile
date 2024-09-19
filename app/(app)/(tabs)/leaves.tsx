@@ -5,6 +5,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Href } from "expo-router";
 import { Animated, StyleSheet, View } from "react-native";
 import { Searchbar, useTheme } from "react-native-paper";
+import { View as ScreenView } from "@/components/Themed";
 
 export default function LeavesScreen() {
   const scrollOffsetY = useTabBarVisibility();
@@ -12,14 +13,10 @@ export default function LeavesScreen() {
 
   return (
     <>
-      <View
-        style={[
-          styles.container,
-          { marginVertical: 10, backgroundColor: theme.colors.background },
-        ]}
-      >
+      <ScreenView style={[styles.container]}>
         <View
           style={{
+            marginVertical: 15,
             marginHorizontal: 15,
             marginBottom: 10,
             flexDirection: "row",
@@ -29,6 +26,7 @@ export default function LeavesScreen() {
           <Searchbar
             style={{
               flex: 1,
+              backgroundColor: theme.colors.surface,
             }}
             placeholder="Search leave"
             value=""
@@ -51,7 +49,7 @@ export default function LeavesScreen() {
             { useNativeDriver: false }
           )}
         />
-      </View>
+      </ScreenView>
     </>
   );
 }
