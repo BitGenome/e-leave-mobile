@@ -1,5 +1,5 @@
 import { TextPoppinsRegular } from "@/components/Text/TextPoppinsRegular";
-import { AntDesign } from "@expo/vector-icons";
+import CustomIcon from "@/ui/custom-icon";
 import { useRouter } from "expo-router";
 import { memo, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
@@ -42,7 +42,7 @@ const LeaveCard = (props: LeaveCardProps) => {
 
   return (
     <Card
-      mode="outlined"
+      mode="contained"
       style={[
         styles.card,
         {
@@ -113,7 +113,14 @@ const LeaveCard = (props: LeaveCardProps) => {
       >
         <View>
           <Text variant="labelMedium">{duration}</Text>
-          <Text variant="headlineLarge">{date}</Text>
+          <Text
+            variant="headlineLarge"
+            style={{
+              fontFamily: "Poppins_700Bold",
+            }}
+          >
+            {date}
+          </Text>
         </View>
         <Divider
           style={{
@@ -121,7 +128,11 @@ const LeaveCard = (props: LeaveCardProps) => {
             backgroundColor: theme.colors.elevation.level5,
           }}
         />
-        <View>
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
           <Button
             onPress={handleViewDetailsPress}
             mode="contained"
@@ -149,13 +160,13 @@ const LeaveCard = (props: LeaveCardProps) => {
               >
                 View Details
               </TextPoppinsRegular>
-              <AntDesign
-                size={20}
-                color={theme.colors.surface}
-                name="right"
+              <CustomIcon
                 style={{
                   marginLeft: 10,
                 }}
+                size={20}
+                color={theme.colors.surface}
+                name="arrowright"
               />
             </View>
           </Button>

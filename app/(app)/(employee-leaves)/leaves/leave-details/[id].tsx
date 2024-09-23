@@ -58,6 +58,9 @@ export default function LeaveDetailsScreen() {
             theme={{ roundness: 10 }}
             multiline
             value="Hello"
+            outlineStyle={{
+              borderColor: theme.colors.elevation.level3,
+            }}
           />
         </View>
       </View>

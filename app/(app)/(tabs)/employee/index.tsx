@@ -1,5 +1,5 @@
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
-import { View } from "@/components/Themed";
+import { View as ScreenView } from "@/components/Themed";
 import { employedata } from "@/data/employee";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { useAppStore } from "@/store/app";
@@ -7,9 +7,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { MotiView } from "moti";
-import { Animated, StyleSheet } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { FAB, MD3Theme, Text, useTheme } from "react-native-paper";
-import { View as ScreenView } from "@/components/Themed";
 
 export default function EmployeeScreen() {
   const theme = useTheme();
@@ -21,38 +20,45 @@ export default function EmployeeScreen() {
 
   return (
     <ScreenView style={styles.container}>
-      <FlashList
-        contentInsetAdjustmentBehavior="automatic"
-        renderItem={({ item, index }) => (
-          <EmployeeCard key={index} path="/employee-detail" {...item} />
-        )}
-        data={employedata}
-        ListEmptyComponent={<Text>No employee yet.</Text>}
-        estimatedItemSize={20}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false }
-        )}
-      />
-      {isTabBarVisible && (
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: "timing", duration: 300 }}
-          style={styles.fab}
-        >
-          <FAB
-            onPress={() => router.navigate("register-employee")}
-            mode="flat"
-            icon={({ color, size }) => (
-              <AntDesign color={color} size={size} name="pluscircle" />
-            )}
-            color={theme.colors.surface}
+      <View
+        style={{
+          flex: 1,
+          marginTop: 15,
+        }}
+      >
+        <FlashList
+          contentInsetAdjustmentBehavior="automatic"
+          renderItem={({ item, index }) => (
+            <EmployeeCard key={index} path="/employee-detail" {...item} />
+          )}
+          data={employedata}
+          ListEmptyComponent={<Text>No employee yet.</Text>}
+          estimatedItemSize={20}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+            { useNativeDriver: false }
+          )}
+        />
+        {isTabBarVisible && (
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: "timing", duration: 300 }}
             style={styles.fab}
-            animated
-          />
-        </MotiView>
-      )}
+          >
+            <FAB
+              onPress={() => router.navigate("register-employee")}
+              mode="flat"
+              icon={({ color, size }) => (
+                <AntDesign color={color} size={size} name="pluscircle" />
+              )}
+              color={theme.colors.surface}
+              style={styles.fab}
+              animated
+            />
+          </MotiView>
+        )}
+      </View>
     </ScreenView>
   );
 }
