@@ -5,32 +5,16 @@ import { Text } from "react-native-paper";
 
 export default function EmployeeDetails() {
   return (
-    <Card
-      style={{
-        padding: 15,
-      }}
-    >
+    <Card style={styles.card}>
       <Text style={styles.title}>Employee Details</Text>
-      <View
-        style={{
-          paddingTop: 10,
-        }}
-      >
-        <View
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: "Poppins_500Medium",
-              fontWeight: "bold",
-            }}
-          >
-            Name:
-          </Text>
+      <View style={styles.container}>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.label}>Name:</Text>
           <TextPoppinsRegular>Jane Doe</TextPoppinsRegular>
+        </View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.label}>Position:</Text>
+          <TextPoppinsRegular>Driver</TextPoppinsRegular>
         </View>
       </View>
     </Card>
@@ -42,5 +26,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Poppins_700Bold",
     fontSize: 17,
+  },
+  detailsContainer: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
+  card: {
+    padding: 15,
+  },
+  container: {
+    paddingTop: 10,
+    rowGap: 10,
+  },
+  label: {
+    fontFamily: "Poppins_500Medium",
+    fontWeight: "bold",
   },
 });
