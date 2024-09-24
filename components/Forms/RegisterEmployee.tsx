@@ -6,7 +6,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Alert, StyleSheet, View } from "react-native";
 import { HelperText, MD3Theme, TextInput, useTheme } from "react-native-paper";
 import * as zod from "zod";
-import BottomSheetSelectTest, {
+import BottomSheetSelect, {
   type SelectValue,
 } from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
 
@@ -120,7 +120,7 @@ export default function RegisterEmployeeForm() {
         name="position"
         render={({ field }) => (
           <>
-            <BottomSheetSelectTest
+            <BottomSheetSelect
               label={"Select position"}
               options={position}
               onSelect={field.onChange}

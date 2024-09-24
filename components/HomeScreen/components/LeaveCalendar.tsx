@@ -1,14 +1,18 @@
 import BottomSheetViewContainer from "@/components/BottomSheet/BottomSheetContainer/BottomSheetContainer";
 import Calendar from "@/components/EmployeeLeave/components/LeaveCalendar";
+import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { employedata, EmployeeData } from "@/data/employee";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
+import CustomIcon from "@/ui/custom-icon";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { List, Text } from "react-native-paper";
+import { Avatar, List, Text, useTheme } from "react-native-paper";
+import { TextPoppinsRegular } from "../../Text/TextPoppinsRegular";
 
 export default function LeaveCalendar() {
+  const theme = useTheme();
   const router = useRouter();
   const {
     state: isOpenBottomSheetLeaves,
@@ -18,29 +22,49 @@ export default function LeaveCalendar() {
     defaultVisiblityState: false,
   });
 
+  const handleDismissBottomSheetDialog = useCallback(() => {
+    setVisibility(false);
+  }, []);
+
   const handleonLongPressMarkedDates = useCallback(() => {
     toggleBottomSheet();
   }, [isOpenBottomSheetLeaves, setVisibility, toggleBottomSheet]);
 
   const renderEmployeeItem = useCallback(
     ({ item }: { item: EmployeeData }) => (
-      <List.Item
-        titleStyle={{
-          fontFamily: "Poppins_500Medium",
-        }}
-        onPress={() => {
-          toggleBottomSheet();
-          return router.navigate({
-            pathname: "/(employee-leaves)/leaves/[id]",
-            params: {
-              name: item.name,
-              id: item.id,
-            },
-          });
-        }}
-        key={item.id}
-        title={item.name}
-      />
+      <>
+        <List.Item
+          key={item.id}
+          title={() => <TextPoppinsBold>{item.name}</TextPoppinsBold>}
+          right={(props) => <CustomIcon name="arrowright" {...props} />}
+          left={() => <Avatar.Text size={44} label={item.name[0]} />}
+          description={() => (
+            <TextPoppinsRegular
+              style={{
+                color: theme.colors.outline,
+              }}
+            >
+              {item.position}
+            </TextPoppinsRegular>
+          )}
+          titleStyle={{
+            fontFamily: "Poppins_500Medium",
+          }}
+          style={{
+            padding: 10,
+          }}
+          onPress={() => {
+            toggleBottomSheet();
+            return router.navigate({
+              pathname: "/(employee-leaves)/leaves/[id]",
+              params: {
+                name: item.name,
+                id: item.id,
+              },
+            });
+          }}
+        />
+      </>
     ),
     []
   );
@@ -52,10 +76,12 @@ export default function LeaveCalendar() {
       <BottomSheetViewContainer
         isList
         openBottomSheet={isOpenBottomSheetLeaves}
+        onDismiss={handleDismissBottomSheetDialog}
       >
         <View
           style={{
             paddingVertical: 10,
+
             flex: 1,
           }}
         >
@@ -68,6 +94,7 @@ export default function LeaveCalendar() {
             Employees with leaves
           </Text>
           <BottomSheetFlatList
+            showsVerticalScrollIndicator={false}
             data={employedata}
             renderItem={renderEmployeeItem}
             keyExtractor={(item) => item.id}

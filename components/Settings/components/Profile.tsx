@@ -1,8 +1,15 @@
+import { useRouter } from "expo-router";
+import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Button, Divider, Text, useTheme } from "react-native-paper";
 
 export default function Profile() {
   const theme = useTheme();
+  const router = useRouter();
+  const handleProfile = useCallback(() => {
+    router.navigate("/(app)/settings/profile");
+  }, [router]);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <Avatar.Text label="JD" />
@@ -41,6 +48,7 @@ export default function Profile() {
         }}
       ></View>
       <Button
+        onPress={handleProfile}
         mode="contained"
         contentStyle={{
           height: 50,

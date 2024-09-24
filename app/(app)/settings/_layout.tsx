@@ -29,6 +29,13 @@ export default function SettingsLayout() {
           headerTitle: () => <NavigationHeaderTitle title="Theme" />,
         }}
       />
+      <Stack.Screen
+        name="profile"
+        options={{
+          headerShown: true,
+          headerTitle: () => <NavigationHeaderTitle title="Edit Profile" />,
+        }}
+      />
     </Stack>
   );
 }

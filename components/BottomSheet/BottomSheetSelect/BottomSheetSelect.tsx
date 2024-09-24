@@ -35,7 +35,7 @@ export interface HeaderProps {
   label: string;
 }
 
-const BottomSheetSelectTest = forwardRef<View, SelectProps>(
+const BottomSheetSelect = forwardRef<View, SelectProps>(
   (
     {
       options,
@@ -49,8 +49,12 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
     ref
   ) => {
     const theme = useTheme();
+    const initialState = value
+      ? ({ label: value, value: value } as Option)
+      : undefined;
+
     const [selectedOption, setSelectedOption] = useState<Option | undefined>(
-      undefined
+      initialState
     );
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -144,7 +148,12 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
               },
             ]}
           >
-            <Text style={{ fontFamily: "Poppins_400Regular" }}>
+            <Text
+              style={{
+                fontFamily: "Poppins_400Regular",
+                textTransform: "capitalize",
+              }}
+            >
               {selectedOption?.label || label}
             </Text>
             <IconButton icon="chevron-down" />
@@ -171,7 +180,7 @@ const BottomSheetSelectTest = forwardRef<View, SelectProps>(
     );
   }
 );
-export default BottomSheetSelectTest;
+export default BottomSheetSelect;
 
 const styles = StyleSheet.create({
   select: {

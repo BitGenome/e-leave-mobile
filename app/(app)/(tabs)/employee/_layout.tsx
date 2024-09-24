@@ -1,17 +1,26 @@
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
-import { Stack } from "expo-router";
+import CustomIcon from "@/ui/custom-icon";
+import { Stack, useRouter } from "expo-router";
 import React from "react";
-import { useTheme } from "react-native-paper";
+import { IconButton, useTheme } from "react-native-paper";
 
 export default function EmployeeLayout() {
   const theme = useTheme();
+  const router = useRouter();
   return (
     <Stack
       screenOptions={{
+        headerRight: () => (
+          <IconButton
+            onPress={() => router.navigate("/(app)/(employee)/search-employee")}
+            icon={(props) => (
+              <CustomIcon name="search" {...props} library="ionic" />
+            )}
+          />
+        ),
         headerShown: true,
         headerShadowVisible: false,
         headerTitleAlign: "center",
-        headerSearchBarOptions: { placeholder: "Search your employees" },
         headerTitle: () => <TextPoppinsBold>My Employees</TextPoppinsBold>,
         headerStyle: {
           backgroundColor: theme.colors.surface,
