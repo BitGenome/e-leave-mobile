@@ -48,10 +48,16 @@ export type leaveStatusType = (typeof leaveStatus)[keyof typeof leaveStatus];
 export const leaveRequest = sqliteTable("leave_request", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   employee_id: integer("employee_id")
-    .references(() => employees.employee_id)
+    .references(() => employees.employee_id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
     .notNull(),
   leave_type_id: integer("leave_type_id")
-    .references(() => leaveType.id)
+    .references(() => leaveType.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    })
     .notNull(),
   start_date: integer("start_date", {
     mode: "timestamp",
@@ -76,10 +82,16 @@ export const leaveRequest = sqliteTable("leave_request", {
 export const leaveBalances = sqliteTable("leave_balances", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   employee_id: integer("employee_id")
-    .references(() => employees.employee_id)
+    .references(() => employees.employee_id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
     .notNull(),
   leave_type_id: integer("leave_type_id")
-    .references(() => leaveType.id)
+    .references(() => leaveType.id, {
+      onUpdate: "cascade",
+      onDelete: "set null",
+    })
     .notNull(),
   available_days: integer("available_days"),
   created_at: integer("created_at", {
