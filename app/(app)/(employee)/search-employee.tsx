@@ -5,12 +5,7 @@ import CustomIcon from "@/ui/custom-icon";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import {
-  Keyboard,
-  TextInput as RNTextInput,
-  StyleSheet,
-  View,
-} from "react-native";
+import { TextInput as RNTextInput, StyleSheet, View } from "react-native";
 import { Button, List, Text, TextInput, useTheme } from "react-native-paper";
 import { TextPoppinsBold } from "../../../components/Text/TextPoppinsBold";
 
@@ -44,7 +39,7 @@ export default function SearchEmployeeScreen() {
       right={(props) => (
         <List.Icon
           {...props}
-          icon={(props) => (
+          icon={() => (
             <CustomIcon
               style={{
                 transform: [{ translateX: 10 }, { rotate: "-120deg" }],

@@ -44,7 +44,7 @@ export default memo(StatusTab);
 const styles = StyleSheet.create({
   leaveCardContainer: {
     flex: 1,
-
     paddingHorizontal: 10,
+    paddingBottom: 5,
   },
 });

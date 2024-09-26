@@ -69,7 +69,7 @@ export default function EmployeeLeaveScreen() {
 
   return (
     <>
-      <View style={[styles.container, { marginBottom: 12 + bottom }]}>
+      <View style={[styles.container]}>
         <Stack.Screen
           options={{
             headerShown: true,

@@ -2,6 +2,13 @@
 module.exports = {
   extends: ["eslint:recommended", "plugin:react/recommended"],
   plugins: ["react", "react-hooks"],
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: "module",
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   rules: {
     // Enforces the need to import 'React' when using hooks/components
     "react/react-in-jsx-scope": "error",

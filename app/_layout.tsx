@@ -1,10 +1,3 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
-
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { useAppThemeStore } from "@/store/app";
@@ -18,6 +11,7 @@ import {
   Poppins_800ExtraBold,
   Poppins_900Black,
 } from "@expo-google-fonts/poppins";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import {
   DarkTheme as NavigationDarkTheme,
@@ -25,16 +19,26 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import merge from "deepmerge";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { adaptNavigationTheme, Provider, useTheme } from "react-native-paper";
 import { TabsProvider } from "react-native-paper-tabs";
-
+import "react-native-reanimated";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
-
 import { enGB, registerTranslation } from "react-native-paper-dates";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "../drizzle/migrations";
+import { db } from "@/api/database/database";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import * as SQLite from "expo-sqlite";
+
+const dbExpo = SQLite.openDatabaseSync("leavease.db");
 registerTranslation("en-GB", enGB);
 
 export const unstable_settings = {
@@ -88,6 +92,10 @@ const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
 
 function RootLayoutNav() {
   const theme = useTheme();
+  /**
+   * check this url for morre info https://github.com/drizzle-team/drizzle-orm/discussions/2447
+   */
+  useDrizzleStudio(dbExpo);
   return (
     <Providers>
       <Stack
@@ -108,6 +116,7 @@ function RootLayoutNav() {
 function Providers({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
   const { isDarkTheme, loadTheme } = useAppThemeStore();
+  const { success, error } = useMigrations(db, migrations);
 
   useEffect(() => {
     loadTheme();
@@ -117,6 +126,10 @@ function Providers({ children }: { children: React.ReactNode }) {
     isDarkTheme || colorScheme === "dark"
       ? CombinedDarkTheme
       : CombinedLightTheme;
+
+  if (success) console.log("success migration");
+
+  if (error) console.warn("error", error);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

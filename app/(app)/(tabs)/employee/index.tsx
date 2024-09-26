@@ -23,7 +23,7 @@ export default function EmployeeScreen() {
       <View
         style={{
           flex: 1,
-          marginTop: 15,
+          paddingBottom: 15,
         }}
       >
         <FlashList
@@ -92,7 +92,7 @@ const createStyles = (theme: MD3Theme) => {
       backgroundColor: theme.colors.surface,
     },
     flashContainer: {
-      marginTop: 20,
+      paddingTop: 20,
     },
   });
 };
