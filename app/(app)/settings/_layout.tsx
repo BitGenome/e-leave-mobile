@@ -36,6 +36,15 @@ export default function SettingsLayout() {
           headerTitle: () => <NavigationHeaderTitle title="Edit Profile" />,
         }}
       />
+      <Stack.Screen
+        name="annual-leave"
+        options={{
+          headerShown: true,
+          headerTitle: () => (
+            <NavigationHeaderTitle title="Set Employee Leave Balances" />
+          ),
+        }}
+      />
     </Stack>
   );
 }

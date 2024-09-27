@@ -19,6 +19,12 @@ interface SettingsItem {
 const SETTINGS_LIST: SettingsItem[] = [
   {
     library: "ionic",
+    icon: "calendar-clear",
+    path: "/(app)/settings/annual-leave",
+    label: "Employee Leave Balances",
+  },
+  {
+    library: "ionic",
     icon: "shield",
     path: "/settings/security",
     label: "Security",
