@@ -1,3 +1,4 @@
+import { useEmployeeData } from "@/api/employees/use-employee-data";
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View as ScreenView } from "@/components/Themed";
 import { employedata } from "@/data/employee";
@@ -14,6 +15,7 @@ export default function EmployeeScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
   const router = useExpoRouter();
+  const { data, error } = useEmployeeData();
 
   const isTabBarVisible = useAppStore((state) => state.isTabbarVisible);
   const scrollOffsetY = useTabBarVisibility();
@@ -31,7 +33,7 @@ export default function EmployeeScreen() {
           renderItem={({ item, index }) => (
             <EmployeeCard key={index} path="/employee-detail" {...item} />
           )}
-          data={employedata}
+          data={data}
           ListEmptyComponent={<Text>No employee yet.</Text>}
           estimatedItemSize={20}
           onScroll={Animated.event(

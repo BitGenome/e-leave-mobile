@@ -4,11 +4,13 @@ import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Chip, IconButton, MD3Theme, useTheme } from "react-native-paper";
 import { TextPoppinsBold } from "../../Text/TextPoppinsBold";
+import Text from "@/ui/typography/regular";
 
 interface IEmployeeCard {
-  name: string;
+  first_name: string;
+  last_name: string;
   position: string;
-  id: string;
+  employee_id: number;
   path: Href<string>;
 }
 
@@ -16,13 +18,14 @@ const positionIcons: Record<
   string,
   React.ComponentProps<typeof AntDesign>["name"]
 > = {
-  Manager: "profile",
-  Mechanic: "tool",
-  Assistant: "profile",
-  Driver: "car",
+  manager: "profile",
+  mechanic: "tool",
+  assistant: "profile",
+  driver: "car",
 };
 export default function EmployeeCard(props: IEmployeeCard) {
-  const { name, position, path, id } = props;
+  const { first_name, last_name, position, path, employee_id } = props;
+  const name = `${first_name} ${last_name}`;
   const theme = useTheme();
   const styles = createStyles(theme);
   const router = useExpoRouter();
@@ -35,7 +38,7 @@ export default function EmployeeCard(props: IEmployeeCard) {
           pathname: path,
           params: {
             name,
-            id,
+            employee_id,
           },
         });
       }}
@@ -58,7 +61,13 @@ export default function EmployeeCard(props: IEmployeeCard) {
               return <AntDesign name={iconName} color={color} size={size} />;
             }}
           >
-            {position}
+            <Text
+              style={{
+                textTransform: "capitalize",
+              }}
+            >
+              {position}
+            </Text>
           </Chip>
         </View>
         <View>

@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
@@ -24,6 +24,11 @@ export const employees = sqliteTable("employees", {
     mode: "timestamp",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
+
+export const employeeRelations = relations(employees, ({ many }) => ({
+  leaveRequest: many(leaveRequest),
+  leaveBalances: many(leaveBalances),
+}));
 
 export const leaveType = sqliteTable("leave_type", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -59,6 +64,12 @@ export const leaveRequest = sqliteTable("leave_request", {
       onUpdate: "cascade",
     })
     .notNull(),
+  deducted_leave_type_id: integer("deducted_leave_type_id")
+    .references(() => leaveType.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    })
+    .notNull(),
   start_date: integer("start_date", {
     mode: "timestamp",
   }),
@@ -78,6 +89,21 @@ export const leaveRequest = sqliteTable("leave_request", {
     mode: "timestamp",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
+
+export const leaveRequestRelations = relations(leaveRequest, ({ one }) => ({
+  employee: one(employees, {
+    fields: [leaveRequest.employee_id],
+    references: [employees.employee_id],
+  }),
+  leaveType: one(leaveType, {
+    fields: [leaveRequest.leave_type_id],
+    references: [leaveType.id],
+  }),
+  deductedLeaveRequests: one(leaveType, {
+    fields: [leaveRequest.deducted_leave_type_id],
+    references: [leaveType.id],
+  }),
+}));
 
 export const leaveBalances = sqliteTable("leave_balances", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -101,3 +127,14 @@ export const leaveBalances = sqliteTable("leave_balances", {
     mode: "timestamp",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
+
+export const leaveBalancesRelation = relations(leaveBalances, ({ one }) => ({
+  employee: one(employees, {
+    fields: [leaveBalances.employee_id],
+    references: [employees.employee_id],
+  }),
+  leaveType: one(leaveType, {
+    fields: [leaveBalances.leave_type_id],
+    references: [leaveType.id],
+  }),
+}));

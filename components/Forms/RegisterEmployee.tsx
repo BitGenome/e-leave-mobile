@@ -1,20 +1,21 @@
+import { addEmployee } from "@/api/employees/employee.service";
 import { position } from "@/data/position";
 import useUnsavedChangesWarning from "@/hooks/useUnsaveChangesWarning";
 import PrimaryButton from "@/ui/primary-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Alert, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { HelperText, MD3Theme, TextInput, useTheme } from "react-native-paper";
 import * as zod from "zod";
-import BottomSheetSelect, {
-  type SelectValue,
-} from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
+import BottomSheetSelect from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
+import { toast } from "sonner-native";
+import Card from "../Common/Card";
 
 interface IFormInput {
   employee_no: string;
   firstname: string;
   lastname: string;
-  position: SelectValue;
+  position: string;
 }
 
 const registerEmployeeSchema = zod
@@ -30,7 +31,8 @@ const registerEmployeeSchema = zod
 
 export default function RegisterEmployeeForm() {
   const theme = useTheme();
-  const { formState, handleSubmit, control } = useForm<IFormInput>({
+
+  const { formState, handleSubmit, control, reset } = useForm<IFormInput>({
     defaultValues: {
       employee_no: "",
       firstname: "",
@@ -43,12 +45,11 @@ export default function RegisterEmployeeForm() {
   useUnsavedChangesWarning({ hasUnsavedChanges: formState.isDirty });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate a 3-second submission delay
-    Alert.alert(
-      "Form Submitted",
-      `First Name: ${data.firstname}\nLast Name: ${data.lastname}\nPosition: ${data.position}`
-    );
-    console.log(data);
+    const result = await addEmployee(data);
+
+    if (!result) return toast.error("Error adding employee");
+    reset();
+    toast.success("Succeesfully added employee.");
   };
 
   return (
@@ -149,7 +150,7 @@ const createStyles = (theme: MD3Theme) => {
   return StyleSheet.create({
     formContainer: {
       gap: 5,
-      borderRadius: 25,
+      borderRadius: 8,
       padding: 20,
       paddingVertical: 40,
     },

@@ -18,6 +18,5 @@ export default function AppTextInput(props: TextInputProps) {
 const styles = StyleSheet.create({
   input: {
     borderRadius: 10,
-    height: 65,
   },
 });

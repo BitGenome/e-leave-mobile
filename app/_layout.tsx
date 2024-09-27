@@ -37,6 +37,7 @@ import migrations from "../drizzle/migrations";
 import { db } from "@/api/database/database";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import * as SQLite from "expo-sqlite";
+import { Toaster } from "sonner-native";
 
 const dbExpo = SQLite.openDatabaseSync("leavease.db");
 registerTranslation("en-GB", enGB);
@@ -137,6 +138,7 @@ function Providers({ children }: { children: React.ReactNode }) {
         <ThemeProvider value={theme}>
           <TabsProvider>
             <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+            <Toaster />
           </TabsProvider>
         </ThemeProvider>
       </Provider>
