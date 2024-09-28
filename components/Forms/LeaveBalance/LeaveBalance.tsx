@@ -1,316 +1,144 @@
+import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
+import { type LeaveBalanceFormInput } from "@/app/(app)/settings/annual-leave";
+import Card from "@/components/Common/Card";
 import CustomIcon from "@/ui/custom-icon";
 import AppTextInput from "@/ui/text-input";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback } from "react";
+import { Control, Controller, UseFormRegister } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
-import {
-  Divider,
-  HelperText,
-  IconButton,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
-import { useLeaveBalance } from "../../../hooks/useLeaveBalance";
-import Card from "@/components/Common/Card";
+import { Divider, HelperText, IconButton, TextInput } from "react-native-paper";
 
-export default function LeaveBalanceForm() {
-  const theme = useTheme();
-  const { balance, increment, decrement } = useLeaveBalance();
-  const {
-    balance: vacationLeaveBalance,
-    increment: vacationLeaveInc,
-    decrement: vacationLeaveDec,
-  } = useLeaveBalance();
-  const {
-    increment: emergencyLeaveInc,
-    balance: emergencyLeaveBalance,
-    decrement: emergencyLeaveDec,
-  } = useLeaveBalance();
+interface LeaveType {
+  name: string;
+  label: string;
+  balance: number;
+  id: number;
+  control?: Control<LeaveBalanceFormInput>;
+  register?: UseFormRegister<LeaveBalanceFormInput>;
+}
 
-  const {
-    increment: accidentLeaveInc,
-    balance: accidentLeaveBalance,
-    decrement: accidentLeaveDec,
-  } = useLeaveBalance();
+const LeaveBalanceItem: React.FC<{
+  leaveType: LeaveType;
+  index: number;
+  control: Control<LeaveBalanceFormInput>;
+  register: UseFormRegister<LeaveBalanceFormInput>;
+}> = ({ leaveType, index, control, register }) => {
+  /** need to include the name and id of leave type upon submit */
+  useFocusEffect(
+    useCallback(() => {
+      register(`leaveTypes.${index}.id`, { value: leaveType.id });
+      register(`leaveTypes.${index}.name`, { value: leaveType.name });
+    }, [register, leaveType.id, leaveType.name, index])
+  );
 
   return (
+    <View style={styles.itemContainer}>
+      <HelperText variant="labelLarge" type="info" style={styles.label}>
+        {leaveType.label}
+      </HelperText>
+      <View style={styles.inputContainer}>
+        <Controller
+          defaultValue={leaveType.balance} // Set default values
+          name={`leaveTypes.${index}.balance`}
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <>
+              <AppTextInput
+                style={styles.input}
+                mode="outlined"
+                placeholder={leaveType.label}
+                value={value.toString()}
+                readOnly
+                keyboardType="numeric"
+                right={<TextInput.Affix text="/days" />}
+              />
+              <View style={styles.buttonContainer}>
+                <IconButton
+                  disabled={value === 0}
+                  onPress={() => onChange(value - 1)} // Decrement the value
+                  mode="outlined"
+                  style={styles.iconButton}
+                  icon={(props) => <CustomIcon name="minus" {...props} />}
+                />
+                <IconButton
+                  onPress={() => onChange(value + 1)} // Increment the value
+                  mode="outlined"
+                  style={styles.iconButton}
+                  icon={(props) => <CustomIcon name="plus" {...props} />}
+                />
+              </View>
+            </>
+          )}
+        />
+      </View>
+    </View>
+  );
+};
+
+interface LeaveFormProps {
+  control: Control<LeaveBalanceFormInput>;
+  /**use for register for react hook form */
+  register: UseFormRegister<LeaveBalanceFormInput>;
+}
+
+export default function LeaveBalanceForm(props: LeaveFormProps) {
+  const { data } = useLeaveTypeData();
+  const leaveTypeData = data?.map((type) => ({
+    id: type.id,
+    name: type.leave_name,
+    label: type.leave_name,
+    balance: 0,
+  }));
+  return (
     <Card style={styles.container}>
-      <HelperText variant="labelLarge" type="info" style={styles.label}>
-        Sick Leave
-      </HelperText>
-      <View style={styles.inputContainer}>
-        <AppTextInput
-          style={{
-            flexGrow: 1,
-          }}
-          mode="outlined"
-          placeholder="Sick leave"
-          value={balance.toString()}
-          keyboardType="numeric"
-          defaultValue={"1"}
-          readOnly
-          right={<TextInput.Affix text="/days" />}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-          }}
-        >
-          <IconButton
-            disabled={balance === 0}
-            onPress={decrement}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="minus" {...props} />}
+      {leaveTypeData?.map((leaveType, index) => (
+        <React.Fragment key={leaveType.name}>
+          <LeaveBalanceItem
+            register={props.register}
+            leaveType={leaveType}
+            control={props.control}
+            index={index}
           />
-
-          <IconButton
-            onPress={increment}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="plus" {...props} />}
-          />
-        </View>
-      </View>
-      <Divider />
-      <HelperText variant="labelLarge" type="info" style={styles.label}>
-        Vacation Leave
-      </HelperText>
-      <View style={styles.inputContainer}>
-        <AppTextInput
-          style={{
-            flexGrow: 1,
-          }}
-          mode="outlined"
-          placeholder="Sick leave"
-          value={vacationLeaveBalance.toString()}
-          keyboardType="numeric"
-          defaultValue={"1"}
-          readOnly
-          right={<TextInput.Affix text="/days" />}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-          }}
-        >
-          <IconButton
-            disabled={vacationLeaveBalance === 0}
-            onPress={vacationLeaveDec}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="minus" {...props} />}
-          />
-
-          <IconButton
-            onPress={vacationLeaveInc}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="plus" {...props} />}
-          />
-        </View>
-      </View>
-      <Divider />
-      <HelperText variant="labelLarge" type="info" style={styles.label}>
-        Emergency Leave
-      </HelperText>
-      <View style={styles.inputContainer}>
-        <AppTextInput
-          style={{
-            flexGrow: 1,
-          }}
-          mode="outlined"
-          placeholder="Sick leave"
-          value={emergencyLeaveBalance.toString()}
-          keyboardType="numeric"
-          defaultValue={"1"}
-          readOnly
-          right={<TextInput.Affix text="/days" />}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-          }}
-        >
-          <IconButton
-            disabled={emergencyLeaveBalance === 0}
-            onPress={emergencyLeaveDec}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="minus" {...props} />}
-          />
-
-          <IconButton
-            onPress={emergencyLeaveInc}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="plus" {...props} />}
-          />
-        </View>
-      </View>
-      <Divider />
-      <HelperText variant="labelLarge" type="info" style={styles.label}>
-        Accident Leave
-      </HelperText>
-      <View style={styles.inputContainer}>
-        <AppTextInput
-          style={{
-            flexGrow: 1,
-          }}
-          mode="outlined"
-          placeholder="Sick leave"
-          value={accidentLeaveBalance.toString()}
-          keyboardType="numeric"
-          defaultValue={"1"}
-          readOnly
-          right={<TextInput.Affix text="/days" />}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-          }}
-        >
-          <IconButton
-            disabled={accidentLeaveBalance === 0}
-            onPress={accidentLeaveDec}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="minus" {...props} />}
-          />
-
-          <IconButton
-            onPress={accidentLeaveInc}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="plus" {...props} />}
-          />
-        </View>
-      </View>
-
-      <Divider />
-      <HelperText variant="labelLarge" type="info" style={styles.label}>
-        Maternity Leave
-      </HelperText>
-      <View style={styles.inputContainer}>
-        <AppTextInput
-          style={{
-            flexGrow: 1,
-          }}
-          mode="outlined"
-          placeholder="Sick leave"
-          value={accidentLeaveBalance.toString()}
-          keyboardType="numeric"
-          defaultValue={"1"}
-          readOnly
-          right={<TextInput.Affix text="/days" />}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-          }}
-        >
-          <IconButton
-            disabled={accidentLeaveBalance === 0}
-            onPress={accidentLeaveDec}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="minus" {...props} />}
-          />
-
-          <IconButton
-            onPress={accidentLeaveInc}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="plus" {...props} />}
-          />
-        </View>
-      </View>
-      <Divider />
-      <HelperText variant="labelLarge" type="info" style={styles.label}>
-        Service Incentive Leave
-      </HelperText>
-      <View style={styles.inputContainer}>
-        <AppTextInput
-          style={{
-            flexGrow: 1,
-          }}
-          mode="outlined"
-          placeholder="Sick leave"
-          value={accidentLeaveBalance.toString()}
-          keyboardType="numeric"
-          defaultValue={"1"}
-          readOnly
-          right={<TextInput.Affix text="/days" />}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-          }}
-        >
-          <IconButton
-            disabled={accidentLeaveBalance === 0}
-            onPress={accidentLeaveDec}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="minus" {...props} />}
-          />
-
-          <IconButton
-            onPress={accidentLeaveInc}
-            mode="outlined"
-            style={{
-              backgroundColor: theme.colors.surface,
-            }}
-            icon={(props) => <CustomIcon name="plus" {...props} />}
-          />
-        </View>
-      </View>
+          {index < leaveTypeData?.length - 1 && (
+            <Divider style={styles.divider} />
+          )}
+        </React.Fragment>
+      ))}
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    rowGap: 15,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    padding: 20,
     marginBottom: 40,
   },
+  itemContainer: {
+    marginBottom: 15,
+  },
   inputContainer: {
-    gap: 10,
     flexDirection: "row",
-    width: "100%",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "space-between",
+  },
+  input: {
+    flex: 1,
+    marginRight: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  iconButton: {
+    margin: 0,
   },
   label: {
     fontWeight: "700",
     fontFamily: "Poppins_500Medium",
+    marginBottom: 5,
+  },
+  divider: {
+    marginVertical: 10,
   },
 });

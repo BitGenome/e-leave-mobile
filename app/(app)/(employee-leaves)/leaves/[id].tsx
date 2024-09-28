@@ -23,7 +23,6 @@ export default function EmployeeLeaveScreen() {
   const theme = useTheme();
   const { state: isOpenFilterBottomsheet, toggle: toogleFilterBottomSheet } =
     useVisibility({ defaultVisiblityState: false });
-  const { bottom } = useSafeAreaInsets();
 
   const { approved, pending, denied, setFilter } = useFilterStore((state) => ({
     approved: state.approved,

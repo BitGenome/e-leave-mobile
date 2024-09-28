@@ -1,7 +1,7 @@
 import { useEmployeeData } from "@/api/employees/use-employee-data";
+import NotFound from "@/components/Common/NotFound";
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View as ScreenView } from "@/components/Themed";
-import { employedata } from "@/data/employee";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { useAppStore } from "@/store/app";
 import { AntDesign } from "@expo/vector-icons";
@@ -9,7 +9,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { MotiView } from "moti";
 import { Animated, StyleSheet, View } from "react-native";
-import { FAB, MD3Theme, Text, useTheme } from "react-native-paper";
+import { FAB, MD3Theme, useTheme } from "react-native-paper";
 
 export default function EmployeeScreen() {
   const theme = useTheme();
@@ -34,7 +34,7 @@ export default function EmployeeScreen() {
             <EmployeeCard key={index} path="/employee-detail" {...item} />
           )}
           data={data}
-          ListEmptyComponent={<Text>No employee yet.</Text>}
+          ListEmptyComponent={<NotFound title="No employee added yet" />}
           estimatedItemSize={20}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],

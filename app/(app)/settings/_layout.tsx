@@ -45,6 +45,13 @@ export default function SettingsLayout() {
           ),
         }}
       />
+      <Stack.Screen
+        name="leave-type"
+        options={{
+          headerShown: true,
+          headerTitle: () => <NavigationHeaderTitle title="Leave type" />,
+        }}
+      />
     </Stack>
   );
 }

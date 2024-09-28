@@ -25,6 +25,12 @@ const SETTINGS_LIST: SettingsItem[] = [
   },
   {
     library: "ionic",
+    icon: "calendar-number",
+    path: "/(app)/settings/leave-type",
+    label: "Leave type",
+  },
+  {
+    library: "ionic",
     icon: "shield",
     path: "/settings/security",
     label: "Security",
@@ -54,7 +60,7 @@ export default function SettingsScreen() {
     router.replace("(auth)/login");
   };
   return (
-    <View style={[styles.container, { paddingTop: height }]}>
+    <View style={[styles.container, { paddingTop: height, paddingBottom: 85 }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Profile />
         <View style={{ marginTop: 30, flex: 1, rowGap: 10 }}>

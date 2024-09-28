@@ -11,6 +11,7 @@ import { type CalendarDate } from "react-native-paper-dates/lib/typescript/Date/
 import BottomSheetSelect, {
   type SelectValue,
 } from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
+import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 
 interface IDateRange {
   startDate: CalendarDate;
@@ -22,6 +23,7 @@ const TODAY = new Date();
 
 export default function ApplyEmployeeLeaveForm() {
   const theme = useTheme();
+  const { data } = useLeaveTypeData();
   const [range, setRange] = useState<Partial<IDateRange>>({
     startDate: undefined,
     endDate: undefined,
@@ -58,6 +60,11 @@ export default function ApplyEmployeeLeaveForm() {
       }),
     [LOCALE]
   );
+
+  const leaveTypeOption = data?.map((type) => ({
+    label: type.leave_name,
+    value: type.id,
+  }));
 
   return (
     <View style={styles.formContainer}>
@@ -154,10 +161,9 @@ export default function ApplyEmployeeLeaveForm() {
 
         <BottomSheetSelect
           label="Select leave type"
-          options={leaveType}
-          // value={leaveType.find((opt) => opt.value === selectedValue)}
+          options={leaveTypeOption}
           onSelect={(value) => handleSelect(value)}
-          header="Leave type"
+          header="Select leave type"
         />
         <PrimaryButton>Apply Leave</PrimaryButton>
       </View>

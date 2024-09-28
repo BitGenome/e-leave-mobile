@@ -1,3 +1,4 @@
+import NotFound from "@/components/Common/NotFound";
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -174,6 +175,7 @@ const BottomSheetSelect = forwardRef<View, SelectProps>(
             data={options}
             keyExtractor={(item) => item.value.toString()}
             renderItem={renderItem}
+            ListEmptyComponent={<NotFound title={"Not found"} />}
           />
         </BottomSheetModal>
       </View>

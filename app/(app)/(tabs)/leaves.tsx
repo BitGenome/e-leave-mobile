@@ -6,6 +6,7 @@ import { Href } from "expo-router";
 import { Animated, StyleSheet, View } from "react-native";
 import { Searchbar, useTheme } from "react-native-paper";
 import { View as ScreenView } from "@/components/Themed";
+import NotFound from "@/components/Common/NotFound";
 
 export default function LeavesScreen() {
   const scrollOffsetY = useTabBarVisibility();
@@ -33,6 +34,9 @@ export default function LeavesScreen() {
           />
         </View>
         <FlashList
+          ListEmptyComponent={
+            <NotFound title="There is no employee leaves found" />
+          }
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item, index }) => (
