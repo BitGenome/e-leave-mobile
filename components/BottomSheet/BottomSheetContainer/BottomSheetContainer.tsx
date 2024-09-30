@@ -4,12 +4,14 @@ import {
   BottomSheetModalProps,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { useFocusEffect } from "expo-router";
 import { ReactNode, useCallback, useRef } from "react";
 import { useTheme } from "react-native-paper";
 
 interface BottomSheetViewContainerProps
   extends Omit<BottomSheetModalProps, "onDismiss" | "openBottomSheet"> {
   children: ReactNode;
+  closeOnPressBackDrop?: boolean;
   snapPoints?: (string | number)[];
   openBottomSheet?: boolean;
   /** trigger for ondismiss of bottom sheet */
@@ -22,9 +24,10 @@ interface BottomSheetViewContainerProps
 
 export default function BottomSheetViewContainer({
   children,
-  snapPoints,
+
   openBottomSheet = false,
   onDismiss,
+  closeOnPressBackDrop = true,
   isList = false,
   ...rest
 }: BottomSheetViewContainerProps) {
@@ -35,23 +38,29 @@ export default function BottomSheetViewContainer({
     if (openBottomSheet) {
       return sheetRef.current?.present();
     }
-
     return sheetRef.current?.dismiss();
   }, [openBottomSheet]);
 
-  handlePresentModalPress();
+  useFocusEffect(
+    useCallback(() => {
+      handlePresentModalPress();
+    }, [handlePresentModalPress])
+  );
 
   return (
     <BottomSheetModal
+      handleIndicatorStyle={{
+        backgroundColor: theme.colors.primaryContainer,
+      }}
       onDismiss={onDismiss}
       ref={sheetRef}
       enableDynamicSizing
       index={0}
-      snapPoints={snapPoints}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
+          pressBehavior={closeOnPressBackDrop ? "close" : "none"}
           disappearsOnIndex={-1}
-          appearsOnIndex={2}
+          appearsOnIndex={1}
           {...props}
         />
       )}

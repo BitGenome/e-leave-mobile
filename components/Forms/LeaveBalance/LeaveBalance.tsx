@@ -1,6 +1,7 @@
 import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 import { type LeaveBalanceFormInput } from "@/app/(app)/settings/annual-leave";
 import Card from "@/components/Common/Card";
+import NotFound from "@/components/Common/NotFound";
 import CustomIcon from "@/ui/custom-icon";
 import AppTextInput from "@/ui/text-input";
 import { useFocusEffect } from "expo-router";
@@ -90,6 +91,10 @@ export default function LeaveBalanceForm(props: LeaveFormProps) {
     label: type.leave_name,
     balance: 0,
   }));
+
+  if (!data || data.length === 0)
+    return <NotFound title="You have not added yet a leave type." />;
+
   return (
     <Card style={styles.container}>
       {leaveTypeData?.map((leaveType, index) => (

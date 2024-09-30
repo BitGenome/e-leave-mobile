@@ -3,7 +3,9 @@ import { TextPoppinsRegular } from "@/components/Text/TextPoppinsRegular";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 
-export default function EmployeeDetails() {
+interface LeaveDetailsProps {}
+
+export default function EmployeeDetails(props: LeaveDetailsProps) {
   return (
     <Card style={styles.card}>
       <Text style={styles.title}>Employee Details</Text>

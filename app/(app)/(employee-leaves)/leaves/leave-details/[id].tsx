@@ -5,6 +5,7 @@ import { Chip, Divider, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function LeaveDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+
   const theme = useTheme();
 
   return (

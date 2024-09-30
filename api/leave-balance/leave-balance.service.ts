@@ -1,7 +1,11 @@
 import { type LeaveBalanceFormInput } from "@/app/(app)/settings/annual-leave";
 import { db } from "../database/database";
-import { leaveBalances as LeaveBalanceSchema } from "../database/schema";
+import {
+  leaveBalances as LeaveBalanceSchema,
+  leaveBalances,
+} from "../database/schema";
 import { getAllEmployee } from "../employees/employee.service";
+import { eq } from "drizzle-orm";
 
 interface LeaveBalanceProps {
   employee?: number;
@@ -32,4 +36,15 @@ export const addLeaveBalance = async (data: LeaveBalanceProps) => {
 
   await db.insert(LeaveBalanceSchema).values(dataToInsertEmployee);
   return;
+};
+
+export const getEmployeeBalance = async ({ id }: { id: number }) => {
+  const leaveBalancesData = await db.query.leaveBalances.findMany({
+    where: eq(leaveBalances.employee_id, id),
+    with: {
+      leaveType: true,
+    },
+  });
+
+  return leaveBalancesData;
 };

@@ -40,7 +40,7 @@ export default function EmployeeCard(props: IEmployeeCard) {
           pathname: path,
           params: {
             name,
-            employee_id,
+            id: employee_id,
           },
         });
       }}

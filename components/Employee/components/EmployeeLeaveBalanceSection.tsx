@@ -3,9 +3,26 @@ import { leaveBalance } from "@/data/leave-balance";
 import { Fragment } from "react";
 import { StyleSheet, View } from "react-native";
 import { Divider, ProgressBar, Text, useTheme } from "react-native-paper";
+import { leaveBalances } from "../../../api/database/schema";
 
-export default function EmployeeLeaveBalance() {
+interface LeaveBalanceDetailsProps {
+  available_days: number | null;
+  leaveType: {
+    leave_name: string;
+    max_days: number;
+  };
+  employee: {
+    first_name: string;
+    last_name: string;
+    position: string;
+  };
+}
+interface LeaveBalanceProps {
+  leaveBalance: LeaveBalanceDetailsProps[];
+}
+export default function EmployeeLeaveBalance(props: LeaveBalanceProps) {
   const theme = useTheme();
+  const { leaveBalance } = props;
   return (
     <Card
       style={{
@@ -27,7 +44,7 @@ export default function EmployeeLeaveBalance() {
           paddingTop: 10,
         }}
       >
-        {leaveBalance.map((data, _index) => (
+        {leaveBalance?.map((data, _index) => (
           <Fragment key={_index}>
             <View
               style={{
@@ -35,21 +52,21 @@ export default function EmployeeLeaveBalance() {
                 justifyContent: "space-between",
               }}
             >
-              <Text style={styles.label}>{data.type}</Text>
+              <Text style={styles.label}>{data.leaveType.leave_name}</Text>
               <Text style={styles.label}>
-                {data.balance_string}
+                {data.available_days}
                 <Text
                   style={{
                     fontFamily: "Poppins_400Regular",
                     color: theme.colors.inverseSurface,
                   }}
                 >
-                  /{data.total_balance} days
+                  /{data.leaveType.max_days} days
                 </Text>
               </Text>
             </View>
             <ProgressBar
-              progress={data.balance}
+              progress={data.available_days ?? 0}
               style={{
                 borderRadius: 99,
                 height: 20,

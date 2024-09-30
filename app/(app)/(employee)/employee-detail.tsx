@@ -1,3 +1,4 @@
+import { useLeaveBalanceDataByEmployee } from "@/api/leave-balance/use-leave-balance";
 import EmployeeDetails from "@/components/Employee/components/EmployeeDetails";
 import EmployeeLeaveBalance from "@/components/Employee/components/EmployeeLeaveBalanceSection";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
@@ -10,7 +11,12 @@ import { useTheme } from "react-native-paper";
 export default function EmployeeDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const { name } = useLocalSearchParams();
+  const { name, id } = useLocalSearchParams<{ id: string; name: string }>();
+
+  console.log(id);
+  const { data: leaveBalancesData } = useLeaveBalanceDataByEmployee({
+    id: +id,
+  });
 
   return (
     <ScreenView style={styles.container}>
@@ -29,7 +35,7 @@ export default function EmployeeDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
-          <EmployeeLeaveBalance />
+          <EmployeeLeaveBalance leaveBalance={leaveBalancesData} />
           <EmployeeDetails />
         </View>
       </ScrollView>
