@@ -82,7 +82,7 @@ export default function LeaveTypeScreen() {
         snapPoints={["50%"]}
         closeOnPressBackDrop={false}
         keyboardBehavior="interactive"
-        android_keyboardInputMode="adjustResize"
+        android_keyboardInputMode="adjustPan"
         openBottomSheet={state}
         onDismiss={handleDismissBottomSheet}
         keyboardBlurBehavior="restore"

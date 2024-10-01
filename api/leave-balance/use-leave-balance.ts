@@ -10,7 +10,7 @@ export const useLeaveBalanceData = () => {
 };
 
 export const useLeaveBalanceDataByEmployee = ({ id }: { id: number }) => {
-  const data = useLiveQuery(
+  const leaveBalancesData = useLiveQuery(
     db.query.leaveBalances.findMany({
       where: eq(leaveBalances.employee_id, id),
       with: {
@@ -20,5 +20,24 @@ export const useLeaveBalanceDataByEmployee = ({ id }: { id: number }) => {
     })
   );
 
-  return data;
+  const resultData = leaveBalancesData.data?.map((balances) => {
+    const {
+      available_days,
+      leaveType: { max_days },
+    } = balances;
+    /**convert available balance to 0-1 example 0.7 */
+    let remaining_balance = 0;
+    if (available_days) {
+      remaining_balance = available_days / max_days;
+    }
+
+    return {
+      remaining_balance,
+      ...balances,
+    };
+  });
+  return {
+    ...leaveBalancesData,
+    data: resultData,
+  };
 };

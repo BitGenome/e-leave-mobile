@@ -22,12 +22,7 @@ export default function EmployeeScreen() {
 
   return (
     <ScreenView style={styles.container}>
-      <View
-        style={{
-          flex: 1,
-          paddingBottom: 15,
-        }}
-      >
+      <View style={styles.flashContainer}>
         <FlashList
           contentInsetAdjustmentBehavior="automatic"
           renderItem={({ item, index }) => (
@@ -94,7 +89,9 @@ const createStyles = (theme: MD3Theme) => {
       backgroundColor: theme.colors.surface,
     },
     flashContainer: {
-      paddingTop: 20,
+      flex: 1,
+      paddingBottom: 15,
+      paddingTop: 5,
     },
   });
 };

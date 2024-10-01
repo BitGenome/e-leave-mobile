@@ -77,6 +77,7 @@ export const leaveRequest = sqliteTable("leave_request", {
     mode: "timestamp",
   }),
   leave_duration: text("leave_duration").notNull(),
+  remark: text("remark"),
   status: text("status", {
     enum: [leaveStatus.APPROVED, leaveStatus.PENDING, leaveStatus.REJECTED],
   })

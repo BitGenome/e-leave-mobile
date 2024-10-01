@@ -13,7 +13,6 @@ export default function EmployeeDetailScreen() {
   const router = useRouter();
   const { name, id } = useLocalSearchParams<{ id: string; name: string }>();
 
-  console.log(id);
   const { data: leaveBalancesData } = useLeaveBalanceDataByEmployee({
     id: +id,
   });
@@ -25,7 +24,13 @@ export default function EmployeeDetailScreen() {
           headerShown: true,
           title: "Employee Details",
           headerTitle: () => (
-            <TextPoppinsBold> {name} Details </TextPoppinsBold>
+            <TextPoppinsBold
+              style={{
+                textTransform: "capitalize",
+              }}
+            >
+              {name} Details
+            </TextPoppinsBold>
           ),
         }}
       />
@@ -36,7 +41,7 @@ export default function EmployeeDetailScreen() {
       >
         <View style={styles.content}>
           <EmployeeLeaveBalance leaveBalance={leaveBalancesData} />
-          <EmployeeDetails />
+          <EmployeeDetails {...leaveBalancesData[0]?.employee} />
         </View>
       </ScrollView>
 

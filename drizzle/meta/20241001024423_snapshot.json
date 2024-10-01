@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "376d5849-2c7c-47d6-9af4-d64dfdf0f92a",
-  "prevId": "534199aa-f13d-4b38-9895-d550516ce699",
+  "id": "78e98074-d652-48ca-ad8f-a865a5afed6f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "employees": {
       "name": "employees",
@@ -124,8 +124,8 @@
           "columnsTo": [
             "employee_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "leave_balances_leave_type_id_leave_type_id_fk": {
           "name": "leave_balances_leave_type_id_leave_type_id_fk",
@@ -137,8 +137,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "set null",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -168,6 +168,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "deducted_leave_type_id": {
+          "name": "deducted_leave_type_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "start_date": {
           "name": "start_date",
           "type": "integer",
@@ -187,6 +194,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "remark": {
+          "name": "remark",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "status": {
@@ -226,8 +240,8 @@
           "columnsTo": [
             "employee_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "leave_request_leave_type_id_leave_type_id_fk": {
           "name": "leave_request_leave_type_id_leave_type_id_fk",
@@ -239,8 +253,21 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "leave_request_deducted_leave_type_id_leave_type_id_fk": {
+          "name": "leave_request_deducted_leave_type_id_leave_type_id_fk",
+          "tableFrom": "leave_request",
+          "tableTo": "leave_type",
+          "columnsFrom": [
+            "deducted_leave_type_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},

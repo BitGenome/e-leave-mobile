@@ -1,12 +1,12 @@
 import Card from "@/components/Common/Card";
-import { leaveBalance } from "@/data/leave-balance";
+import NotFound from "@/components/Common/NotFound";
 import { Fragment } from "react";
 import { StyleSheet, View } from "react-native";
 import { Divider, ProgressBar, Text, useTheme } from "react-native-paper";
-import { leaveBalances } from "../../../api/database/schema";
 
 interface LeaveBalanceDetailsProps {
   available_days: number | null;
+  remaining_balance: number;
   leaveType: {
     leave_name: string;
     max_days: number;
@@ -23,6 +23,7 @@ interface LeaveBalanceProps {
 export default function EmployeeLeaveBalance(props: LeaveBalanceProps) {
   const theme = useTheme();
   const { leaveBalance } = props;
+
   return (
     <Card
       style={{
@@ -44,37 +45,41 @@ export default function EmployeeLeaveBalance(props: LeaveBalanceProps) {
           paddingTop: 10,
         }}
       >
-        {leaveBalance?.map((data, _index) => (
-          <Fragment key={_index}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={styles.label}>{data.leaveType.leave_name}</Text>
-              <Text style={styles.label}>
-                {data.available_days}
-                <Text
-                  style={{
-                    fontFamily: "Poppins_400Regular",
-                    color: theme.colors.inverseSurface,
-                  }}
-                >
-                  /{data.leaveType.max_days} days
+        {leaveBalance.length === 0 ? (
+          <NotFound title="Leave balance not found." />
+        ) : (
+          leaveBalance?.map((data, _index) => (
+            <Fragment key={_index}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={styles.label}>{data.leaveType.leave_name}</Text>
+                <Text style={styles.label}>
+                  {data.available_days}
+                  <Text
+                    style={{
+                      fontFamily: "Poppins_400Regular",
+                      color: theme.colors.inverseSurface,
+                    }}
+                  >
+                    /{data.leaveType.max_days} days
+                  </Text>
                 </Text>
-              </Text>
-            </View>
-            <ProgressBar
-              progress={data.available_days ?? 0}
-              style={{
-                borderRadius: 99,
-                height: 20,
-              }}
-            />
-            <Divider />
-          </Fragment>
-        ))}
+              </View>
+              <ProgressBar
+                progress={data.remaining_balance}
+                style={{
+                  borderRadius: 99,
+                  height: 20,
+                }}
+              />
+              <Divider />
+            </Fragment>
+          ))
+        )}
       </View>
     </Card>
   );

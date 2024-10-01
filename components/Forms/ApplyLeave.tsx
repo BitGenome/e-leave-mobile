@@ -1,29 +1,51 @@
-import { employee } from "@/data/employee";
-import { leaveType } from "@/data/leave-type";
+import { useEmployeeData } from "@/api/employees/use-employee-data";
+import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 import { time } from "@/data/time";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
-import PrimaryButton from "@/ui/primary-button";
 import { useCallback, useMemo, useState } from "react";
+import {
+  Control,
+  Controller,
+  FormState,
+  UseFormRegister,
+} from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import { type CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar";
-import BottomSheetSelect, {
-  type SelectValue,
-} from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
-import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
+import BottomSheetSelect from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
+import { useFocusEffect } from "expo-router";
 
 interface IDateRange {
   startDate: CalendarDate;
   endDate: CalendarDate;
 }
 
-const LOCALE = "en-GB";
-const TODAY = new Date();
+export interface ApplyLeaveInputProps {
+  start_date: CalendarDate | null;
+  end_date?: CalendarDate | null;
+  leave_duration: string;
+  employee: string;
+  remarks?: string;
+  leave_type: string;
+}
 
-export default function ApplyEmployeeLeaveForm() {
+interface ApplyEmployeeLeaveFormProps {
+  control: Control<ApplyLeaveInputProps>;
+  register: UseFormRegister<ApplyLeaveInputProps>;
+  formState: FormState<ApplyLeaveInputProps>;
+}
+
+const LOCALE = "en-GB";
+export const TODAY = new Date();
+
+export default function ApplyEmployeeLeaveForm(
+  props: ApplyEmployeeLeaveFormProps
+) {
+  const { control, register, formState } = props;
   const theme = useTheme();
   const { data } = useLeaveTypeData();
+  const { data: employeeData } = useEmployeeData();
   const [range, setRange] = useState<Partial<IDateRange>>({
     startDate: undefined,
     endDate: undefined,
@@ -31,13 +53,6 @@ export default function ApplyEmployeeLeaveForm() {
   const { state: isOpebDateSelector, toggle: toogleDate } = useVisibility({
     defaultVisiblityState: false,
   });
-  const [selectedValue, setSelectedValue] = useState<
-    string | number | undefined
-  >(undefined);
-
-  const handleSelect = (option: SelectValue) => {
-    setSelectedValue(option);
-  };
 
   const onDismiss = useCallback(() => {
     toogleDate();
@@ -66,6 +81,11 @@ export default function ApplyEmployeeLeaveForm() {
     value: type.id,
   }));
 
+  const employeeDataOption = employeeData?.map((emp) => ({
+    label: `${emp.first_name} ${emp.last_name}`,
+    value: emp.employee_id,
+  }));
+
   return (
     <View style={styles.formContainer}>
       <View
@@ -79,22 +99,13 @@ export default function ApplyEmployeeLeaveForm() {
             gap: 10,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              columnGap: 5,
-              flex: 1,
-              width: "100%",
-            }}
-          >
+          <View style={styles.dateSelectorContainer}>
             <View
               style={{
                 flexShrink: 1,
               }}
             >
-              <Text variant="labelMedium">Select Inclusive Dates</Text>
+              <Text variant="labelSmall">Select Inclusive Dates</Text>
               {
                 <Text
                   variant="bodySmall"
@@ -102,6 +113,9 @@ export default function ApplyEmployeeLeaveForm() {
                   maxFontSizeMultiplier={1.5}
                   ellipsizeMode="middle"
                   numberOfLines={1}
+                  style={{
+                    fontWeight: "bold",
+                  }}
                 >
                   {!range.startDate && !range.endDate
                     ? "No dates selected."
@@ -120,10 +134,19 @@ export default function ApplyEmployeeLeaveForm() {
                 </Text>
               }
             </View>
-            <Button mode="outlined" onPress={toogleDate}>
+            <Button
+              mode="outlined"
+              onPress={toogleDate}
+              style={{
+                borderColor: Boolean(formState?.errors?.start_date?.message)
+                  ? theme.colors.error
+                  : undefined,
+              }}
+            >
               Select Date
             </Button>
           </View>
+
           <DatePickerModal
             locale={LOCALE}
             mode="range"
@@ -136,36 +159,82 @@ export default function ApplyEmployeeLeaveForm() {
             presentationStyle="pageSheet"
           />
         </View>
-        <BottomSheetSelect
-          label="Duration"
-          options={time}
-          onSelect={handleSelect}
-          header="Select leave duration"
-        />
-        <BottomSheetSelect
-          label="Employee name"
-          options={employee}
-          onSelect={handleSelect}
-          header="Employee name"
-        />
-        <TextInput
-          mode="outlined"
-          placeholder="Remarks"
-          theme={{ roundness: 8 }}
-          multiline
-          style={[
-            styles.textMultiline,
-            { backgroundColor: theme.colors.surface },
-          ]}
+        <Controller
+          control={control}
+          name="leave_duration"
+          render={({
+            field: { onChange, value, ...rest },
+            fieldState: { error },
+          }) => (
+            <BottomSheetSelect
+              error={Boolean(error?.message)}
+              label="Duration"
+              options={time}
+              value={value}
+              onSelect={onChange}
+              {...rest}
+              header="Select leave duration"
+            />
+          )}
         />
 
-        <BottomSheetSelect
-          label="Select leave type"
-          options={leaveTypeOption}
-          onSelect={(value) => handleSelect(value)}
-          header="Select leave type"
+        <Controller
+          control={control}
+          name="employee"
+          render={({ field, fieldState: { error } }) => {
+            console.log("error employee", Boolean(error?.message));
+            console.log("message employee", error?.message);
+
+            return (
+              <BottomSheetSelect
+                error={Boolean(error?.message)}
+                label="Employee name"
+                options={employeeDataOption}
+                onSelect={field.onChange}
+                value={field.value.toString()}
+                header="Employee name"
+              />
+            );
+          }}
         />
-        <PrimaryButton>Apply Leave</PrimaryButton>
+
+        <Controller
+          control={control}
+          name="leave_type"
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <BottomSheetSelect
+              value={value}
+              error={Boolean(error?.message)}
+              label="Select leave type"
+              options={leaveTypeOption}
+              onSelect={onChange}
+              header="Select leave type"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="remarks"
+          render={({
+            field: { onBlur, value, onChange },
+            fieldState: { error },
+          }) => (
+            <TextInput
+              error={!!error?.root}
+              onBlur={onBlur}
+              value={value}
+              onChangeText={onChange}
+              mode="outlined"
+              placeholder="Remarks"
+              theme={{ roundness: 8 }}
+              multiline
+              style={[
+                styles.textMultiline,
+                { backgroundColor: theme.colors.surface },
+              ]}
+            />
+          )}
+        />
       </View>
     </View>
   );
@@ -184,5 +253,13 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     flex: 1,
+  },
+  dateSelectorContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    columnGap: 5,
+    flex: 1,
+    width: "100%",
   },
 });
