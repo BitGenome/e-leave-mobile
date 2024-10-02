@@ -79,7 +79,7 @@ export default function LeaveTypeScreen() {
         </View>
       </ScreenView>
       <BottomSheetViewContainer
-        snapPoints={["50%"]}
+        snapPoints={["45%"]}
         closeOnPressBackDrop={false}
         keyboardBehavior="interactive"
         android_keyboardInputMode="adjustPan"

@@ -13,9 +13,7 @@ export default function EmployeeLayout() {
         headerRight: () => (
           <IconButton
             onPress={() => router.navigate("/(app)/(employee)/search-employee")}
-            icon={(props) => (
-              <CustomIcon name="search" {...props} library="ionic" />
-            )}
+            icon={() => <CustomIcon name="search" library="ionic" />}
           />
         ),
         headerShown: true,

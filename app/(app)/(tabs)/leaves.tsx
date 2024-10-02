@@ -1,58 +1,41 @@
-import EmployeeCard from "@/components/Employee/components/EmployeeCard";
-import { employedata } from "@/data/employee";
-import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
-import { FlashList } from "@shopify/flash-list";
-import { Href } from "expo-router";
-import { Animated, StyleSheet, View } from "react-native";
-import { Searchbar, useTheme } from "react-native-paper";
+import LeaveTab from "@/components/EmployeeLeave/components/LeavesTab";
 import { View as ScreenView } from "@/components/Themed";
-import NotFound from "@/components/Common/NotFound";
+import CustomIcon from "@/ui/custom-icon";
+import { Stack } from "expo-router";
+import { StyleSheet, View } from "react-native";
+import { IconButton, Searchbar, useTheme } from "react-native-paper";
+import { Tabs, TabScreen } from "react-native-paper-tabs";
+
+export type LeaveType = "pending" | "approved" | "denied";
+
+const tabs: { label: string; leaveType: LeaveType }[] = [
+  { label: "Pending", leaveType: "pending" },
+  { label: "Approved", leaveType: "approved" },
+  { label: "Denied", leaveType: "denied" },
+];
 
 export default function LeavesScreen() {
-  const scrollOffsetY = useTabBarVisibility();
   const theme = useTheme();
 
   return (
     <>
-      <ScreenView style={[styles.container]}>
-        <View
-          style={{
-            marginVertical: 15,
-            marginHorizontal: 15,
-            marginBottom: 10,
-            flexDirection: "row",
-            gap: 5,
-          }}
-        >
-          <Searchbar
-            style={{
-              flex: 1,
-              backgroundColor: theme.colors.surface,
-            }}
-            placeholder="Search leave"
-            value=""
-          />
-        </View>
-        <FlashList
-          ListEmptyComponent={
-            <NotFound title="There is no employee leaves found" />
-          }
-          showsVerticalScrollIndicator={false}
-          contentInsetAdjustmentBehavior="automatic"
-          renderItem={({ item, index }) => (
-            <EmployeeCard
-              key={index}
-              path={"/(employee-leaves)/leaves/[id]" as Href<string>}
-              {...item}
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <IconButton
+              icon={() => <CustomIcon name="search" library="ionic" />}
             />
-          )}
-          data={employedata}
-          estimatedItemSize={20}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-            { useNativeDriver: false }
-          )}
-        />
+          ),
+        }}
+      />
+      <ScreenView style={[styles.container]}>
+        <Tabs>
+          {tabs.map((tab, index) => (
+            <TabScreen key={index} label={tab.label}>
+              <LeaveTab tab={tab.leaveType} />
+            </TabScreen>
+          ))}
+        </Tabs>
       </ScreenView>
     </>
   );
@@ -60,5 +43,12 @@ export default function LeavesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  searchContainer: {
+    padding: 10,
+    marginVertical: 15,
+    marginBottom: 10,
+    flexDirection: "row",
+    gap: 5,
   },
 });

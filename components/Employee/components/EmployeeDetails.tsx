@@ -12,10 +12,11 @@ interface LeaveDetailsProps {
 
 export default function EmployeeDetails(props: LeaveDetailsProps) {
   const { position, first_name, last_name } = props;
+
   return (
     <Card style={styles.card}>
       <Text style={styles.title}>Employee Details</Text>
-      {!!props ? (
+      {!props ? (
         <NotFound />
       ) : (
         <View style={styles.container}>

@@ -2,19 +2,20 @@ import { useEmployeeData } from "@/api/employees/use-employee-data";
 import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 import { time } from "@/data/time";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import {
   Control,
   Controller,
   FormState,
   UseFormRegister,
+  UseFormSetValue,
 } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import { type CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar";
 import BottomSheetSelect from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
-import { useFocusEffect } from "expo-router";
 
 interface IDateRange {
   startDate: CalendarDate;
@@ -24,16 +25,18 @@ interface IDateRange {
 export interface ApplyLeaveInputProps {
   start_date: CalendarDate | null;
   end_date?: CalendarDate | null;
-  leave_duration: string;
+  leave_duration: "full_day" | "halfday_morning" | "halfday_afternoon";
   employee: string;
   remarks?: string;
   leave_type: string;
+  deducted_leave_type: string;
 }
 
 interface ApplyEmployeeLeaveFormProps {
   control: Control<ApplyLeaveInputProps>;
   register: UseFormRegister<ApplyLeaveInputProps>;
   formState: FormState<ApplyLeaveInputProps>;
+  setValue: UseFormSetValue<ApplyLeaveInputProps>;
 }
 
 const LOCALE = "en-GB";
@@ -42,10 +45,11 @@ export const TODAY = new Date();
 export default function ApplyEmployeeLeaveForm(
   props: ApplyEmployeeLeaveFormProps
 ) {
-  const { control, register, formState } = props;
+  const { control, register, formState, setValue } = props;
   const theme = useTheme();
   const { data } = useLeaveTypeData();
   const { data: employeeData } = useEmployeeData();
+
   const [range, setRange] = useState<Partial<IDateRange>>({
     startDate: undefined,
     endDate: undefined,
@@ -62,8 +66,17 @@ export default function ApplyEmployeeLeaveForm(
     ({ startDate, endDate }: IDateRange) => {
       toogleDate();
       setRange({ startDate, endDate });
+      setValue("start_date", startDate);
+      setValue("end_date", endDate);
     },
-    [toogleDate, setRange]
+    [toogleDate, setRange, setValue]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      register("start_date");
+      register("end_date");
+    }, [register])
   );
 
   const dateFormatter = useMemo(
@@ -182,11 +195,9 @@ export default function ApplyEmployeeLeaveForm(
           control={control}
           name="employee"
           render={({ field, fieldState: { error } }) => {
-            console.log("error employee", Boolean(error?.message));
-            console.log("message employee", error?.message);
-
             return (
               <BottomSheetSelect
+                snapPoint={["50%", `96%`]}
                 error={Boolean(error?.message)}
                 label="Employee name"
                 options={employeeDataOption}
@@ -212,6 +223,21 @@ export default function ApplyEmployeeLeaveForm(
             />
           )}
         />
+
+        <Controller
+          control={control}
+          name="deducted_leave_type"
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <BottomSheetSelect
+              value={value}
+              error={Boolean(error?.message)}
+              label="Deduct leave type"
+              options={leaveTypeOption}
+              onSelect={onChange}
+              header="Select on where to deduct leave balance"
+            />
+          )}
+        />
         <Controller
           control={control}
           name="remarks"
@@ -220,6 +246,7 @@ export default function ApplyEmployeeLeaveForm(
             fieldState: { error },
           }) => (
             <TextInput
+              verticalAlign="top"
               error={!!error?.root}
               onBlur={onBlur}
               value={value}
@@ -228,6 +255,8 @@ export default function ApplyEmployeeLeaveForm(
               placeholder="Remarks"
               theme={{ roundness: 8 }}
               multiline
+              numberOfLines={Platform.OS === "android" ? 5 : undefined}
+              textAlignVertical="top"
               style={[
                 styles.textMultiline,
                 { backgroundColor: theme.colors.surface },
@@ -245,7 +274,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   textMultiline: {
-    minHeight: 100,
+    height: 100,
     paddingVertical: 10,
   },
   formLayoutContainer: {

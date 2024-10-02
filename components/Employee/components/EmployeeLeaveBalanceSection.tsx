@@ -76,7 +76,7 @@ export default function EmployeeLeaveBalance(props: LeaveBalanceProps) {
                   height: 20,
                 }}
               />
-              <Divider />
+              {leaveBalance.length > 1 && <Divider />}
             </Fragment>
           ))
         )}

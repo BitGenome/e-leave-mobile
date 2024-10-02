@@ -80,9 +80,7 @@ export const leaveRequest = sqliteTable("leave_request", {
   remark: text("remark"),
   status: text("status", {
     enum: [leaveStatus.APPROVED, leaveStatus.PENDING, leaveStatus.REJECTED],
-  })
-    .notNull()
-    .default(leaveStatus.PENDING),
+  }).default(leaveStatus.PENDING),
   created_at: integer("created_at", {
     mode: "timestamp",
   }).default(sql`(CURRENT_TIMESTAMP)`),

@@ -24,12 +24,13 @@ export default function LeaveCalendar() {
 
   const handleDismissBottomSheetDialog = useCallback(() => {
     setVisibility(false);
-  }, []);
+  }, [setVisibility]);
 
   const handleonLongPressMarkedDates = useCallback(() => {
     toggleBottomSheet();
   }, [isOpenBottomSheetLeaves, setVisibility, toggleBottomSheet]);
 
+  console.log("is open bottomsheet", isOpenBottomSheetLeaves);
   const renderEmployeeItem = useCallback(
     ({ item }: { item: EmployeeData }) => (
       <>
@@ -54,7 +55,7 @@ export default function LeaveCalendar() {
             padding: 10,
           }}
           onPress={() => {
-            toggleBottomSheet();
+            handleDismissBottomSheetDialog();
             return router.navigate({
               pathname: "/(employee-leaves)/leaves/[id]",
               params: {
@@ -81,7 +82,6 @@ export default function LeaveCalendar() {
         <View
           style={{
             paddingVertical: 10,
-
             flex: 1,
           }}
         >

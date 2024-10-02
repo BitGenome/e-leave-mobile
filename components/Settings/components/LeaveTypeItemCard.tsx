@@ -83,15 +83,14 @@ export default function LeaveTypeItemCard(props: LeaveTypeItemProps) {
       <BottomSheetViewContainer
         onDismiss={handleDismiss}
         openBottomSheet={isOpenBottomSheetEditLeaveTypeForm}
-        snapPoints={["50%"]}
+        snapPoints={["45%"]}
         closeOnPressBackDrop={true}
         keyboardBehavior="interactive"
-        android_keyboardInputMode="adjustResize"
+        android_keyboardInputMode="adjustPan"
         keyboardBlurBehavior="restore"
       >
         <View
           style={{
-            paddingBottom: 10,
             paddingHorizontal: 10,
           }}
         >

@@ -73,7 +73,6 @@ const BottomSheetSelect = forwardRef<View, SelectProps>(
     const renderItem = ({ item }: { item: Option }) => (
       <List.Item
         style={{
-          borderBottomWidth: 1,
           borderBottomColor: theme.colors.surfaceDisabled,
         }}
         contentStyle={{

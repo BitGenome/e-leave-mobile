@@ -69,9 +69,21 @@ export default function AnnualLeaveScreen() {
       leaveBalances: data,
       employee: selectedEmployee,
     };
-    await addLeaveBalance(dataToSubmit);
-    toast.success("Success adding leave balances ");
-    reset();
+    try {
+      await addLeaveBalance(dataToSubmit);
+      toast.success("Success adding leave balances ");
+      reset();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error("Error", {
+          description: error.message,
+        });
+        return;
+      }
+
+      toast.error("Error", { description: "Something went wrong." });
+      return;
+    }
   };
 
   return (

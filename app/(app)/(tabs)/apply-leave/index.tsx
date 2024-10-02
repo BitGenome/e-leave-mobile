@@ -1,75 +1,107 @@
+import { requestLeave } from "@/api/leaves-request/leave-request.service";
 import ApplyEmployeeLeaveForm, {
   ApplyLeaveInputProps,
-  TODAY,
 } from "@/components/Forms/ApplyLeave";
 import { View } from "@/components/Themed";
 import PrimaryButton from "@/ui/primary-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView, StyleSheet } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
+import { toast } from "sonner-native";
 import * as zod from "zod";
 
-const leaveRequestSchema = zod
-  .object({
-    employee: zod.number(),
-    start_date: zod.date(),
-    end_date: zod.string().date("End date."),
-    leave_duration: zod
-      .string()
-      .min(1, { message: "Leave duration is required." }),
-    leave_type: zod.number(),
-    remarks: zod.string(),
-  })
-  .required();
+const leaveRequestSchema = zod.object({
+  employee: zod.number(),
+  start_date: zod.date(),
+  end_date: zod.date().optional(),
+  leave_duration: zod
+    .string()
+    .min(1, { message: "leave duration is required" }),
+  leave_type: zod.number(),
+  remarks: zod.string().optional(),
+  deducted_leave_type: zod.number().optional(),
+});
 
 export default function ApplyLeaveScreen() {
-  const { control, reset, handleSubmit, register, formState, getValues } =
+  const { control, reset, handleSubmit, register, formState, setValue } =
     useForm<ApplyLeaveInputProps>({
       defaultValues: {
+        deducted_leave_type: "",
         employee: "",
-        start_date: null,
-        end_date: null,
-        leave_duration: "",
+        start_date: undefined,
+        end_date: undefined,
+        leave_duration: "full_day",
         leave_type: "",
         remarks: "",
       },
       resolver: zodResolver(leaveRequestSchema),
+      mode: "onSubmit",
     });
 
   const onSubmit: SubmitHandler<ApplyLeaveInputProps> = async (data) => {
-    console.log("data-->", data);
+    try {
+      await requestLeave(data);
+      toast.success("Sucess", {
+        description: `You sucessfully applied leave.`,
+      });
+      reset();
+    } catch (error) {
+      // Use 'instanceof' to check if error is of type 'Error'
+      if (error instanceof Error) {
+        toast.error("Error", {
+          description: error.message,
+        });
+        console.error("ERROR --->", error.message);
+      } else {
+        // If error is not an instance of Error, handle it as a generic case
+        console.error("Unexpected error --->", error);
+        toast.error("Unexpected Error", {
+          description: "An unexpected error occurred.",
+        });
+      }
+    }
   };
 
-  console.log("start date", formState.errors.start_date);
-
-  console.log(getValues("start_date"));
   return (
-    <View style={styles.screenContainer}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <ApplyEmployeeLeaveForm
-          formState={formState}
-          register={register}
-          control={control}
-        />
-      </ScrollView>
-      <View style={styles.submitButtonContainer}>
-        <PrimaryButton onPress={handleSubmit(onSubmit)}>
-          Apply Leave
-        </PrimaryButton>
-      </View>
-    </View>
+    <SafeAreaView style={styles.screenContainer}>
+      <KeyboardAvoidingView
+        style={[styles.screenContainer]}
+        keyboardVerticalOffset={5}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      >
+        <View style={styles.screenContainer}>
+          <ScrollView style={styles.container}>
+            <ApplyEmployeeLeaveForm
+              formState={formState}
+              register={register}
+              control={control}
+              setValue={setValue}
+            />
+          </ScrollView>
+          <View style={[styles.submitButtonContainer, { bottom: 90 }]}>
+            <PrimaryButton onPress={handleSubmit(onSubmit)}>
+              Apply Leave
+            </PrimaryButton>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1 },
-  container: { flex: 1, marginTop: 10, margin: 5 },
+  container: { flex: 1, paddingTop: 10, marginHorizontal: 10 },
   submitButtonContainer: {
     position: "absolute",
-    bottom: 80,
     left: 0,
     right: 0,
-    paddingBottom: 10,
-    padding: 10,
+    paddingHorizontal: 10,
   },
 });

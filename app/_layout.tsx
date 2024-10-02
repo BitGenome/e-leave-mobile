@@ -38,6 +38,7 @@ import { db } from "@/api/database/database";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import * as SQLite from "expo-sqlite";
 import { Toaster } from "sonner-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const dbExpo = SQLite.openDatabaseSync("leavease.db");
 registerTranslation("en-GB", enGB);

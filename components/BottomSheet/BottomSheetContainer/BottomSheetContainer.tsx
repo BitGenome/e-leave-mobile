@@ -24,7 +24,6 @@ interface BottomSheetViewContainerProps
 
 export default function BottomSheetViewContainer({
   children,
-
   openBottomSheet = false,
   onDismiss,
   closeOnPressBackDrop = true,
