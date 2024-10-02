@@ -4,8 +4,7 @@ import {
   BottomSheetModalProps,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { useFocusEffect } from "expo-router";
-import { ReactNode, useCallback, useRef } from "react";
+import { ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTheme } from "react-native-paper";
 
 interface BottomSheetViewContainerProps
@@ -40,11 +39,9 @@ export default function BottomSheetViewContainer({
     return sheetRef.current?.dismiss();
   }, [openBottomSheet]);
 
-  useFocusEffect(
-    useCallback(() => {
-      handlePresentModalPress();
-    }, [handlePresentModalPress])
-  );
+  useEffect(() => {
+    handlePresentModalPress();
+  }, [handlePresentModalPress]);
 
   return (
     <BottomSheetModal

@@ -2,8 +2,8 @@ import LeaveTab from "@/components/EmployeeLeave/components/LeavesTab";
 import { View as ScreenView } from "@/components/Themed";
 import CustomIcon from "@/ui/custom-icon";
 import { Stack } from "expo-router";
-import { StyleSheet, View } from "react-native";
-import { IconButton, Searchbar, useTheme } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { IconButton, useTheme } from "react-native-paper";
 import { Tabs, TabScreen } from "react-native-paper-tabs";
 
 export type LeaveType = "pending" | "approved" | "denied";

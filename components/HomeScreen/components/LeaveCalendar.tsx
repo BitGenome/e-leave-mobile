@@ -30,7 +30,6 @@ export default function LeaveCalendar() {
     toggleBottomSheet();
   }, [isOpenBottomSheetLeaves, setVisibility, toggleBottomSheet]);
 
-  console.log("is open bottomsheet", isOpenBottomSheetLeaves);
   const renderEmployeeItem = useCallback(
     ({ item }: { item: EmployeeData }) => (
       <>

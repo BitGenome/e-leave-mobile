@@ -26,6 +26,31 @@ const LEAVE_STATUS = {
   pending: "pending",
 };
 
+const LeaveStatusChip = ({ status }: { status: string }) => {
+  const theme = useTheme();
+
+  const statusColors = {
+    [LEAVE_STATUS.pending]: theme.colors.tertiary,
+    [LEAVE_STATUS.approved]: theme.colors.primary,
+    [LEAVE_STATUS.denied]: theme.colors.error,
+  };
+
+  return (
+    <Chip
+      theme={{ roundness: 8 }}
+      style={{
+        backgroundColor: statusColors[status] || theme.colors.error,
+      }}
+      textStyle={{
+        color: theme.colors.surface,
+        textTransform: "capitalize",
+      }}
+    >
+      {status}
+    </Chip>
+  );
+};
+
 const LeaveCard = (props: LeaveCardProps) => {
   const { type, status, date, duration, id } = props;
   const router = useRouter();
@@ -52,59 +77,9 @@ const LeaveCard = (props: LeaveCardProps) => {
       ]}
     >
       <Card.Title
-        style={{
-          padding: 15,
-          alignItems: "center",
-        }}
+        style={styles.cardTitle}
         title={type}
-        right={() => {
-          if (status === LEAVE_STATUS.pending)
-            return (
-              <Chip
-                theme={{ roundness: 8 }}
-                style={{
-                  backgroundColor: theme.colors.tertiary,
-                }}
-                textStyle={{
-                  color: theme.colors.surface,
-                  textTransform: "capitalize",
-                }}
-              >
-                {status}
-              </Chip>
-            );
-
-          if (status === LEAVE_STATUS.approved)
-            return (
-              <Chip
-                theme={{ roundness: 8 }}
-                style={{
-                  backgroundColor: theme.colors.primary,
-                }}
-                textStyle={{
-                  color: theme.colors.surface,
-                  textTransform: "capitalize",
-                }}
-              >
-                {status}
-              </Chip>
-            );
-
-          return (
-            <Chip
-              theme={{ roundness: 8 }}
-              style={{
-                backgroundColor: theme.colors.error,
-              }}
-              textStyle={{
-                color: theme.colors.surface,
-                textTransform: "capitalize",
-              }}
-            >
-              {status}
-            </Chip>
-          );
-        }}
+        right={() => <LeaveStatusChip status={status} />}
       />
       <Card.Content
         style={{
@@ -181,5 +156,9 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
     marginVertical: 5,
+  },
+  cardTitle: {
+    padding: 15,
+    alignItems: "center",
   },
 });
