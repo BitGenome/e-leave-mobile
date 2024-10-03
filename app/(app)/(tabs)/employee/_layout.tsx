@@ -18,7 +18,7 @@ export default function EmployeeLayout() {
         ),
         headerShown: true,
         headerShadowVisible: false,
-        headerTitleAlign: "center",
+        headerTitleAlign: "left",
         headerTitle: () => <TextPoppinsBold>My Employees</TextPoppinsBold>,
         headerStyle: {
           backgroundColor: theme.colors.surface,

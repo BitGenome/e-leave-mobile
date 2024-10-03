@@ -1,23 +1,37 @@
+import { type leaveStatusType } from "@/api/database/schema";
+import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { TextPoppinsRegular } from "@/components/Text/TextPoppinsRegular";
+import { getDurationLabel } from "@/data/time";
 import CustomIcon from "@/ui/custom-icon";
+import { dateFormatter } from "@/utils/dateFormatter";
+import { nameFormatter } from "@/utils/nameFormatter";
 import { useRouter } from "expo-router";
 import { memo, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import {
-  Button,
-  Card,
-  Chip,
-  Divider,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import { Button, Card, Chip, Divider, useTheme } from "react-native-paper";
+
+export interface Employee {
+  first_name: string;
+  last_name: string;
+  employee_no: string;
+}
+
+interface LeaveType {
+  leave_name: string;
+  max_days: number;
+  id: number;
+}
 
 export interface LeaveCardProps {
-  type: string;
-  status: string;
-  date: string;
-  duration: string;
-  id: string;
+  status: leaveStatusType | null;
+  leave_duration: string;
+  id: number;
+  employee: Employee;
+  leaveType: LeaveType;
+  created_at: Date | null;
+  start_date: Date | null;
+  end_date: Date | null;
+  deductedLeaveRequests: LeaveType;
 }
 
 const LEAVE_STATUS = {
@@ -26,7 +40,7 @@ const LEAVE_STATUS = {
   pending: "pending",
 };
 
-const LeaveStatusChip = ({ status }: { status: string }) => {
+export const LeaveStatusChip = ({ status }: { status: string }) => {
   const theme = useTheme();
 
   const statusColors = {
@@ -43,7 +57,7 @@ const LeaveStatusChip = ({ status }: { status: string }) => {
       }}
       textStyle={{
         color: theme.colors.surface,
-        textTransform: "capitalize",
+        textTransform: "uppercase",
       }}
     >
       {status}
@@ -52,7 +66,16 @@ const LeaveStatusChip = ({ status }: { status: string }) => {
 };
 
 const LeaveCard = (props: LeaveCardProps) => {
-  const { type, status, date, duration, id } = props;
+  const {
+    leaveType: type,
+    status,
+    leave_duration,
+    start_date,
+    end_date,
+    id,
+    deductedLeaveRequests: deduct_leavetype,
+    employee,
+  } = props;
   const router = useRouter();
   const theme = useTheme();
 
@@ -76,33 +99,58 @@ const LeaveCard = (props: LeaveCardProps) => {
         },
       ]}
     >
-      <Card.Title
-        style={styles.cardTitle}
-        title={type}
-        right={() => <LeaveStatusChip status={status} />}
-      />
       <Card.Content
         style={{
           rowGap: 10,
         }}
       >
-        <View>
-          <Text variant="labelMedium">{duration}</Text>
-          <Text
-            variant="headlineLarge"
-            style={{
-              fontFamily: "Poppins_700Bold",
-            }}
-          >
-            {date}
-          </Text>
+        <View style={styles.contentContainer}>
+          <TextPoppinsRegular>Status</TextPoppinsRegular>
+          <LeaveStatusChip status={status ?? ""} />
         </View>
-        <Divider
-          style={{
-            height: 1,
-            backgroundColor: theme.colors.elevation.level5,
-          }}
-        />
+        <Divider />
+        <View style={styles.contentContainer}>
+          <TextPoppinsRegular>Employee no.</TextPoppinsRegular>
+          <TextPoppinsBold>{employee.employee_no}</TextPoppinsBold>
+        </View>
+        <View style={styles.contentContainer}>
+          <TextPoppinsRegular>Employee</TextPoppinsRegular>
+          <TextPoppinsBold>
+            {nameFormatter({
+              first_name: employee.first_name,
+              last_name: employee.last_name,
+            })}
+          </TextPoppinsBold>
+        </View>
+        <View style={styles.contentContainer}>
+          <TextPoppinsRegular>Requested leave type</TextPoppinsRegular>
+          <TextPoppinsBold>{type.leave_name}</TextPoppinsBold>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <TextPoppinsRegular>Duration</TextPoppinsRegular>
+          <TextPoppinsBold>{getDurationLabel(leave_duration)}</TextPoppinsBold>
+        </View>
+        {start_date && (
+          <View style={styles.contentContainer}>
+            <TextPoppinsRegular>Starting date</TextPoppinsRegular>
+            <TextPoppinsBold> {dateFormatter(start_date)}</TextPoppinsBold>
+          </View>
+        )}
+        {end_date && (
+          <View style={styles.contentContainer}>
+            <TextPoppinsRegular>End date</TextPoppinsRegular>
+            <TextPoppinsBold> {dateFormatter(end_date)}</TextPoppinsBold>
+          </View>
+        )}
+
+        {deduct_leavetype.id !== type.id && (
+          <View style={styles.contentContainer}>
+            <TextPoppinsRegular>Deducted leave balance</TextPoppinsRegular>
+            <TextPoppinsBold>{deduct_leavetype.leave_name}</TextPoppinsBold>
+          </View>
+        )}
+
         <View
           style={{
             marginTop: 10,
@@ -120,14 +168,7 @@ const LeaveCard = (props: LeaveCardProps) => {
               height: 55,
             }}
           >
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                flex: 1,
-              }}
-            >
+            <View style={styles.viewDetailsContainer}>
               <TextPoppinsRegular
                 style={{
                   color: theme.colors.surface,
@@ -158,7 +199,20 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   cardTitle: {
+    display: "flex",
     padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  viewDetailsContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  contentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
 });

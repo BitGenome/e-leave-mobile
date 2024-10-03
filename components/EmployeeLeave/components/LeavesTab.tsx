@@ -1,20 +1,34 @@
-import { type LeaveType } from "@/app/(app)/(tabs)/leaves";
+import { type leaveStatusType } from "@/api/database/schema";
+import { useLeaveRequest } from "@/api/leaves-request/use-leave-request";
 import NotFound from "@/components/Common/NotFound";
 import LeaveCard, {
   LeaveCardProps,
 } from "@/components/Leaves/components/LeaveCard";
-import { EmployeeLeaves } from "@/data/leaves";
+import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { FlashList } from "@shopify/flash-list";
+import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { Animated, View } from "react-native";
+import { toast } from "sonner-native";
 
-export default function LeaveTab({ tab }: { tab: LeaveType }) {
+export default function LeaveTab({ tab }: { tab: leaveStatusType }) {
   const scrollOffsetY = useTabBarVisibility();
-  console.log("tab", tab);
+  const { data: leaveRequestData, error } = useLeaveRequest({
+    status: tab ?? "pending",
+  });
   const renderItem = useCallback(
     ({ item }: { item: LeaveCardProps }) => <LeaveCard {...item} />,
     []
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!!error)
+        toast.error("Error", {
+          description: error.message,
+        });
+    }, [error, toast])
   );
 
   return (
@@ -29,9 +43,25 @@ export default function LeaveTab({ tab }: { tab: LeaveType }) {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
         renderItem={renderItem}
-        data={EmployeeLeaves}
+        data={leaveRequestData}
         estimatedItemSize={20}
-        ListEmptyComponent={<NotFound title="No employee leave found." />}
+        ListEmptyComponent={
+          <NotFound
+            title={
+              <>
+                No leave status{" "}
+                <TextPoppinsBold
+                  style={{
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {tab}
+                </TextPoppinsBold>{" "}
+                found.
+              </>
+            }
+          />
+        }
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false }

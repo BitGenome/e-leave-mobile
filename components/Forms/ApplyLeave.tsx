@@ -23,7 +23,7 @@ interface IDateRange {
 }
 
 export interface ApplyLeaveInputProps {
-  start_date: CalendarDate | null;
+  start_date: CalendarDate;
   end_date?: CalendarDate | null;
   leave_duration: "full_day" | "halfday_morning" | "halfday_afternoon";
   employee: string;

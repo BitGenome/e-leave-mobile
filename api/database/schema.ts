@@ -6,7 +6,7 @@ export const users = sqliteTable("users", {
   firstname: text("firstname").notNull(),
   lastname: text("lastname").notNull(),
   password_hash: text("password_hash").notNull(),
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).default(
     sql`(CURRENT_TIMESTAMP)`
   ),
 });
@@ -18,10 +18,10 @@ export const employees = sqliteTable("employees", {
   last_name: text("last_name").notNull(),
   position: text("position").notNull(),
   created_at: integer("created_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
   updated_at: integer("updated_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
@@ -36,10 +36,10 @@ export const leaveType = sqliteTable("leave_type", {
   leave_description: text("leave_description"),
   max_days: integer("max_days").notNull(),
   created_at: integer("created_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
   updated_at: integer("updated_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
@@ -72,7 +72,7 @@ export const leaveRequest = sqliteTable("leave_request", {
     .notNull(),
   start_date: integer("start_date", {
     mode: "timestamp",
-  }),
+  }).notNull(),
   end_date: integer("end_date", {
     mode: "timestamp",
   }),
@@ -82,10 +82,12 @@ export const leaveRequest = sqliteTable("leave_request", {
     enum: [leaveStatus.APPROVED, leaveStatus.PENDING, leaveStatus.REJECTED],
   }).default(leaveStatus.PENDING),
   created_at: integer("created_at", {
-    mode: "timestamp",
-  }).default(sql`(CURRENT_TIMESTAMP)`),
+    mode: "timestamp_ms",
+  })
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
   updated_at: integer("updated_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
@@ -118,12 +120,12 @@ export const leaveBalances = sqliteTable("leave_balances", {
       onDelete: "set null",
     })
     .notNull(),
-  available_days: integer("available_days"),
+  available_days: integer("available_days").notNull(),
   created_at: integer("created_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
   updated_at: integer("updated_at", {
-    mode: "timestamp",
+    mode: "timestamp_ms",
   }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 

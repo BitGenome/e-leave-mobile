@@ -1,3 +1,4 @@
+import { type leaveStatusType } from "@/api/database/schema";
 import LeaveTab from "@/components/EmployeeLeave/components/LeavesTab";
 import { View as ScreenView } from "@/components/Themed";
 import CustomIcon from "@/ui/custom-icon";
@@ -6,12 +7,10 @@ import { StyleSheet } from "react-native";
 import { IconButton, useTheme } from "react-native-paper";
 import { Tabs, TabScreen } from "react-native-paper-tabs";
 
-export type LeaveType = "pending" | "approved" | "denied";
-
-const tabs: { label: string; leaveType: LeaveType }[] = [
+const tabs: { label: string; leaveType: leaveStatusType }[] = [
   { label: "Pending", leaveType: "pending" },
   { label: "Approved", leaveType: "approved" },
-  { label: "Denied", leaveType: "denied" },
+  { label: "Denied", leaveType: "rejected" },
 ];
 
 export default function LeavesScreen() {
@@ -21,6 +20,7 @@ export default function LeavesScreen() {
     <>
       <Stack.Screen
         options={{
+          headerTitleAlign: "left",
           headerRight: () => (
             <IconButton
               icon={() => <CustomIcon name="search" library="ionic" />}

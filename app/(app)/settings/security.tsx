@@ -55,7 +55,6 @@ export default function SecurityScreen() {
       "Form Submitted",
       `First Name: ${data.oldPassword}\nLast Name: ${data.oldPassword}\nPosition: ${data.confirmPassword}`
     );
-    console.log(data);
   };
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>

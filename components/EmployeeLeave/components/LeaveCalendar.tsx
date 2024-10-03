@@ -46,11 +46,11 @@ export default function LeaveCalendar(props: Calendar) {
     (date: DateData) => {
       const { dateString } = date;
       if (!markedDates[dateString as keyof typeof markedDates]) {
-        return console.log(`The date ${dateString} is not marked.`);
+        return;
       }
 
       onPressMarkedDates(date);
-      return console.log(`The date ${dateString} is marked.`);
+      return;
     },
     [markedDates]
   );

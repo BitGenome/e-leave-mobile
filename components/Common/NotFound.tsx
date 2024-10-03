@@ -1,9 +1,10 @@
 import { Image } from "expo-image";
 import { Dimensions, StyleSheet, View, ViewProps } from "react-native";
 import { TextPoppinsRegular } from "../Text/TextPoppinsRegular";
+import { ReactNode } from "react";
 
 interface NotFoundProps extends ViewProps {
-  title?: string;
+  title?: ReactNode | string;
 }
 
 export default function NotFound(props: NotFoundProps) {

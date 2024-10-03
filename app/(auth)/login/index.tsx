@@ -24,8 +24,6 @@ export default function LoginScreen() {
   });
 
   const onSubmit: SubmitHandler<LoginInputProps> = (data) => {
-    console.log("data", data);
-
     router.navigate("(tabs)");
     return;
   };

@@ -2,9 +2,10 @@ import { requestLeave } from "@/api/leaves-request/leave-request.service";
 import ApplyEmployeeLeaveForm, {
   ApplyLeaveInputProps,
 } from "@/components/Forms/ApplyLeave";
-import { View } from "@/components/Themed";
+import { View as ScreenView } from "@/components/Themed";
 import PrimaryButton from "@/ui/primary-button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Stack } from "expo-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   KeyboardAvoidingView,
@@ -12,7 +13,9 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  View,
 } from "react-native";
+import { Button } from "react-native-paper";
 import { toast } from "sonner-native";
 import * as zod from "zod";
 
@@ -69,13 +72,29 @@ export default function ApplyLeaveScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      <KeyboardAvoidingView
-        style={[styles.screenContainer]}
-        keyboardVerticalOffset={5}
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
-      >
-        <View style={styles.screenContainer}>
+    <>
+      <Stack.Screen
+        options={{
+          headerTitleAlign: "left",
+          headerRight: () => (
+            <Button
+              style={{
+                margin: 5,
+              }}
+              onPress={handleSubmit(onSubmit)}
+            >
+              Apply Leave
+            </Button>
+          ),
+        }}
+      />
+
+      <ScreenView style={styles.screenContainer}>
+        <KeyboardAvoidingView
+          style={[styles.screenContainer]}
+          keyboardVerticalOffset={3}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
           <ScrollView style={styles.container}>
             <ApplyEmployeeLeaveForm
               formState={formState}
@@ -84,24 +103,17 @@ export default function ApplyLeaveScreen() {
               setValue={setValue}
             />
           </ScrollView>
-          <View style={[styles.submitButtonContainer, { bottom: 90 }]}>
-            <PrimaryButton onPress={handleSubmit(onSubmit)}>
-              Apply Leave
-            </PrimaryButton>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </ScreenView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1 },
-  container: { flex: 1, paddingTop: 10, marginHorizontal: 10 },
-  submitButtonContainer: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    paddingHorizontal: 10,
+  container: {
+    flex: 1,
+    paddingTop: 10,
+    marginHorizontal: 10,
   },
 });

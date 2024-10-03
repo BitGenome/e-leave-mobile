@@ -2,8 +2,10 @@ import { summarydata } from "@/data/summary";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import SummaryCard from "./SummaryCard";
+import { monthlyPendingLeaveRequestCount } from "@/api/leaves-request/use-leave-request";
 
 export default function DashboardSummary() {
+  const pendingLeaveRequestCount = monthlyPendingLeaveRequestCount();
   return (
     <View style={styles.wrapper}>
       <Text style={styles.sectionTitle}>Dashboard Overview</Text>
@@ -18,7 +20,7 @@ export default function DashboardSummary() {
             width: "100%",
           }}
           label="Pending request"
-          total={200}
+          total={pendingLeaveRequestCount}
         />
       </View>
     </View>
