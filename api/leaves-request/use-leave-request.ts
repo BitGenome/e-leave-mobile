@@ -1,11 +1,13 @@
+import { count, eq, inArray, sql } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { db } from "../database/database";
-import { and, eq, sql } from "drizzle-orm";
+import { position } from "../../data/position";
 import {
-  leaveBalances,
+  employees,
   leaveRequest,
   type leaveStatusType,
 } from "../database/schema";
+import { TEmployee } from "@/components/EmployeeLeave/components/LeaveCalendar";
 
 export const useLeaveRequest = ({ status }: { status: leaveStatusType }) => {
   const data = useLiveQuery(
@@ -35,27 +37,187 @@ export const useLeaveRequestId = ({ id }: { id: number }) => {
   return data;
 };
 
-export const monthlyPendingLeaveRequestCount = () => {
+type LeaveAccrual = "annual" | "monthly";
+export const summaryLeaveRequest = ({
+  status,
+  leaveAccrual,
+}: {
+  status: leaveStatusType;
+  leaveAccrual: LeaveAccrual;
+}) => {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1; // Month is zero-indexed in JS
 
-  console.log("month", currentMonth);
-  console.log("year", currentYear);
-
-  const data = useLiveQuery(
-    db
+  let query;
+  if (leaveAccrual === "monthly") {
+    query = db
       .select({
-        count: sql<number>`COUNT(*)`,
+        count: count(),
       })
       .from(leaveRequest)
       .where(
-        and(
-          eq(leaveRequest.status, "pending"),
-          sql`strftime('%Y', datetime(${leaveRequest.created_at} / 1000, 'unixepoch')) = ${currentYear}`, // Convert to seconds
-          sql`strftime('%m', datetime(${leaveRequest.created_at} / 1000, 'unixepoch')) = ${currentMonth}` // Convert to seconds
-        )
-      )
+        sql`status = ${status} AND 
+            strftime('%Y', created_at) = ${currentYear.toString()} AND 
+            strftime('%m', created_at) = ${currentMonth
+              .toString()
+              .padStart(2, "0")}`
+      );
+  } else {
+    // Annual query
+    query = db
+      .select({
+        count: count(),
+      })
+      .from(leaveRequest)
+      .where(
+        sql`status = ${status} AND 
+            strftime('%Y', created_at) = ${currentYear.toString()}`
+      );
+  }
+
+  const { data, error } = useLiveQuery(query);
+
+  if (error) throw new Error("Something went wrong");
+
+  const leaveSummary = data?.map(({ count }) => ({
+    label: leaveAccrual === "monthly" ? "Monthly" : "Annual",
+    count,
+  }));
+
+  return leaveSummary ?? [];
+};
+
+const STATUS: Record<leaveStatusType, leaveStatusType> = {
+  approved: "approved",
+  pending: "pending",
+  rejected: "rejected",
+};
+export const comprehensiveLeaveSummary = () => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1; // Month is zero-indexed in JS
+
+  const query = db
+    .select({
+      annualCount: sql<number>`SUM(CASE WHEN strftime('%Y', created_at) = ${currentYear.toString()} AND status =${
+        STATUS.approved
+      } THEN 1 ELSE 0 END)`,
+      monthlyCount: sql<number>`SUM(CASE WHEN strftime('%Y', created_at) = ${currentYear.toString()} AND strftime('%m', created_at) = ${currentMonth
+        .toString()
+        .padStart(2, "0")} AND status =${STATUS.approved} THEN 1 ELSE 0 END)`,
+      pendingCount: sql<number>`SUM(CASE WHEN status = ${STATUS.pending} THEN 1 ELSE 0 END)`,
+    })
+    .from(leaveRequest);
+
+  const { data, error } = useLiveQuery(query);
+
+  if (error) throw new Error("Something went wrong");
+
+  if (!data || data.length === 0) {
+    return [];
+  }
+
+  const { annualCount, monthlyCount, pendingCount } = data[0];
+
+  return [
+    {
+      label: "Annual Leave",
+      count: annualCount ?? 0,
+    },
+    {
+      label: "Monthly Leave",
+      count: monthlyCount ?? 0,
+    },
+    {
+      label: "Pending Leave",
+      count: pendingCount ?? 0,
+    },
+  ];
+};
+
+export interface LeaveDate {
+  date: string;
+  employee: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    position: string;
+  };
+}
+
+function getDatesInRange(startDate: Date, endDate: Date): Date[] {
+  const dates = [];
+  const currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+}
+
+export const getDatesWithCalendar = (props: { year?: number } = {}) => {
+  const currentYear = new Date().getFullYear();
+  const { year = currentYear } = props;
+
+  const data = useLiveQuery(
+    db.query.leaveRequest.findMany({
+      columns: {
+        id: true,
+        start_date: true,
+        end_date: true,
+        employee_id: true,
+      },
+      with: {
+        employee: true,
+      },
+      where: sql`status = ${
+        STATUS.approved
+      } AND strftime('%Y', datetime(start_date, 'unixepoch')) = ${year.toString()}`,
+    })
   );
-  console.log(data);
-  return data ? data.data[0]?.count : 0;
+
+  const expandedDates: LeaveDate[] = [];
+
+  data?.data?.forEach((leave) => {
+    const startDate = new Date(leave.start_date);
+    const endDate = leave.end_date ? new Date(leave.end_date) : startDate;
+    const datesInRange = getDatesInRange(startDate, endDate);
+
+    datesInRange.forEach((date) => {
+      expandedDates.push({
+        date: date.toISOString().split("T")[0], // Format as 'YYYY-MM-DD'
+        employee: {
+          id: leave.employee?.employee_id ?? 0,
+          last_name: leave.employee?.first_name ?? "",
+          first_name: leave.employee?.first_name ?? "",
+          position: leave.employee.position,
+        },
+      });
+    });
+  });
+
+  return expandedDates;
+};
+
+export const getEmployeeWithLeaveRequestOnGevinDate = async ({
+  employee_id,
+}: {
+  employee_id: number[];
+}) => {
+  console.log();
+  if (!employee_id) return;
+  const query = await db.query.employees.findMany({
+    columns: {
+      first_name: true,
+      last_name: true,
+      employee_id: true,
+      position: true,
+    },
+    where: inArray(employees.employee_id, employee_id),
+  });
+
+  const data = query?.map((employee) => ({
+    id: employee.employee_id,
+    ...employee,
+  }));
+  return data;
 };

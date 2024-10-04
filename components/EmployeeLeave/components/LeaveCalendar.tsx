@@ -1,23 +1,33 @@
+import { LeaveDate } from "@/api/leaves-request/use-leave-request";
 import CustomIcon from "@/ui/custom-icon";
 import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { Calendar, type DateData } from "react-native-calendars";
 import { type MarkingProps } from "react-native-calendars/src/calendar/day/marking";
 import { useTheme } from "react-native-paper";
+import { type Employee } from "../../Leaves/components/LeaveCard";
+
+export interface SelectedData {
+  selectedDate: DateData;
+  employee: TEmployee[];
+}
+
+export interface TEmployee extends Omit<Employee, "employee_no"> {
+  id: number;
+  position: string;
+}
 
 interface Calendar {
-  onPressMarkedDates: (selectedDate: DateData) => void;
+  onPressMarkedDates: (props: SelectedData) => void;
   /**list of dates to be marked */
-  leavesDates?: string[];
+  leavesDates: LeaveDate[];
 }
 
 const todayDate = new Date();
 const today = todayDate.toISOString().split("T")[0];
 
 export default function LeaveCalendar(props: Calendar) {
-  const { onPressMarkedDates, leavesDates = ["2024-09-19", "2024-09-21"] } =
-    props;
-
+  const { onPressMarkedDates, leavesDates } = props;
   const theme = useTheme();
 
   const markedDateStyles = {
@@ -33,28 +43,44 @@ export default function LeaveCalendar(props: Calendar) {
     startingDay: true,
     textColor: theme.colors.surface,
   };
-  const markedDates: Record<string, MarkingProps> = leavesDates.reduce(
-    (acc, date) => {
-      acc[date] = { ...markedDateStyles };
-      return acc;
-    },
-    {} as Record<string, MarkingProps>
-  );
+  const markedDates: Record<
+    string,
+    { marking: MarkingProps; employee: TEmployee[] }
+  > = leavesDates?.reduce((acc, { date, employee }) => {
+    acc[date] = {
+      marking: markedDateStyles,
+      employee: Array.isArray(employee) ? [...employee] : [employee],
+    };
+    // Add employee to the date's employee array while ensuring uniqueness
+    const employeeId = employee.id; // Use the unique identifier for deduplication
+    const employeeExists = acc[date].employee.some(
+      (emp) => emp.id === employeeId
+    );
+    // Only add if the employee is not already in the array
+    if (!employeeExists) {
+      acc[date].employee.push(employee);
+    }
+    console.log("employee", employeeId);
+
+    return acc;
+  }, {} as Record<string, { marking: MarkingProps; employee: TEmployee[] }>);
 
   //handle dates press to only select the marked dates.
   const handleDayLongPress = useCallback(
-    (date: DateData) => {
-      const { dateString } = date;
-      if (!markedDates[dateString as keyof typeof markedDates]) {
+    (data: DateData) => {
+      const { dateString } = data;
+      const markedDate = markedDates[dateString as keyof typeof markedDates];
+
+      if (!markedDate) {
         return;
       }
 
-      onPressMarkedDates(date);
-      return;
+      const { employee } = markedDate;
+
+      onPressMarkedDates({ employee, selectedDate: data });
     },
     [markedDates]
   );
-
   return (
     <Calendar
       style={[
@@ -84,7 +110,13 @@ export default function LeaveCalendar(props: Calendar) {
       }}
       enableSwipeMonths
       onDayLongPress={handleDayLongPress}
-      markedDates={markedDates}
+      markedDates={Object.keys(markedDates).reduce(
+        (acc, date) => ({
+          ...acc,
+          [date]: markedDates[date].marking,
+        }),
+        {}
+      )}
     />
   );
 }

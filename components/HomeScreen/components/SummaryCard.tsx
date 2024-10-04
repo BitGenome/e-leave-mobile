@@ -4,11 +4,11 @@ import { Text, useTheme } from "react-native-paper";
 
 interface SummaryCardProps extends ViewProps {
   label: string;
-  total: number;
+  count: number;
 }
 
 export default function SummaryCard({ style, ...props }: SummaryCardProps) {
-  const { label, total } = props;
+  const { label, count } = props;
   const theme = useTheme();
   return (
     <View
@@ -31,7 +31,7 @@ export default function SummaryCard({ style, ...props }: SummaryCardProps) {
         variant="headlineLarge"
         style={[styles.label, { color: theme.colors.primary, fontSize: 30 }]}
       >
-        {total}
+        {count}
       </Text>
     </View>
   );

@@ -17,6 +17,7 @@ export default function LeaveTab({ tab }: { tab: leaveStatusType }) {
   const { data: leaveRequestData, error } = useLeaveRequest({
     status: tab ?? "pending",
   });
+
   const renderItem = useCallback(
     ({ item }: { item: LeaveCardProps }) => <LeaveCard {...item} />,
     []
