@@ -1,8 +1,8 @@
+import { useEmployeeLeaves } from "@/api/leaves-request/use-leave-request";
 import BottomSheetViewContainer from "@/components/BottomSheet/BottomSheetContainer/BottomSheetContainer";
 import HistoryTab from "@/components/Leaves/components/HistoryTab";
 import StatusTab from "@/components/Leaves/components/StatusTab";
 import NavigationHeaderTitle from "@/components/Navigation/HeaderTitle/CustomHeaderTitle";
-import { EmployeeLeaves } from "@/data/leaves";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
 import { FilterOptions, useFilterStore } from "@/store/leaveFilter";
 import CustomIcon from "@/ui/custom-icon";
@@ -11,15 +11,18 @@ import { useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { Checkbox, IconButton, Text, useTheme } from "react-native-paper";
 import { Tabs, TabScreen } from "react-native-paper-tabs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const tabs = [
-  { label: "Status", component: <StatusTab /> },
-  { label: "History", component: <HistoryTab /> },
+  {
+    label: "Status",
+    component: StatusTab,
+  },
+  { label: "History", component: HistoryTab },
 ];
 
 export default function EmployeeLeaveScreen() {
   const param = useLocalSearchParams<{ name: string; id: string }>();
+
   const theme = useTheme();
   const { state: isOpenFilterBottomsheet, toggle: toogleFilterBottomSheet } =
     useVisibility({ defaultVisiblityState: false });
@@ -89,11 +92,14 @@ export default function EmployeeLeaveScreen() {
           }}
         />
         <Tabs>
-          {tabs.map((tab, index) => (
-            <TabScreen key={index} label={tab.label}>
-              {tab.component}
-            </TabScreen>
-          ))}
+          {tabs.map((tab, index) => {
+            const TabComponent = tab.component;
+            return (
+              <TabScreen key={index} label={tab.label}>
+                <TabComponent employeeId={+param.id} />
+              </TabScreen>
+            );
+          })}
         </Tabs>
       </View>
       <BottomSheetViewContainer

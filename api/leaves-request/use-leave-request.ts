@@ -1,13 +1,13 @@
+import { TEmployee } from "@/components/EmployeeLeave/components/LeaveCalendar";
 import { count, eq, inArray, sql } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { db } from "../database/database";
-import { position } from "../../data/position";
 import {
   employees,
   leaveRequest,
   type leaveStatusType,
 } from "../database/schema";
-import { TEmployee } from "@/components/EmployeeLeave/components/LeaveCalendar";
+import { getDatesInRange } from "./utils";
 
 export const useLeaveRequest = ({ status }: { status: leaveStatusType }) => {
   const data = useLiveQuery(
@@ -136,24 +136,10 @@ export const comprehensiveLeaveSummary = () => {
 
 export interface LeaveDate {
   date: string;
-  employee: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    position: string;
-  };
+  employees: TEmployee[];
 }
 
-function getDatesInRange(startDate: Date, endDate: Date): Date[] {
-  const dates = [];
-  const currentDate = new Date(startDate);
-  while (currentDate <= endDate) {
-    dates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return dates;
-}
-
+/** This function will get the dates where it has an employee leave */
 export const getDatesWithCalendar = (props: { year?: number } = {}) => {
   const currentYear = new Date().getFullYear();
   const { year = currentYear } = props;
@@ -175,7 +161,7 @@ export const getDatesWithCalendar = (props: { year?: number } = {}) => {
     })
   );
 
-  const expandedDates: LeaveDate[] = [];
+  const dateEmployeeMap: Record<string, TEmployee[]> = {};
 
   data?.data?.forEach((leave) => {
     const startDate = new Date(leave.start_date);
@@ -183,27 +169,40 @@ export const getDatesWithCalendar = (props: { year?: number } = {}) => {
     const datesInRange = getDatesInRange(startDate, endDate);
 
     datesInRange.forEach((date) => {
-      expandedDates.push({
-        date: date.toISOString().split("T")[0], // Format as 'YYYY-MM-DD'
-        employee: {
-          id: leave.employee?.employee_id ?? 0,
-          last_name: leave.employee?.first_name ?? "",
-          first_name: leave.employee?.first_name ?? "",
-          position: leave.employee.position,
-        },
-      });
+      const dateString = date.toISOString().split("T")[0]; // Format as 'YYYY-MM-DD'
+      if (!dateEmployeeMap[dateString]) {
+        dateEmployeeMap[dateString] = [];
+      }
+
+      const employee: TEmployee = {
+        id: leave.employee?.employee_id ?? 0,
+        last_name: leave.employee?.last_name ?? "",
+        first_name: leave.employee?.first_name ?? "",
+        position: leave.employee.position,
+      };
+
+      // Check if employee already exists in the array to avoid duplicates
+      if (!dateEmployeeMap[dateString].some((emp) => emp.id === employee.id)) {
+        dateEmployeeMap[dateString].push(employee);
+      }
     });
   });
 
-  return expandedDates;
+  const leaveDates: LeaveDate[] = Object.entries(dateEmployeeMap).map(
+    ([date, employees]) => ({
+      date,
+      employees,
+    })
+  );
+
+  return leaveDates;
 };
 
-export const getEmployeeWithLeaveRequestOnGevinDate = async ({
+export const getEmployeeWithLeaveRequestOnGivenDate = async ({
   employee_id,
 }: {
   employee_id: number[];
 }) => {
-  console.log();
   if (!employee_id) return;
   const query = await db.query.employees.findMany({
     columns: {
@@ -219,5 +218,30 @@ export const getEmployeeWithLeaveRequestOnGevinDate = async ({
     id: employee.employee_id,
     ...employee,
   }));
+  return data;
+};
+
+export const useEmployeeLeaves = ({
+  employeeId,
+  status,
+}: {
+  employeeId: number;
+  status: leaveStatusType;
+}) => {
+  const data = useLiveQuery(
+    db.query.leaveRequest.findMany({
+      with: {
+        leaveType: true,
+        employee: true,
+        deductedLeaveRequests: true,
+      },
+      where: (leaveRequest, { eq, and }) =>
+        and(
+          eq(leaveRequest.status, status),
+          eq(leaveRequest.employee_id, employeeId)
+        ),
+    })
+  );
+
   return data;
 };

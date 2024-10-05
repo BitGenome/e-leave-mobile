@@ -6,6 +6,7 @@ import { Calendar, type DateData } from "react-native-calendars";
 import { type MarkingProps } from "react-native-calendars/src/calendar/day/marking";
 import { useTheme } from "react-native-paper";
 import { type Employee } from "../../Leaves/components/LeaveCard";
+import { employees } from "../../../api/database/schema";
 
 export interface SelectedData {
   selectedDate: DateData;
@@ -43,41 +44,33 @@ export default function LeaveCalendar(props: Calendar) {
     startingDay: true,
     textColor: theme.colors.surface,
   };
+
   const markedDates: Record<
     string,
-    { marking: MarkingProps; employee: TEmployee[] }
-  > = leavesDates?.reduce((acc, { date, employee }) => {
+    { marking: MarkingProps; employees: TEmployee[] }
+  > = leavesDates?.reduce((acc, { date, employees }) => {
     acc[date] = {
       marking: markedDateStyles,
-      employee: Array.isArray(employee) ? [...employee] : [employee],
+      employees,
     };
-    // Add employee to the date's employee array while ensuring uniqueness
-    const employeeId = employee.id; // Use the unique identifier for deduplication
-    const employeeExists = acc[date].employee.some(
-      (emp) => emp.id === employeeId
-    );
-    // Only add if the employee is not already in the array
-    if (!employeeExists) {
-      acc[date].employee.push(employee);
-    }
-    console.log("employee", employeeId);
 
     return acc;
-  }, {} as Record<string, { marking: MarkingProps; employee: TEmployee[] }>);
+  }, {} as Record<string, { marking: MarkingProps; employees: TEmployee[] }>);
 
   //handle dates press to only select the marked dates.
   const handleDayLongPress = useCallback(
     (data: DateData) => {
       const { dateString } = data;
-      const markedDate = markedDates[dateString as keyof typeof markedDates];
+      const markedDate = markedDates[dateString];
 
       if (!markedDate) {
         return;
       }
 
-      const { employee } = markedDate;
-
-      onPressMarkedDates({ employee, selectedDate: data });
+      onPressMarkedDates({
+        employee: markedDate.employees,
+        selectedDate: data,
+      });
     },
     [markedDates]
   );
@@ -110,12 +103,11 @@ export default function LeaveCalendar(props: Calendar) {
       }}
       enableSwipeMonths
       onDayLongPress={handleDayLongPress}
-      markedDates={Object.keys(markedDates).reduce(
-        (acc, date) => ({
-          ...acc,
-          [date]: markedDates[date].marking,
-        }),
-        {}
+      markedDates={Object.fromEntries(
+        Object.entries(markedDates).map(([date, { marking }]) => [
+          date,
+          marking,
+        ])
       )}
     />
   );

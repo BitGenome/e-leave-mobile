@@ -1,12 +1,12 @@
 import {
   getDatesWithCalendar,
-  getEmployeeWithLeaveRequestOnGevinDate,
+  getEmployeeWithLeaveRequestOnGivenDate,
 } from "@/api/leaves-request/use-leave-request";
 import BottomSheetViewContainer from "@/components/BottomSheet/BottomSheetContainer/BottomSheetContainer";
 import NotFound from "@/components/Common/NotFound";
 import Calendar, {
   SelectedData,
-  TEmployee,
+  type TEmployee,
 } from "@/components/EmployeeLeave/components/LeaveCalendar";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
@@ -18,7 +18,8 @@ import { useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, List, Text, useTheme } from "react-native-paper";
 import { TextPoppinsRegular } from "../../Text/TextPoppinsRegular";
-import { employee } from "../../../data/employee";
+
+const MODAL_SNAP_POINTS = ["50%", "95%"];
 
 export default function LeaveCalendar() {
   const theme = useTheme();
@@ -29,6 +30,7 @@ export default function LeaveCalendar() {
   >(undefined);
 
   const leaveCalendar = getDatesWithCalendar();
+
   const {
     state: isOpenBottomSheetLeaves,
     setVisibility,
@@ -55,8 +57,9 @@ export default function LeaveCalendar() {
   );
 
   const employeeIds = selectedLeaveDate?.employee.map((emp) => emp.id) || [];
+
   const handleFetchEmployeeWithLeave = useCallback(async () => {
-    const data = await getEmployeeWithLeaveRequestOnGevinDate({
+    const data = await getEmployeeWithLeaveRequestOnGivenDate({
       employee_id: employeeIds,
     });
 
@@ -71,24 +74,22 @@ export default function LeaveCalendar() {
     }, [handleFetchEmployeeWithLeave])
   );
 
-  const renderEmployeeItem = useCallback(
-    ({ item }: { item: TEmployee }) => (
+  const renderEmployeeItem = useCallback(({ item }: { item: TEmployee }) => {
+    const employeeName = nameFormatter({
+      first_name: item.first_name,
+      last_name: item.last_name,
+    });
+    return (
       <>
         <List.Item
           key={item.id}
-          title={() => (
-            <TextPoppinsBold>
-              {nameFormatter({
-                first_name: item.first_name,
-                last_name: item.last_name,
-              })}
-            </TextPoppinsBold>
-          )}
+          title={() => <TextPoppinsBold>{employeeName}</TextPoppinsBold>}
           right={(props) => <CustomIcon name="arrowright" {...props} />}
           left={() => <Avatar.Text size={44} label={item.first_name[0]} />}
           description={() => (
             <TextPoppinsRegular
               style={{
+                textTransform: "capitalize",
                 color: theme.colors.outline,
               }}
             >
@@ -106,19 +107,15 @@ export default function LeaveCalendar() {
             return router.navigate({
               pathname: "/(employee-leaves)/leaves/[id]",
               params: {
-                name: nameFormatter({
-                  first_name: item.first_name,
-                  last_name: item.last_name,
-                }),
+                name: employeeName,
                 id: item.id,
               },
             });
           }}
         />
       </>
-    ),
-    []
-  );
+    );
+  }, []);
 
   return (
     <View style={styles.wrapper}>
@@ -129,25 +126,13 @@ export default function LeaveCalendar() {
       />
       <BottomSheetViewContainer
         isList
-        snapPoints={["50%", "95%"]}
+        snapPoints={MODAL_SNAP_POINTS}
         openBottomSheet={isOpenBottomSheetLeaves}
         onDismiss={handleDismissBottomSheetDialog}
         enableDynamicSizing
       >
-        <View
-          style={{
-            paddingVertical: 10,
-            flex: 1,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: "Poppins_600SemiBold",
-              textAlign: "center",
-            }}
-          >
-            Employees with leaves
-          </Text>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalLabel}>Employees with leaves</Text>
           <BottomSheetFlatList
             showsVerticalScrollIndicator={false}
             data={employeeData}
@@ -168,5 +153,13 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 20,
+  },
+  modalLabel: {
+    fontFamily: "Poppins_600SemiBold",
+    textAlign: "center",
+  },
+  modalContainer: {
+    paddingVertical: 10,
+    flex: 1,
   },
 });

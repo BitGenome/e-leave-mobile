@@ -5,8 +5,9 @@ import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { View as ScreenView } from "@/components/Themed";
 import PrimaryButton from "@/ui/primary-button";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 
 export default function EmployeeDetailScreen() {
   const theme = useTheme();
@@ -17,12 +18,25 @@ export default function EmployeeDetailScreen() {
     id: +id,
   });
 
+  const handlePressViewLeaveButton = useCallback(() => {
+    router.navigate({
+      pathname: "/(app)/(employee-leaves)/leaves/[id]",
+      params: {
+        name,
+        id,
+      },
+    });
+  }, [router]);
+
   return (
     <ScreenView style={styles.container}>
       <Stack.Screen
         options={{
           headerShown: true,
           title: "Employee Details",
+          headerRight: () => (
+            <Button onPress={handlePressViewLeaveButton}>View leaves</Button>
+          ),
           headerTitle: () => (
             <TextPoppinsBold
               style={{

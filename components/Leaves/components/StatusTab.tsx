@@ -1,18 +1,23 @@
+import { useEmployeeLeaves } from "@/api/leaves-request/use-leave-request";
+import { View as TabScreenView } from "@/components/Themed";
 import { EmployeeLeaves } from "@/data/leaves";
+import { useFilterStore } from "@/store/leaveFilter";
 import { FlashList } from "@shopify/flash-list";
 import { memo, useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import LeaveCard, { LeaveCardProps } from "./LeaveCard";
-import { useFilterStore } from "@/store/leaveFilter";
-import { View as TabScreenView } from "@/components/Themed";
+import NotFound from "@/components/Common/NotFound";
 
-const StatusTab = () => {
+const StatusTab = ({ employeeId }: { employeeId: number }) => {
   const { approved, pending, denied } = useFilterStore((state) => ({
     approved: state.approved,
     pending: state.pending,
     denied: state.denied,
   }));
-
+  const { data: employeeLeavesData } = useEmployeeLeaves({
+    employeeId,
+    status: "pending",
+  });
   const filteredLeaves = EmployeeLeaves.filter((leave) => {
     const matchesApproved = approved ? leave.status === "approved" : true;
     const matchesPending = pending ? leave.status === "pending" : true;
@@ -32,8 +37,9 @@ const StatusTab = () => {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
         renderItem={renderItem}
-        data={filteredLeaves}
+        data={employeeLeavesData}
         estimatedItemSize={20}
+        ListEmptyComponent={<NotFound title={`No pending request`} />}
       />
     </TabScreenView>
   );
