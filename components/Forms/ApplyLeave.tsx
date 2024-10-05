@@ -3,19 +3,21 @@ import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 import { time } from "@/data/time";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Control,
   Controller,
   FormState,
   UseFormRegister,
   UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import { type CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar";
 import BottomSheetSelect from "../BottomSheet/BottomSheetSelect/BottomSheetSelect";
+import { mapOptions } from "@/utils/selectMapOptionFormatter";
 
 interface IDateRange {
   startDate: CalendarDate;
@@ -37,6 +39,7 @@ interface ApplyEmployeeLeaveFormProps {
   register: UseFormRegister<ApplyLeaveInputProps>;
   formState: FormState<ApplyLeaveInputProps>;
   setValue: UseFormSetValue<ApplyLeaveInputProps>;
+  watch: UseFormWatch<ApplyLeaveInputProps>;
 }
 
 const LOCALE = "en-GB";
@@ -45,7 +48,7 @@ export const TODAY = new Date();
 export default function ApplyEmployeeLeaveForm(
   props: ApplyEmployeeLeaveFormProps
 ) {
-  const { control, register, formState, setValue } = props;
+  const { control, register, formState, setValue, watch } = props;
   const theme = useTheme();
   const { data } = useLeaveTypeData();
   const { data: employeeData } = useEmployeeData();
@@ -89,15 +92,19 @@ export default function ApplyEmployeeLeaveForm(
     [LOCALE]
   );
 
-  const leaveTypeOption = data?.map((type) => ({
-    label: type.leave_name,
-    value: type.id,
-  }));
+  const leaveTypeOption = mapOptions(data, "leave_name", "id");
 
   const employeeDataOption = employeeData?.map((emp) => ({
     label: `${emp.first_name} ${emp.last_name}`,
     value: emp.employee_id,
   }));
+
+  const leaveTypeValue = watch("leave_type");
+  useEffect(() => {
+    if (leaveTypeValue) {
+      setValue("deducted_leave_type", leaveTypeValue);
+    }
+  }, [leaveTypeValue, setValue]);
 
   return (
     <View style={styles.formContainer}>
@@ -212,16 +219,19 @@ export default function ApplyEmployeeLeaveForm(
         <Controller
           control={control}
           name="leave_type"
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <BottomSheetSelect
-              value={value}
-              error={Boolean(error?.message)}
-              label="Select leave type"
-              options={leaveTypeOption}
-              onSelect={onChange}
-              header="Select leave type"
-            />
-          )}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return (
+              <BottomSheetSelect
+                value={value}
+                error={Boolean(error?.message)}
+                label="Select leave type"
+                //@ts-ignore
+                options={leaveTypeOption}
+                onSelect={onChange}
+                header="Select leave type"
+              />
+            );
+          }}
         />
 
         <Controller
@@ -231,7 +241,8 @@ export default function ApplyEmployeeLeaveForm(
             <BottomSheetSelect
               value={value}
               error={Boolean(error?.message)}
-              label="Deduct leave type"
+              label={`Deduct leave type`}
+              //@ts-ignore
               options={leaveTypeOption}
               onSelect={onChange}
               header="Select on where to deduct leave balance"

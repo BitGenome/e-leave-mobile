@@ -3,17 +3,14 @@ import ApplyEmployeeLeaveForm, {
   ApplyLeaveInputProps,
 } from "@/components/Forms/ApplyLeave";
 import { View as ScreenView } from "@/components/Themed";
-import PrimaryButton from "@/ui/primary-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack } from "expo-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { toast } from "sonner-native";
@@ -32,7 +29,7 @@ const leaveRequestSchema = zod.object({
 });
 
 export default function ApplyLeaveScreen() {
-  const { control, reset, handleSubmit, register, formState, setValue } =
+  const { control, reset, handleSubmit, register, formState, setValue, watch } =
     useForm<ApplyLeaveInputProps>({
       defaultValues: {
         deducted_leave_type: "",
@@ -97,6 +94,7 @@ export default function ApplyLeaveScreen() {
         >
           <ScrollView style={styles.container}>
             <ApplyEmployeeLeaveForm
+              watch={watch}
               formState={formState}
               register={register}
               control={control}

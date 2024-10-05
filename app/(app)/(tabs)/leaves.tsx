@@ -14,8 +14,6 @@ const tabs: { label: string; leaveType: leaveStatusType }[] = [
 ];
 
 export default function LeavesScreen() {
-  const theme = useTheme();
-
   return (
     <>
       <Stack.Screen

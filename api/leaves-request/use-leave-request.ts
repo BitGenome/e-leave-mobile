@@ -1,6 +1,8 @@
 import { TEmployee } from "@/components/EmployeeLeave/components/LeaveCalendar";
 import { count, eq, inArray, sql } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { db } from "../database/database";
 import {
   employees,
@@ -9,18 +11,73 @@ import {
 } from "../database/schema";
 import { getDatesInRange } from "./utils";
 
-export const useLeaveRequest = ({ status }: { status: leaveStatusType }) => {
-  const data = useLiveQuery(
-    db.query.leaveRequest.findMany({
-      with: {
-        leaveType: true,
-        employee: true,
-        deductedLeaveRequests: true,
-      },
-      where: eq(leaveRequest.status, status),
-    })
+export const useLeaveRequests = ({
+  status: initialStatus = "pending",
+  pageSize = 5,
+}: {
+  status: leaveStatusType;
+  pageSize?: number;
+  initialPage?: number;
+}) => {
+  const [leaveData, setLeaveData] = useState<any[]>([]);
+  const [status, setStatus] = useState(initialStatus);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getLeaveRequest = useCallback(
+    async (page: number) => {
+      if (!hasMore || isLoading) return;
+
+      setIsLoading(true);
+      try {
+        const data = await db.query.leaveRequest.findMany({
+          with: {
+            leaveType: true,
+            employee: true,
+            deductedLeaveRequests: true,
+          },
+          where: eq(leaveRequest.status, status),
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+          orderBy: (leaveRequest, { desc }) => [desc(leaveRequest.created_at)],
+        });
+
+        if (data.length < pageSize) {
+          setHasMore(false);
+        }
+
+        setLeaveData((prevData) => [...prevData, ...data]);
+        setCurrentPage(page);
+      } catch (error) {
+        console.error("Error fetching leave requests:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [pageSize, status, hasMore, isLoading]
   );
-  return data;
+
+  const loadMore = () => {
+    if (hasMore && !isLoading) {
+      getLeaveRequest(currentPage + 1);
+    }
+  };
+
+  const refreshData = () => {
+    setLeaveData([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    getLeaveRequest(1);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshData();
+    }, [status])
+  );
+
+  return { leaveData, loadMore, refreshData, isLoading, hasMore, setStatus };
 };
 
 export const useLeaveRequestId = ({ id }: { id: number }) => {

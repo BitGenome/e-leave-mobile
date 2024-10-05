@@ -1,5 +1,5 @@
 import { type leaveStatusType } from "@/api/database/schema";
-import { useLeaveRequest } from "@/api/leaves-request/use-leave-request";
+import { useLeaveRequests } from "@/api/leaves-request/use-leave-request";
 import NotFound from "@/components/Common/NotFound";
 import LeaveCard, {
   LeaveCardProps,
@@ -7,29 +7,30 @@ import LeaveCard, {
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { useTabBarVisibility } from "@/hooks/useTabBarVisibility";
 import { FlashList } from "@shopify/flash-list";
-import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { Animated, View } from "react-native";
-import { toast } from "sonner-native";
 
 export default function LeaveTab({ tab }: { tab: leaveStatusType }) {
   const scrollOffsetY = useTabBarVisibility();
-  const { data: leaveRequestData, error } = useLeaveRequest({
-    status: tab ?? "pending",
-  });
 
+  const { leaveData, hasMore, loadMore, refreshData, isLoading } =
+    useLeaveRequests({
+      status: tab,
+    });
+  // const {
+  //   data: leaveRequestData,
+
+  //   nextPage,
+  // } = useLeaveRequest({
+  //   status: tab ?? "pending",
+  // });
+
+  if (tab === "approved") {
+    console.log(" leave data lenth", leaveData?.length, "status:", tab);
+  }
   const renderItem = useCallback(
     ({ item }: { item: LeaveCardProps }) => <LeaveCard {...item} />,
     []
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!!error)
-        toast.error("Error", {
-          description: error.message,
-        });
-    }, [error, toast])
   );
 
   return (
@@ -44,8 +45,12 @@ export default function LeaveTab({ tab }: { tab: leaveStatusType }) {
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
         renderItem={renderItem}
-        data={leaveRequestData}
-        estimatedItemSize={20}
+        data={leaveData}
+        estimatedItemSize={5}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.7}
+        onRefresh={refreshData}
+        refreshing={isLoading}
         ListEmptyComponent={
           <NotFound
             title={
