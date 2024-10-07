@@ -3,6 +3,7 @@ import { addLeaveBalance } from "@/api/leave-balance/leave-balance.service";
 import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 import BottomSheetSelect from "@/components/BottomSheet/BottomSheetSelect/BottomSheetSelect";
 import Card from "@/components/Common/Card";
+import { Loading } from "@/components/Common/Loading";
 import LeaveBalanceForm from "@/components/Forms/LeaveBalance/LeaveBalance";
 import { TextPoppinsBold } from "@/components/Text/TextPoppinsBold";
 import { View as ScreenView } from "@/components/Themed";
@@ -169,6 +170,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   selectBalanceContainer: {
+    flex: 1,
     rowGap: 15,
   },
   containerEmployeeSelect: {

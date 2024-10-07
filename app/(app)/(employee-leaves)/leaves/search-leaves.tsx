@@ -1,38 +1,43 @@
-import { useSearchEmployee } from "@/api/employees/use-employee-data";
-import { HighlightedText } from "@/components/Common/HighlightedSearchTerm";
-import NotFound from "@/components/Common/NotFound";
 import { View as ScreenView } from "@/components/Themed";
 import CustomIcon from "@/ui/custom-icon";
-import { nameFormatter } from "@/utils/nameFormatter";
-import { FlashList } from "@shopify/flash-list";
-import { Stack, useFocusEffect, useRouter } from "expo-router";
+import Text from "@/ui/typography/regular";
+import { Stack, useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import { TextInput as RNTextInput, StyleSheet, View } from "react-native";
-import {
-  IconButton,
-  List,
-  Text,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
-import { type Employee } from "../../../components/Leaves/components/LeaveCard";
+import { StyleSheet, View } from "react-native";
+import { IconButton, List, TextInput, useTheme } from "react-native-paper";
+import { TextInput as RNTextInput } from "react-native";
+import { useSearchEmployeeLeaves } from "@/api/leaves-request/use-leave-request";
+import { FlashList } from "@shopify/flash-list";
+import { HighlightedText } from "@/components/Common/HighlightedSearchTerm";
 
-interface TEmployee extends Employee {
+import { nameFormatter } from "@/utils/nameFormatter";
+import NotFound from "@/components/Common/NotFound";
+import { Employee } from "@/components/Leaves/components/LeaveCard";
+
+interface TEmployeeData extends Employee {
   employee_id: number;
 }
 
-export default function SearchEmployeeScreen() {
+export default function SearchLeavesScreen() {
   const theme = useTheme();
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const { data: searchEmployeeData } = useSearchEmployee(searchQuery);
   const textInputRef = useRef<RNTextInput>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const { data: employeeLeavesQueryData } =
+    useSearchEmployeeLeaves(searchQuery);
 
-  const renderItem = ({ item }: { item: TEmployee }) => {
+  const handleClearSearchText = useCallback(() => {
+    setSearchQuery("");
+  }, [setSearchQuery]);
+
+  const renderItem = ({
+    item,
+  }: {
+    item: { employees: TEmployeeData; leave_request: any };
+  }) => {
     const name = nameFormatter({
-      first_name: item.first_name,
-      last_name: item.last_name,
+      first_name: item.employees.first_name,
+      last_name: item.employees.last_name,
     });
     return (
       <List.Item
@@ -42,9 +47,9 @@ export default function SearchEmployeeScreen() {
         }}
         onPress={() => {
           return router.navigate({
-            pathname: "/(app)/(employee)/employee-detail",
+            pathname: "/(app)/(employee-leaves)/leaves/[id]",
             params: {
-              id: item.employee_id,
+              id: item.employees.employee_id,
               name,
             },
           });
@@ -70,22 +75,6 @@ export default function SearchEmployeeScreen() {
     );
   };
 
-  const handleClearSearchText = useCallback(() => {
-    setSearchQuery("");
-  }, [setSearchQuery]);
-
-  useFocusEffect(
-    useCallback(() => {
-      const focus = () => {
-        setTimeout(() => {
-          textInputRef?.current?.focus();
-        }, 1);
-      };
-      focus();
-      return focus();
-    }, [textInputRef])
-  );
-
   return (
     <>
       <Stack.Screen
@@ -108,21 +97,24 @@ export default function SearchEmployeeScreen() {
                 autoFocus={true}
                 onChangeText={setSearchQuery}
                 value={searchQuery}
-                placeholder="Search your employee"
-                style={[styles.searchBar, { fontSize: 14 }]}
+                placeholder="Search your employee leaves"
+                style={[{ fontSize: 14 }]}
               />
             </View>
           ),
-          headerRight: () =>
-            searchQuery && (
-              <IconButton
-                onPress={handleClearSearchText}
-                icon={() => <CustomIcon name="close" />}
-              />
-            ),
+          headerRight: () => (
+            <View>
+              {searchQuery && (
+                <IconButton
+                  onPress={handleClearSearchText}
+                  icon={() => <CustomIcon name="close" />}
+                />
+              )}
+            </View>
+          ),
         }}
       />
-      <ScreenView style={styles.screenView}>
+      <ScreenView style={styles.screenWrapper}>
         {searchQuery === "" ? (
           <Text
             style={{
@@ -132,40 +124,32 @@ export default function SearchEmployeeScreen() {
             }}
             variant="bodyMedium"
           >
-            Try searching your employee here
+            Try searching your employee name here
           </Text>
         ) : (
           <FlashList
             estimatedItemSize={10}
-            data={searchEmployeeData}
+            //@ts-ignore
+            data={employeeLeavesQueryData}
             renderItem={renderItem}
-            keyExtractor={(item) => item.employee_id.toString()}
+            keyExtractor={(item) => item.employees.employee_id.toString()}
             keyboardShouldPersistTaps="handled"
-            ListEmptyComponent={<NotFound title="Oops no employee found." />}
+            ListEmptyComponent={
+              <NotFound title="Oops employee have not a leave request." />
+            }
           />
         )}
       </ScreenView>
     </>
   );
 }
-
-const SEARCH_BUTTON_WIDTH = 80; // Approximate width of the search button
 const styles = StyleSheet.create({
+  screenWrapper: {
+    flex: 1,
+  },
   headerContainer: {
     flex: 1,
     paddingLeft: 10,
-    paddingRight: SEARCH_BUTTON_WIDTH + 100,
     justifyContent: "center",
-  },
-  searchBar: {},
-  searchBarInput: {
-    fontSize: 13,
-  },
-  searchButton: {
-    marginRight: 10,
-    width: SEARCH_BUTTON_WIDTH,
-  },
-  screenView: {
-    flex: 1,
   },
 });

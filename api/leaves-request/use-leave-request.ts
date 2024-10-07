@@ -1,5 +1,5 @@
 import { TEmployee } from "@/components/EmployeeLeave/components/LeaveCalendar";
-import { count, eq, inArray, sql } from "drizzle-orm";
+import { and, count, eq, inArray, like, or, sql } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
@@ -300,5 +300,20 @@ export const useEmployeeLeaves = ({
     })
   );
 
+  return data;
+};
+
+export const useSearchEmployeeLeaves = (searchTerm: string) => {
+  const searchQuery = db
+    .select()
+    .from(leaveRequest)
+    .innerJoin(employees, eq(leaveRequest.employee_id, employees.employee_id))
+    .where(
+      or(
+        like(employees.first_name, `%${searchTerm}%`),
+        like(employees.last_name, `%${searchTerm}%`)
+      )
+    );
+  const data = useLiveQuery(searchQuery, [searchTerm]);
   return data;
 };

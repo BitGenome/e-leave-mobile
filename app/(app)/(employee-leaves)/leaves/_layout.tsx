@@ -22,6 +22,13 @@ export default function LeavesLayout() {
           headerTitle: () => <NavigationHeaderTitle title="Leave details" />,
         }}
       />
+      <Stack.Screen
+        name="search-leaves"
+        options={{
+          title: "Search Leaves",
+          headerTitle: () => <NavigationHeaderTitle title="Search leaves" />,
+        }}
+      />
     </Stack>
   );
 }

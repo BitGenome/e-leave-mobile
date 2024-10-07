@@ -1,13 +1,15 @@
 import { useLeaveTypeData } from "@/api/leave-type/use-leave-type-data";
 import { type LeaveBalanceFormInput } from "@/app/(app)/settings/annual-leave";
 import Card from "@/components/Common/Card";
+import { CenteredView } from "@/components/Common/CenteredView";
+import { Loading } from "@/components/Common/Loading";
 import NotFound from "@/components/Common/NotFound";
 import CustomIcon from "@/ui/custom-icon";
 import AppTextInput from "@/ui/text-input";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback } from "react";
 import { Control, Controller, UseFormRegister } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, StyleProp } from "react-native";
 import { Divider, HelperText, IconButton, TextInput } from "react-native-paper";
 
 interface LeaveType {
@@ -84,13 +86,15 @@ interface LeaveFormProps {
 }
 
 export default function LeaveBalanceForm(props: LeaveFormProps) {
-  const { data } = useLeaveTypeData();
+  const { data, isLoading } = useLeaveTypeData();
   const leaveTypeData = data?.map((type) => ({
     id: type.id,
     name: type.leave_name,
     label: type.leave_name,
     balance: 0,
   }));
+
+  if (isLoading) return <Loading />;
 
   if (!data || data.length === 0)
     return <NotFound title="You have not added yet a leave type." />;

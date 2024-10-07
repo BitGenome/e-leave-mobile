@@ -2,9 +2,9 @@ import { type leaveStatusType } from "@/api/database/schema";
 import LeaveTab from "@/components/EmployeeLeave/components/LeavesTab";
 import { View as ScreenView } from "@/components/Themed";
 import CustomIcon from "@/ui/custom-icon";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
-import { IconButton, useTheme } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import { Tabs, TabScreen } from "react-native-paper-tabs";
 
 const tabs: { label: string; leaveType: leaveStatusType }[] = [
@@ -14,6 +14,7 @@ const tabs: { label: string; leaveType: leaveStatusType }[] = [
 ];
 
 export default function LeavesScreen() {
+  const router = useRouter();
   return (
     <>
       <Stack.Screen
@@ -21,6 +22,9 @@ export default function LeavesScreen() {
           headerTitleAlign: "left",
           headerRight: () => (
             <IconButton
+              onPress={() =>
+                router.navigate("/(app)/(employee-leaves)/leaves/search-leaves")
+              }
               icon={() => <CustomIcon name="search" library="ionic" />}
             />
           ),

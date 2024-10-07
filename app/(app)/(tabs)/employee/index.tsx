@@ -1,4 +1,5 @@
 import { useEmployeeData } from "@/api/employees/use-employee-data";
+import { CenteredView } from "@/components/Common/CenteredView";
 import NotFound from "@/components/Common/NotFound";
 import EmployeeCard from "@/components/Employee/components/EmployeeCard";
 import { View as ScreenView } from "@/components/Themed";
@@ -9,13 +10,13 @@ import { FlashList } from "@shopify/flash-list";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { MotiView } from "moti";
 import { Animated, StyleSheet, View } from "react-native";
-import { FAB, MD3Theme, useTheme } from "react-native-paper";
+import { ActivityIndicator, FAB, MD3Theme, useTheme } from "react-native-paper";
 
 export default function EmployeeScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
   const router = useExpoRouter();
-  const { data, error } = useEmployeeData();
+  const { data, isLoading } = useEmployeeData();
 
   const isTabBarVisible = useAppStore((state) => state.isTabbarVisible);
   const scrollOffsetY = useTabBarVisibility();
@@ -23,19 +24,25 @@ export default function EmployeeScreen() {
   return (
     <ScreenView style={styles.container}>
       <View style={styles.flashContainer}>
-        <FlashList
-          contentInsetAdjustmentBehavior="automatic"
-          renderItem={({ item, index }) => (
-            <EmployeeCard key={index} path="/employee-detail" {...item} />
-          )}
-          data={data}
-          ListEmptyComponent={<NotFound title="No employee added yet" />}
-          estimatedItemSize={20}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-            { useNativeDriver: false }
-          )}
-        />
+        {isLoading ? (
+          <CenteredView>
+            <ActivityIndicator />
+          </CenteredView>
+        ) : (
+          <FlashList
+            contentInsetAdjustmentBehavior="automatic"
+            renderItem={({ item, index }) => (
+              <EmployeeCard key={index} path="/employee-detail" {...item} />
+            )}
+            data={data}
+            ListEmptyComponent={<NotFound title="No employee added yet" />}
+            estimatedItemSize={20}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+              { useNativeDriver: false }
+            )}
+          />
+        )}
         {isTabBarVisible && (
           <MotiView
             from={{ opacity: 0, translateY: 20 }}

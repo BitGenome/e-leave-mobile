@@ -3,7 +3,7 @@ import { db } from "../database/database";
 import { leaveType } from "../database/schema";
 
 export const useLeaveTypeData = () => {
-  const data = useLiveQuery(db.select().from(leaveType));
+  const { data, error } = useLiveQuery(db.select().from(leaveType));
 
-  return data;
+  return { data, error, isLoading: !data };
 };

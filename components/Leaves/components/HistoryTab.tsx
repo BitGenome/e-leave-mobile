@@ -23,6 +23,7 @@ const HistoryTab = ({ employeeId }: { employeeId: number }) => {
         contentInsetAdjustmentBehavior="automatic"
         renderItem={renderItem}
         data={employeeLeavesData}
+        keyExtractor={(item) => item.id.toString()}
         estimatedItemSize={20}
         ListEmptyComponent={<NotFound title={`No leave request`} />}
       />

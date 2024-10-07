@@ -13,21 +13,10 @@ import { Animated, View } from "react-native";
 export default function LeaveTab({ tab }: { tab: leaveStatusType }) {
   const scrollOffsetY = useTabBarVisibility();
 
-  const { leaveData, hasMore, loadMore, refreshData, isLoading } =
-    useLeaveRequests({
-      status: tab,
-    });
-  // const {
-  //   data: leaveRequestData,
+  const { leaveData, loadMore, refreshData, isLoading } = useLeaveRequests({
+    status: tab,
+  });
 
-  //   nextPage,
-  // } = useLeaveRequest({
-  //   status: tab ?? "pending",
-  // });
-
-  if (tab === "approved") {
-    console.log(" leave data lenth", leaveData?.length, "status:", tab);
-  }
   const renderItem = useCallback(
     ({ item }: { item: LeaveCardProps }) => <LeaveCard {...item} />,
     []
@@ -46,6 +35,7 @@ export default function LeaveTab({ tab }: { tab: leaveStatusType }) {
         contentInsetAdjustmentBehavior="automatic"
         renderItem={renderItem}
         data={leaveData}
+        keyExtractor={(item) => item.id.toString()}
         estimatedItemSize={5}
         onEndReached={loadMore}
         onEndReachedThreshold={0.7}
