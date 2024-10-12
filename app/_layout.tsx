@@ -1,3 +1,4 @@
+import { db } from "@/api/database/database";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { useAppThemeStore } from "@/store/app";
@@ -19,26 +20,24 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import merge from "deepmerge";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SQLite from "expo-sqlite";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { adaptNavigationTheme, Provider, useTheme } from "react-native-paper";
+import { enGB, registerTranslation } from "react-native-paper-dates";
 import { TabsProvider } from "react-native-paper-tabs";
 import "react-native-reanimated";
+import { Toaster } from "sonner-native";
+import migrations from "../drizzle/migrations";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
-import { enGB, registerTranslation } from "react-native-paper-dates";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import migrations from "../drizzle/migrations";
-import { db } from "@/api/database/database";
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
-import * as SQLite from "expo-sqlite";
-import { Toaster } from "sonner-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const dbExpo = SQLite.openDatabaseSync("leavease.db");
 registerTranslation("en-GB", enGB);
@@ -97,7 +96,10 @@ function RootLayoutNav() {
   /**
    * check this url for morre info https://github.com/drizzle-team/drizzle-orm/discussions/2447
    */
-  useDrizzleStudio(dbExpo);
+  if (__DEV__) {
+    useDrizzleStudio(dbExpo);
+  }
+
   return (
     <Providers>
       <Stack

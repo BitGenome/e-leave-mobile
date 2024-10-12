@@ -1,23 +1,23 @@
 {
-  "cli": {
-    "version": ">= 12.4.1",
-    "appVersionSource": "remote"
-  },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
+    "preview": {
       "android": {
         "buildType": "apk"
       }
     },
-    "preview": {
-      "distribution": "internal",
+    "preview2": {
       "android": {
-        "buildType": "apk"
+        "gradleCommand": ":app:assembleRelease"
       }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "preview4": {
+      "distribution": "internal"
     },
     "production": {
+      "developmentClient": false,
       "android": {
         "buildType": "apk"
       }
