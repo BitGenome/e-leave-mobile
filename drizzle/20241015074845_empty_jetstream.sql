@@ -12,7 +12,7 @@ CREATE TABLE `leave_balances` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`employee_id` integer NOT NULL,
 	`leave_type_id` integer NOT NULL,
-	`available_days` integer,
+	`available_days` integer NOT NULL,
 	`created_at` integer DEFAULT (CURRENT_TIMESTAMP),
 	`updated_at` integer DEFAULT (CURRENT_TIMESTAMP),
 	FOREIGN KEY (`employee_id`) REFERENCES `employees`(`employee_id`) ON UPDATE cascade ON DELETE cascade,
@@ -24,12 +24,12 @@ CREATE TABLE `leave_request` (
 	`employee_id` integer NOT NULL,
 	`leave_type_id` integer NOT NULL,
 	`deducted_leave_type_id` integer NOT NULL,
-	`start_date` integer,
+	`start_date` integer NOT NULL,
 	`end_date` integer,
 	`leave_duration` text NOT NULL,
 	`remark` text,
-	`status` text DEFAULT 'pending' NOT NULL,
-	`created_at` integer DEFAULT (CURRENT_TIMESTAMP),
+	`status` text DEFAULT 'pending',
+	`created_at` integer DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
 	`updated_at` integer DEFAULT (CURRENT_TIMESTAMP),
 	FOREIGN KEY (`employee_id`) REFERENCES `employees`(`employee_id`) ON UPDATE cascade ON DELETE cascade,
 	FOREIGN KEY (`leave_type_id`) REFERENCES `leave_type`(`id`) ON UPDATE cascade ON DELETE set null,
@@ -47,8 +47,7 @@ CREATE TABLE `leave_type` (
 --> statement-breakpoint
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`firstname` text NOT NULL,
-	`lastname` text NOT NULL,
+	`username` text NOT NULL,
 	`password_hash` text NOT NULL,
 	`createdAt` integer DEFAULT (CURRENT_TIMESTAMP)
 );

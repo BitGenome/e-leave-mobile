@@ -38,15 +38,7 @@ export interface HeaderProps {
 
 const BottomSheetSelect = forwardRef<View, SelectProps>(
   (
-    {
-      options,
-      label,
-      onSelect,
-      value,
-      header,
-      snapPoint = ["30%", "50%"],
-      error,
-    },
+    { options, label, onSelect, value, header, snapPoint = ["50%"], error },
     ref
   ) => {
     const theme = useTheme();
@@ -164,6 +156,7 @@ const BottomSheetSelect = forwardRef<View, SelectProps>(
           ref={bottomSheetModalRef}
           index={0}
           snapPoints={snapPoint}
+          enableDynamicSizing
           backdropComponent={renderBackdrop}
           backgroundStyle={{
             backgroundColor: theme.colors.surface,

@@ -187,6 +187,7 @@ export default function ApplyEmployeeLeaveForm(
             fieldState: { error },
           }) => (
             <BottomSheetSelect
+              snapPoint={["50%", "70%"]}
               error={Boolean(error?.message)}
               label="Duration"
               options={time}

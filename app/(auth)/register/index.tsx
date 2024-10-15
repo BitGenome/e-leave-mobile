@@ -1,3 +1,4 @@
+import { loginUser, registerUser } from "@/api/user/user.service";
 import AuthWrapper from "@/components/Auth/AuthWrapper";
 import RegisterForm, {
   RegisterInputProps,
@@ -6,6 +7,7 @@ import { useAppThemeStore } from "@/store/app";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StatusBar } from "expo-status-bar";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner-native";
 import * as zod from "zod";
 
 const registerUserSchema = zod
@@ -40,8 +42,22 @@ export default function RegistrationScreen() {
     resolver: zodResolver(registerUserSchema),
   });
 
-  const onSubmit: SubmitHandler<RegisterInputProps> = (data) => {
-    console.log("data", data);
+  const onSubmit: SubmitHandler<RegisterInputProps> = async (data) => {
+    try {
+      await registerUser(data);
+      toast.success("Success", {
+        duration: 6000,
+        description: "You succesfully register.",
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error("Error", {
+          description: error.message,
+        });
+        throw new Error(`${error.message}`);
+      }
+      throw Error("Unexpected error");
+    }
   };
   return (
     <>

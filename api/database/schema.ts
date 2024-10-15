@@ -3,8 +3,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  firstname: text("firstname").notNull(),
-  lastname: text("lastname").notNull(),
+  username: text("username").notNull(),
   password_hash: text("password_hash").notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" }).default(
     sql`(CURRENT_TIMESTAMP)`

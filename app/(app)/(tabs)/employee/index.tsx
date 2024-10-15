@@ -58,7 +58,6 @@ export default function EmployeeScreen() {
               )}
               color={theme.colors.surface}
               style={styles.fab}
-              animated
             />
           </MotiView>
         )}
