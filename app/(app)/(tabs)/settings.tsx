@@ -1,6 +1,7 @@
 import ListItem from "@/components/Settings/components/ListItems";
 import Profile from "@/components/Settings/components/Profile";
 import { View } from "@/components/Themed";
+import { useSession } from "@/ctx";
 import useVisibility from "@/hooks/usePasswordVisibilityToggle";
 import AppDialog from "@/ui/app-dialog";
 import CustomIcon, { IconName, TIconLibrary } from "@/ui/custom-icon";
@@ -51,11 +52,13 @@ const SETTINGS_LIST: SettingsItem[] = [
 export default function SettingsScreen() {
   const height = useHeaderHeight();
   const router = useExpoRouter();
+  const { signOut } = useSession();
   const { state: isLogoutDialogVisible, toggle: toggleLogoutDialog } =
     useVisibility({ defaultVisiblityState: false });
   const theme = useTheme();
 
   const onConfirmLogout = () => {
+    signOut();
     toggleLogoutDialog();
     router.replace("(auth)/login");
   };

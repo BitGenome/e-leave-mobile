@@ -1,5 +1,6 @@
 import AuthWrapper from "@/components/Auth/AuthWrapper";
 import LoginForm, { LoginInputProps } from "@/components/Forms/Auth/Login";
+import { useSession } from "@/ctx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useExpoRouter } from "expo-router/build/global-state/router-store";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -14,7 +15,7 @@ const loginSchema = zod
 
 export default function LoginScreen() {
   const router = useExpoRouter();
-
+  const { signIn } = useSession();
   const form = useForm<LoginInputProps>({
     defaultValues: {
       password: "",
@@ -24,6 +25,7 @@ export default function LoginScreen() {
   });
 
   const onSubmit: SubmitHandler<LoginInputProps> = (data) => {
+    signIn(data);
     router.navigate("(tabs)");
     return;
   };

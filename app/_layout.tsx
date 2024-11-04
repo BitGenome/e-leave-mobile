@@ -23,7 +23,7 @@ import merge from "deepmerge";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Slot, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SQLite from "expo-sqlite";
 import { useEffect } from "react";
@@ -34,6 +34,7 @@ import { TabsProvider } from "react-native-paper-tabs";
 import "react-native-reanimated";
 import { Toaster } from "sonner-native";
 import migrations from "../drizzle/migrations";
+import { SessionProvider } from "@/ctx";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -140,7 +141,9 @@ function Providers({ children }: { children: React.ReactNode }) {
       <Provider theme={theme}>
         <ThemeProvider value={theme}>
           <TabsProvider>
-            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+            <SessionProvider>
+              <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+            </SessionProvider>
             <Toaster />
           </TabsProvider>
         </ThemeProvider>

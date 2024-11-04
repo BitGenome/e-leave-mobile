@@ -49,6 +49,7 @@ export default function RegistrationScreen() {
         duration: 6000,
         description: "You succesfully register.",
       });
+      form.reset();
     } catch (error) {
       if (error instanceof Error) {
         toast.error("Error", {
